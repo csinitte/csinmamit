@@ -15,10 +15,10 @@ export default function Home() {
       </p>
         </div>
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          Welcome to the official website of <span className="text-blue-600">CSI,</span>
+          Welcome to the official website of <span className="text-blue-600">CSI NMAMIT,</span>
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm-text-lg">
-        Computer Society of India
+        Computer Society of India, NMAMIT
         </p>
 
         <Link className={buttonVariants({
@@ -44,7 +44,7 @@ export default function Home() {
               <div className="mt-16 flow-root sm:mt-24">
                 <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                       <Image 
-                      src={"/dashboard-preview.jpg"} width={1364} height={866}
+                      src={"/team.jpg"} width={1500} height={1000}
                       alt="main-image"
                       quality={100}
                       className="rounded-md bg-white p-2 sm:p-8 md:p-20 shadow-2xl ring-1 ring-gray-900/10"/>

@@ -1,23 +1,14 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { redirect } from 'next/navigation';
 
-const Dashboard = () => {
-  
-  const fetchUser = async () => {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
-    console.log(user);
+const Dashboard = async () => {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
+  if (!user || !user.id) redirect('/auth-callback?origin=dashboard')
 
-    if (user) {
-      console.log('User Email:', user.given_name);
-    } else {
-      console.log('User not logged in');
-    }
-  };
-
-  // Call the function to fetch and log user information
-  fetchUser();
-
-  return <div></div>;
+  return(
+    <>{user.email}</>
+  );
 };
 
 export default Dashboard;
