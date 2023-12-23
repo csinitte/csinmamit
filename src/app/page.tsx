@@ -15,7 +15,7 @@ export default function Home() {
       </p>
         </div>
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          Welcome to the official website of <span className="text-blue-600">CSI NMAMIT,</span>
+          Welcome to <br></br><span className="text-blue-600">CSI NMAMIT,</span>
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm-text-lg">
         Computer Society of India, NMAMIT
@@ -24,8 +24,8 @@ export default function Home() {
         <Link className={buttonVariants({
           size: 'lg',
           className: 'mt-5',
-        })} href={"/dashboard"} target="_blank">
-          Get started <ArrowRight className="ml-2 h-5 w-5"/>
+        })} href={"/events"} target="_blank">
+          Checkout Events <ArrowRight className="ml-2 h-5 w-5"/>
         </Link>
       </MaxWidthWrapper>
 
@@ -41,14 +41,32 @@ export default function Home() {
 
           <div>
             <div className="mx-auto max-w-6xl px-6 lg:px-8">
-              <div className="mt-16 flow-root sm:mt-24">
+             
+              <div className="mt-16 mb-16 flow-root sm:mt-24">
+           
                 <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-                      <Image 
-                      src={"/team.jpg"} width={1500} height={1000}
-                      alt="main-image"
-                      quality={100}
-                      className="rounded-md bg-white p-2 sm:p-8 md:p-20 shadow-2xl ring-1 ring-gray-900/10"/>
-                      
+                <div className="flex justify-center items-center gap-8 p-8">
+  <div className='w-1/2 flex flex-col items-center'>
+    <h1 className="max-w-3xl text-4xl font-bold md:text-5xl lg:text-6xl text-blue-600 mb-4">
+      About Us
+    </h1>
+    <p className="text-left">
+      Embark on a transformative journey with the Computer Society of India, NMAMIT Student Branch, where technology meets community, and ideas take flight. We are not just an organization; we are a family that fosters growth, innovation, and a shared passion for all things tech. At CSI, we believe in shaping the future of technology enthusiasts by providing a holistic perspective on development and empowering students to turn their ideas into impactful solutions.
+    </p>
+  </div>
+
+  <div className='w-1/2 cursor-pointer overflow-hidden rounded-lg '>
+    <Image 
+      src={"/team.jpg"} width={1000} height={750}
+      alt="main-image"
+      quality={100}
+      className="rounded-md"
+    />  
+  </div>
+</div>
+
+            
+  
                 </div>
               </div>
             </div>

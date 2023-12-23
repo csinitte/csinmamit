@@ -11,9 +11,9 @@ datasource db {
 }
 
 model User {
-  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
-  custid                 String    @unique
-  email                  String    @unique
-  role                   String
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  custid      String    @unique
+  email       String    @unique
+  role        String    @default("user")
+  joinedDate  DateTime  @default(now())
 }
