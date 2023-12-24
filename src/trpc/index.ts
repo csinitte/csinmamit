@@ -46,6 +46,11 @@ export const appRouter = router({
 
     return { success: true }
   }),
+  // getUser: publicProcedure.query(async ( { ctx } ) => {
+  //   const { userId } = ctx
+
+  //   return await 
+  // })
 //   getUserFiles: privateProcedure.query(async ({ ctx }) => {
 //     const { userId } = ctx
 

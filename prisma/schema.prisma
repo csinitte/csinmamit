@@ -17,3 +17,15 @@ model User {
   role        String    @default("user")
   joinedDate  DateTime  @default(now())
 }
+
+model Team {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  custid      String    @unique
+  email       String    @unique
+  branch      String
+  role        String
+  linkedin    String?
+  github      String?
+  imageLink   String?
+}
+
