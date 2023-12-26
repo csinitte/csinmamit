@@ -24,6 +24,7 @@
     "@trpc/server": "^10.38.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "firebase": "^10.7.1",
     "lucide-react": "^0.300.0",
     "next": "14.0.4",
     "react": "^18",
@@ -35,6 +36,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/firebase": "^3.2.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

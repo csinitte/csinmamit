@@ -22,6 +22,7 @@ model Team {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   custid      String    @unique
   email       String    @unique
+  name        String
   branch      String
   role        String
   linkedin    String?
