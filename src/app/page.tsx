@@ -3,9 +3,14 @@ import Link from "next/link";
 import { ArrowRight } from 'lucide-react';
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
-import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server';
+import { RegisterLink, getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { redirect, useRouter } from "next/navigation";
 
 export default function Home() {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
+
+  if (user) redirect('/dashboard')
   return (
     <>
       <MaxWidthWrapper className="mb-12 mt-14 sm:mt-28 flex flex-col items-center justify-center text-center">
