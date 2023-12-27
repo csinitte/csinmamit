@@ -5,6 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { GithubIcon, LinkedinIcon } from "lucide-react";
 import Image from "next/image";
 import { RotateLoader } from 'react-spinners'
+import { trpc } from '../_trpc/client';
+import Link from 'next/link';
 // Loader component
 const Loader = () => (
   <div className="flex items-center justify-center h-screen">
@@ -39,24 +41,24 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
         <h2 className="text-2xl font-semibold">{name}</h2>
         <p className="text-blue-500">{position}</p>
         <div className="flex justify-center gap-4 mt-4">
-          <p
+          <Link
             className={buttonVariants({
               variant: "outline",
               size: "icon",
               className: "rounded-full transition-colors hover:text-blue-500",
-            })}
+            })} href={linkedin} target='_blank'
           >
             <LinkedinIcon size={24} />
-          </p>
-          <p
+          </Link>
+          <Link
             className={buttonVariants({
               variant: "outline",
               size: "icon",
               className: "rounded-full  transition-colors hover:text-gray-600",
-            })}
+            })} href={github} target='_blank'
           >
             <GithubIcon  size={24} />
-          </p>
+          </Link>
         </div>
       </div>
     </div>
@@ -65,31 +67,47 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
 
 const Team = () => {
   const [loading, setLoading] = useState(true);
-  const teamMembers: TeamMemberProps[] = [
-    // Simulating an asynchronous data fetch
-    {
-      name: "John Doe",
-      position: "Software Engineer",
-      linkedin: "https://www.linkedin.com/in/johndoe/",
-      github: "https://github.com/johndoe",
-      imageSrc: "/mock.png",
-    },
-    {
-        name: "John Doe",
-        position: "Software Engineer",
-        linkedin: "https://www.linkedin.com/in/johndoe/",
-        github: "https://github.com/johndoe",
-        imageSrc: "/mock.png",
-      },
-      {
-        name: "John Doe",
-        position: "Software Engineer",
-        linkedin: "https://www.linkedin.com/in/johndoe/",
-        github: "https://github.com/johndoe",
-        imageSrc: "/mock.png",
-      },
-    // Add more team members as needed
-  ];
+  const [teamMembers, setTeamMembers] = useState<TeamMemberProps[]>([]);
+  const roleOptions = ["Chairman", "Vice Chairman", "Secretary", "Treasurer", "Joint Secretary", "Program Committee Head", "Program Committee Co-Head", "Social Media Head", "Web Editor Head", "Web Editor Co-Head", "MC Committee Head", "MC Committee Co-Head", "Graphic Committee Head", "Graphic Committee Co-Head", "Magazine Committee Head", "Magazine Committee Co-Head", "Photography Committee Head", "Photography Committee Co-Head", "Android Domain Head", "Android Domain Co-Head", "Web Domain Head", "Web Domain Co-Head", "AIML Domain Head", "AIML Domain Co-Head", "CyberSecurity Domain Head", "CyberSecurity Domain Co-Head", "Final Year Representative", "Third Year Representative", "Second Year Representative" ];
+
+  useEffect(() => {
+    // Fetch team data using HTTP request
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/trpc/getTeam');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log('Fetched data:', data);
+
+        // Assuming the actual data structure matches what you expect
+        const dataa = data?.result?.data?.dbF ;
+
+        // Map dbF to your TeamMemberProps
+        const mappedTeamMembers = dataa.map((member: any) => ({
+          name: member.name,
+          position: member.role,
+          linkedin: member.linkedin || '',
+          github: member.github || '',
+          imageSrc: member.imageLink || '/default-image.png', // Provide a default image source
+        }));
+        const sortedTeamMembers = mappedTeamMembers.sort((a: any, b: any) =>
+        roleOptions.indexOf(a.position) - roleOptions.indexOf(b.position)
+      );
+
+        setTeamMembers(sortedTeamMembers);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching team data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Simulate fetching data
@@ -101,6 +119,8 @@ const Team = () => {
 
     fetchData();
   }, []);
+
+  console.log(teamMembers)
 
   return (
     <MaxWidthWrapper>

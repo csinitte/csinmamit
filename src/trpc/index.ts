@@ -19,6 +19,12 @@ import { z } from "zod";
 
 
 export const appRouter = router({
+
+  getTeam: publicProcedure.query(async () => {
+    const dbF = await db.team.findMany();
+    return { dbF };
+  }),
+
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession()
     const user = getUser()
