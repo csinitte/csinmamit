@@ -25,7 +25,7 @@ const Add = async () => {
       <div>
         {dbUser ? (
           <MaxWidthWrapper className='text-center mb-10'>
-            <h1  className="max-w-4xl text-3xl font-bold md:text-5xl lg:text-6xl justify-center text-center pt-10 pb-10">Your Account already Exists.</h1>
+            <h1  className="max-w-4xl text-3xl font-bold md:text-5xl lg:text-6xl justify-center text-center pt-10 pb-10">Your Account already Exists :D</h1>
             <Link className={buttonVariants({
           size: 'lg',
           className: 'items-center justify-center text-center',
