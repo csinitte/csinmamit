@@ -13,3 +13,11 @@ export function absoluteUrl(path: string) {
     process.env.PORT ?? 3000
   }${path}`
 }
+
+export const eventTabs = [
+  "Year2019to2020",
+  "Year2020to2021",
+  "Year2021to2022",
+  "Year2022to2023",
+  "All",
+];
