@@ -60,11 +60,21 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                 <li>
                   <Link
                     onClick={() =>
-                      closeOnCurrent('/pricing')
+                      closeOnCurrent('/team')
                     }
                     className='flex items-center w-full font-semibold'
-                    href='/pricing'>
-                    Pricing
+                    href='/team'>
+                    Team
+                  </Link>
+                </li>
+                <li>
+                <Link
+                    onClick={() =>
+                      closeOnCurrent('/team')
+                    }
+                    className='flex items-center w-full font-semibold'
+                    href='/events'>
+                    Events
                   </Link>
                 </li>
               </>
@@ -78,6 +88,26 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                     className='flex items-center w-full font-semibold'
                     href='/dashboard'>
                     Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={() =>
+                      closeOnCurrent('/team')
+                    }
+                    className='flex items-center w-full font-semibold'
+                    href='/team'>
+                    Team
+                  </Link>
+                </li>
+                <li>
+                <Link
+                    onClick={() =>
+                      closeOnCurrent('/team')
+                    }
+                    className='flex items-center w-full font-semibold'
+                    href='/events'>
+                    Events
                   </Link>
                 </li>
                 <li className='my-3 h-px w-full bg-gray-300' />

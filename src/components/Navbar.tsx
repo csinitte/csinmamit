@@ -9,6 +9,7 @@ import {
 import { ArrowRight } from 'lucide-react'
 import UserAccountNav from './UserAccountNav'
 import MobileNav from './MobileNav'
+import Image from 'next/image'
 
 const Navbar = () => {
   const { getUser } = getKindeServerSession()
@@ -18,13 +19,19 @@ const Navbar = () => {
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
       <MaxWidthWrapper>
         <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
+        
           <Link
             href='/'
             className='flex z-40 font-semibold'>
-            <span className='text-blue-600'>Computer Society of India.</span>
+              <div className='flex h-14 items-center justify-between gap-5'>
+              <Image src="/csi-logo.png" alt="CSI Logo" width={30} height={30} />
+              <span className='text-blue-600 '>Computer Society of India.</span>
+              </div>
+              
+            
           </Link>
 
-        
+          <MobileNav isAuth={!!user} />
 
           <div className='hidden items-center space-x-4 sm:flex'>
             {!user ? (

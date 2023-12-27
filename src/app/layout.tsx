@@ -20,6 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='light'>
+      <head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link
+  rel="icon"
+  href="/csi-logo?<generated>"
+  type="image/<generated>"
+  sizes="<generated>"
+/>
+      </head>
       <Providers>
       <body className={cn('min-h-screen font-sans antialiased grainy', inter.className)}>
         <Navbar/>

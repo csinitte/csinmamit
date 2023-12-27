@@ -21,10 +21,10 @@ const Dashboard = () => {
             size: "lg",
             className: "mt-5",
           })}
-          href={"/events"}
+          href={"/addteam"}
           target="_blank"
         >
-          Checkout Events <ArrowRight className="ml-2 h-5 w-5" />
+          Add your profile <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </MaxWidthWrapper>
 

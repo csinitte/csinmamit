@@ -20,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import MaxWidthWrapper from './MaxWidthWrapper';
 import { storage } from '../../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { redirect } from 'next/navigation';
 
 const isFileUrl = (value: string) => {
   // You can customize this logic based on how you identify a file URL
@@ -106,6 +107,7 @@ const AddTeam = () => {
       });
 
       console.log('Done', values);
+      redirect('/team')
     } catch (error) {
       console.error('Error creating team:', error);
     } finally {

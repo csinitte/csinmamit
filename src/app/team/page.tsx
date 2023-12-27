@@ -28,14 +28,17 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
   return (
     <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-6 hover:ring-blue-500 transition-all">
       <div className="flex justify-center items-center gap-4 p-4">
+      <div className="relative w-48 h-48 overflow-hidden rounded-md">
         <Image
           src={imageSrc}
           width={250}
           height={250}
           alt="main-image"
           quality={100}
-          className="rounded-md"
+          className="object-cover w-full h-full rounded-md"
+        
         />
+        </div>
       </div>
       <div className="text-center">
         <h2 className="text-2xl font-semibold">{name}</h2>
