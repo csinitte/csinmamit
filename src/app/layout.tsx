@@ -6,7 +6,14 @@ import Navbar from '@/components/Navbar'
 import Providers from '@/components/Providers'
 import Footer from '@/components/Footer'
 
-const inter = Inter({ subsets: ['latin'] })
+
+import { Roboto } from 'next/font/google'
+import { Toaster } from 'sonner'
+ 
+const roboto = Roboto({
+  weight: '400',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: 'CSI NMAMIT',
@@ -30,10 +37,11 @@ export default function RootLayout({
 />
       </head>
       <Providers>
-      <body className={cn('min-h-screen font-sans antialiased grainy', inter.className)}>
+      <body className={cn('min-h-screen font-sans antialiased grainy', roboto.className)}>
         <Navbar/>
         {children}
         <Footer/>
+        <Toaster/>
         </body>
         </Providers>
     </html>

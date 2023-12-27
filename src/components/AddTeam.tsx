@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
+useRouter
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,6 +21,9 @@ import MaxWidthWrapper from './MaxWidthWrapper';
 import { storage } from '../../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { redirect } from 'next/navigation';
+import AnimatedGradientText from './AnimatedGradientText';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const isFileUrl = (value: string) => {
   // You can customize this logic based on how you identify a file URL
@@ -52,6 +55,7 @@ const AddTeam = () => {
       imageLink: '',
     },
   });
+  const router = useRouter()
 
   const addTeamQuery = trpc.addTeam.useMutation();
   const roleOptions = ["Chairman", "Vice Chairman", "Secretary", "Treasurer", "Joint Secretary", "Program Committee Head", "Program Committee Co-Head", "Social Media Head", "Web Editor Head", "Web Editor Co-Head", "MC Committee Head", "MC Committee Co-Head", "Graphic Committee Head", "Graphic Committee Co-Head", "Magazine Committee Head", "Magazine Committee Co-Head", "Photography Committee Head", "Photography Committee Co-Head", "Android Domain Head", "Android Domain Co-Head", "Web Domain Head", "Web Domain Co-Head", "AIML Domain Head", "AIML Domain Co-Head", "CyberSecurity Domain Head", "CyberSecurity Domain Co-Head", "Final Year Representative", "Third Year Representative", "Second Year Representative" ];
@@ -95,6 +99,12 @@ const AddTeam = () => {
         form.setValue('imageLink', imageUrl);
         
         console.log(form.getValues())
+        toast("User has been created", {
+          description: `${values.name} entry created in the database.`,
+        })
+       
+        router.push('/team')
+        
       }
 
       await addTeamQuery.mutate({
@@ -117,6 +127,7 @@ const AddTeam = () => {
 
   return (
     <MaxWidthWrapper>
+      <AnimatedGradientText>Join the Team.</AnimatedGradientText>
       <div style={{ padding: '20px' }}>
         <Form {...form}>
           <form

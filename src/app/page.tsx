@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from 'lucide-react';
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
+import { RegisterLink } from '@kinde-oss/kinde-auth-nextjs/server';
 
 export default function Home() {
   return (
@@ -20,16 +21,15 @@ export default function Home() {
           Computer Society of India, NMAMIT
         </p>
 
-        <Link
-          className={buttonVariants({
-            size: 'lg',
-            className: 'mt-5',
-          })}
-          href={"/events"}
-          target="_blank"
-        >
-          Checkout Events <ArrowRight className="ml-2 h-5 w-5" />
-        </Link>
+
+        <RegisterLink
+                  className={buttonVariants({
+                    size: 'lg',
+                    className: 'mt-5',
+                  })}>
+                  Join Us{' '}
+                  <ArrowRight className='ml-1.5 h-5 w-5' />
+                </RegisterLink>
       </MaxWidthWrapper>
 
       <div>
