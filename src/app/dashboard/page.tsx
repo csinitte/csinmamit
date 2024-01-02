@@ -17,10 +17,13 @@ const Page = async () => {
   })
 
   if(!dbUser) redirect('/auth-callback?origin=dashboard')
+  let name = user.given_name || "";
+
+  if(name.startsWith("NNM")) name = user.family_name || "";
 
  
 
-  return <Dashboard />
+  return <Dashboard name={name}/>
 }
 
 export default Page

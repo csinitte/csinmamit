@@ -52,6 +52,42 @@ export const appRouter = router({
 
     return { success: true }
   }),
+  addEvent: publicProcedure.input(
+    z.object({
+      eventname: z.string(),
+      category   : z.string(),
+      date: z.date(),
+      registered: z.number(),
+      organizers: z.string(),
+      description: z.string(),
+      imageLink  : z.string()
+    })
+  ).mutation(async ( { ctx, input }) => {
+    const { eventname, category, date, registered, organizers, description, imageLink } = input;
+
+    const { getUser } = getKindeServerSession()
+    const user = getUser()
+
+    if (!user.id || !user.email)
+      throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+    // check if the user is in the database
+    await db.event.create({
+      data: {
+        eventname: eventname,
+        category: category,
+        date: date,
+        registered: registered,
+        organizers : organizers,
+        description: description, 
+        imageLink: imageLink
+      }
+    })
+    
+
+    return { success: true };
+  }),
+
   addTeam: publicProcedure.input(
     z.object({
       name: z.string(),

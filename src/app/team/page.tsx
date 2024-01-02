@@ -8,6 +8,7 @@ import { RotateLoader } from 'react-spinners'
 import { trpc } from '../_trpc/client';
 import Link from 'next/link';
 import AnimatedGradientText from '@/components/AnimatedGradientText';
+import TimelineTape from '@/components/Timeline';
 // Loader component
 const Loader = () => (
   <div className="flex items-center justify-center h-screen">
@@ -142,6 +143,8 @@ const Team = () => {
           ))}
         </div>
       )}
+
+      <TimelineTape/>
     </MaxWidthWrapper>
   );
 };

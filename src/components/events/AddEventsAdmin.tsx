@@ -13,53 +13,67 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-useRouter
+import { Calendar as CalendarIcon } from "lucide-react"
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import MaxWidthWrapper from './MaxWidthWrapper';
-import { storage } from '../../firebase';
+import { format } from "date-fns"
+
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { redirect } from 'next/navigation';
-import AnimatedGradientText from './AnimatedGradientText';
+
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import TimelineTape from './Timeline';
+import AnimatedGradientText from '../AnimatedGradientText';
+import MaxWidthWrapper from '../MaxWidthWrapper';
+import { storage } from '../../../firebase';
+import { Textarea } from '../ui/textarea';
+import { CalendarRangeIcon } from 'lucide-react';
+import { Calendar } from "@/components/ui/calendar"
+import {
+  FormDescription,
+} from "@/components/ui/form"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from './../../lib/utils';
 
 const isFileUrl = (value: string) => {
   // You can customize this logic based on how you identify a file URL
   return value.startsWith('file://');
 };
 
+
 const formSchema = z.object({
-  name: z.string(),
-  branch: z.string(),
-  role: z.string(),
-  linkedin: z.string().url({
-    message: 'Please enter a valid LinkedIn profile URL.',
-  }),
-  github: z.string().url({
-    message: 'Please enter a valid GitHub profile URL.',
-  }),
-  imageLink: z.string()
+    eventname: z.string(),
+    category   : z.string(),
+    date: z.date({
+        required_error: "A date of birth is required.",
+      }),
+    registered: z.number(),
+    organizers: z.string(),
+    description: z.string(),
+    imageLink  : z.string()
 });
 
-const AddTeam = () => {
+const AddEventsAdmin = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      branch: '',
-      role: '',
-      linkedin: '',
-      github: '',
-      imageLink: '',
-    },
+        eventname: '',
+        category   : '',
+        date: new Date(),
+        registered: 0,
+        organizers: '',
+        description: '',
+        imageLink  : '',   
+     },
   });
   const router = useRouter()
 
-  const addTeamQuery = trpc.addTeam.useMutation();
-  const roleOptions = ["Chairman", "Vice Chairman", "Secretary", "Treasurer", "Joint Secretary", "Student Advisor" ,"Program Committee Head", "Program Committee Co-Head", "Social Media Head", "Web Editor Head", "Web Editor Co-Head", "MC Committee Head", "MC Committee Co-Head", "Graphic Committee Head", "Graphic Committee Co-Head", "Magazine Committee Head", "Magazine Committee Co-Head", "Photography Committee Head", "Photography Committee Co-Head", "Android Domain Head", "Android Domain Co-Head", "Web Domain Head", "Web Domain Co-Head", "AIML Domain Head", "AIML Domain Co-Head", "CyberSecurity Domain Head", "CyberSecurity Domain Co-Head", "Final Year Representative", "Third Year Representative", "Second Year Representative"];
+  const addEventQuery = trpc.addEvent.useMutation();
 
   const [image, setImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -72,7 +86,7 @@ const AddTeam = () => {
   };
 
   const uploadImageToStorage = async (file: File): Promise<string> => {
-    const imageRef = ref(storage, 'images/' + file.name);
+    const imageRef = ref(storage, 'events/' + file.name);
   
     try {
       const snapshot = await uploadBytesResumable(imageRef, file);
@@ -100,25 +114,26 @@ const AddTeam = () => {
         form.setValue('imageLink', imageUrl);
         
         console.log(form.getValues())
-        toast("User has been created", {
-          description: `${values.name} entry created in the database.`,
+        toast("Event has been created", {
+          description: `${values.eventname} created in the database.`,
         })
        
-        router.push('/team')
+        router.push('/events')
         
       }
 
-      await addTeamQuery.mutate({
-        name: values.name,
-        branch: values.branch,
-        role: values.role,
-        linkedin: values.linkedin,
-        github: values.github,
+      await addEventQuery.mutate({
+        eventname: values.eventname,
+        category: values.category,
+        date: new Date(values.date), // Convert the date string to a Date object
+        registered: values.registered,
+        organizers: values.organizers,
+        description: values.description,
         imageLink: form.getValues('imageLink')
       });
 
       console.log('Done', values);
-      redirect('/team')
+      redirect('/events')
     } catch (error) {
       console.error('Error creating team:', error);
     } finally {
@@ -128,7 +143,7 @@ const AddTeam = () => {
 
   return (
     <MaxWidthWrapper>
-      <AnimatedGradientText>Join the Team.</AnimatedGradientText>
+      <AnimatedGradientText>Add Events.</AnimatedGradientText>
       <div style={{ padding: '20px' }}>
         <Form {...form}>
           <form
@@ -138,13 +153,13 @@ const AddTeam = () => {
             {/* Form fields for name, branch, role, linkedin, github, imagelink */}
             <FormField
               control={form.control}
-              name="name"
+              name="eventname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Event Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter Name"
+                      placeholder="Enter Event Name"
                       {...field}
                       style={{ padding: '10px' }}
                     />
@@ -156,13 +171,13 @@ const AddTeam = () => {
 
             <FormField
               control={form.control}
-              name="branch"
+              name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Branch</FormLabel>
+                  <FormLabel>Event Category</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter Branch"
+                      placeholder="Enter Event Category"
                       {...field}
                       style={{ padding: '10px' }}
                     />
@@ -172,68 +187,82 @@ const AddTeam = () => {
               )}
             />
 
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+                      )}
+                      />
+
             <FormField
               control={form.control}
-              name="role"
+              name="organizers"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>Enter Organizers </FormLabel>
                   <FormControl>
-                    {/* Dropdown for selecting role */}
-                    <select
+                    <Input
+                      placeholder="(E.g Dhanush,Vishnu)"
                       {...field}
-                      style={{ padding: '10px', fontSize: '16px' }}
+                      style={{ padding: '10px' }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+                    <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of birth</FormLabel>
+              <Popover>
+                
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
                     >
-                      <option value="" disabled>
-                        Select Role
-                      </option>
-                      {roleOptions.map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </select>
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="linkedin"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>LinkedIn</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter LinkedIn URL"
-                      {...field}
-                      style={{ padding: '10px' }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="github"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>GitHub</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter GitHub URL"
-                      {...field}
-                      style={{ padding: '10px' }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
 
 <FormField
   control={form.control}
@@ -263,9 +292,8 @@ const AddTeam = () => {
           </form>
         </Form>
       </div>
-      
     </MaxWidthWrapper>
   );
 };
 
-export default AddTeam;
+export default AddEventsAdmin;

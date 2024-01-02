@@ -7,10 +7,15 @@ import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { RotateLoader } from 'react-spinners';
 import { motion, useAnimation } from 'framer-motion';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-const Dashboard = () => {
+interface DashboardProps {
+  name : string
+}
+const Dashboard:React.FC<DashboardProps> = ({ name }) => {
   const [loading, setLoading] = useState(true);
   const controls = useAnimation();
+
 
   useEffect(() => {
     // Simulating loading delay (replace this with actual data fetching)
@@ -40,8 +45,8 @@ const Dashboard = () => {
           
           className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl"
         >
-          Welcome to <br></br>
-          <span className="text-blue-600">CSI NMAMIT,</span>
+          Welcome back! <br></br>
+          <span className="text-blue-600">{name}</span>
         </h1>
         <p
           

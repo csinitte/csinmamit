@@ -32,7 +32,7 @@ const Footer = () => {
             <h2 className="text-xl">
               Build With <span> 💙 </span> by&nbsp;{" "}
               <Link href={"https://github.com/dhanushlnaik"} target={"_blank"}>
-                Tatsui
+                CSI Team
               </Link>
             </h2>
           </div>

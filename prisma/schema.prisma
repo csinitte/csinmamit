@@ -30,3 +30,13 @@ model Team {
   imageLink   String?
 }
 
+model Event{
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  eventname   String
+  category    String
+  date        DateTime  @default(now())
+  registered  Int?
+  organizers  String
+  description String
+  imageLink   String?
+}
