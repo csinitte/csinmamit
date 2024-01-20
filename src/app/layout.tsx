@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -5,8 +6,6 @@ import { cn } from '@/lib/utils'
 import Navbar from '@/components/Navbar'
 import Providers from '@/components/Providers'
 import Footer from '@/components/Footer'
-
-
 import { Roboto } from 'next/font/google'
 import { Toaster } from 'sonner'
  
@@ -26,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className='dark'>
+    <html lang="en" suppressHydrationWarning>
       <head>
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <link
@@ -37,11 +36,13 @@ export default function RootLayout({
 />
       </head>
       <Providers>
-      <body className={cn('min-h-screen font-sans antialiased grainy', roboto.className)}>
+      <body className={cn('min-h-screen font-sans antialiased grainy dark:bg-black', roboto.className)}>
         <Navbar/>
         {children}
         <Footer/>
         <Toaster/>
+    
+
         </body>
         </Providers>
     </html>

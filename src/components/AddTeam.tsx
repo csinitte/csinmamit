@@ -24,7 +24,7 @@ import { redirect } from 'next/navigation';
 import AnimatedGradientText from './AnimatedGradientText';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import TimelineTape from './Timeline';
+
 
 const isFileUrl = (value: string) => {
   // You can customize this logic based on how you identify a file URL

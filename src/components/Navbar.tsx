@@ -11,12 +11,15 @@ import UserAccountNav from './UserAccountNav'
 import MobileNav from './MobileNav'
 import Image from 'next/image'
 
+import { Button } from "@/components/ui/button"
+
 const Navbar = () => {
   const { getUser } = getKindeServerSession()
   const user = getUser()
 
+
   return (
-    <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
+    <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all dark:bg-black'>
       <MaxWidthWrapper>
         <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
         
@@ -74,6 +77,9 @@ const Navbar = () => {
                   Join Us{' '}
                   <ArrowRight className='ml-1.5 h-5 w-5' />
                 </RegisterLink>
+                {/* <Button variant="outline" size="icon">
+                <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                </Button> */}
               </>
             ) : (
               <>

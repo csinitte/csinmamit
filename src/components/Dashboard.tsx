@@ -62,10 +62,10 @@ const Dashboard:React.FC<DashboardProps> = ({ name }) => {
             size: 'lg',
             className: 'mt-5',
           })}
-          href={'/addteam'}
+          href={'/events'}
           target="_blank"
         >
-          Add your profile <ArrowRight className="ml-2 h-5 w-5" />
+          Explore Events <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </MaxWidthWrapper>
 
@@ -96,7 +96,7 @@ const Dashboard:React.FC<DashboardProps> = ({ name }) => {
                   
                   
                   
-                  className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4"
+                  className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 dark:bg-neutral-500/5"
                 >
                   <div className="flex justify-center items-center gap-8 p-8">
                     <div

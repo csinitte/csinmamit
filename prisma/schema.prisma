@@ -40,3 +40,31 @@ model Event{
   description String
   imageLink   String?
 }
+
+model Members {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  custid      String    @unique
+  name        String
+  username    String    @unique
+  email       String    @unique
+  role        String    @default("Member")
+  pfp         String
+  phonenumber String?
+  usn         String?
+  bio         String?
+  branch      String?
+  phone       String?
+  linkedin    String?
+  github      String?
+  certificate Certificate?
+}
+
+model Certificate {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  link     String
+  name     String
+  memberId String    @unique @db.ObjectId
+  member   Members?  @relation(fields: [memberId], references: [id])
+}
+
+

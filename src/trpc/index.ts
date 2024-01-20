@@ -138,6 +138,56 @@ export const appRouter = router({
     return { success: true };
   }),
 
+
+  addMember: publicProcedure.input(
+    z.object({
+      name : z.string(),
+      username: z.string(),
+      bio:  z.string(),
+      pfp:  z.string(),
+      phonenumber: z.string(),
+      branch: z.string(),
+      github: z.string(),
+      linkedin: z.string(),
+  })
+  ).mutation(async ({ ctx, input }) => {
+    const { name, branch, username, bio, pfp, phonenumber, linkedin, github } = input;
+
+
+    const { getUser } = getKindeServerSession()
+    const user = getUser()
+
+    if (!user.id || !user.email)
+      throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+    // check if the user is in the database
+    const dbUser = await db.members.findFirst({
+      where: {
+        custid: user.id,
+      },
+    })
+
+    if (!dbUser) {
+      // create user in db
+      await db.members.create({
+        data: {
+          custid: user.id,
+          name : name,
+          username: username,
+          email: user.email,
+          bio:  bio,
+          pfp:  pfp,
+          branch: branch,
+          github: github,
+          linkedin: linkedin,
+          phonenumber: phonenumber,  
+        },
+      })
+    }
+
+    return { success: true };
+  }),
+
  
 })
 

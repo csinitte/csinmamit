@@ -18,7 +18,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-white flex-grow-0">
+    <footer className="bg-white flex-grow-0 dark:bg-black">
 
       <div className="border-t border-gray-200"></div>
       <MaxWidthWrapper>
