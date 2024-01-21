@@ -188,6 +188,34 @@ export const appRouter = router({
     return { success: true };
   }),
 
+  getProfile: publicProcedure
+  .input(
+    z.object({
+      username: z.string(),
+    }),
+  )
+  .query(async ({ ctx, input }) => {
+    try {
+      const memberData = await db.members.findUnique({
+        where: {
+          username: input.username,
+        },
+      });
+
+      if (!memberData) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Member not found' });
+      }
+    
+      return memberData;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }),
+
+  
+
+  
+
  
 })
 

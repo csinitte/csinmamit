@@ -13,8 +13,6 @@ import ProfileUI from '../profile/ProfileUI';
 import Edit from './editw';
 import Certificates from '../profile/certificates';
 import MaxWidthWrapper from '../MaxWidthWrapper';
-import { usePathname } from 'next/navigation';
-import OtherProfile from './OtherProfile';
 
 interface TabsProps {
   name : string,
@@ -27,10 +25,9 @@ interface TabsProps {
   role: string,
   phonenumber: string
 }
-const ProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, github, linkedin, role, phonenumber}) => {
+const MyProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, github, linkedin, role, phonenumber}) => {
   const [loading, setLoading] = useState(true);
   const controls = useAnimation();
-  const pathname = usePathname();
 
 
   useEffect(() => {
@@ -64,14 +61,6 @@ const ProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, gith
       </div>
     );
   }
-  
-
-  
-  if(pathname?.split("/")[1] === "u") {
-    return (
-      <OtherProfile username={pathname.split("/")[2]}/>
-    )
-  }
 
   return (
     <>
@@ -80,14 +69,11 @@ const ProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, gith
       <Tabs defaultValue="profile" >
   <TabsList>
     <TabsTrigger value="profile">Profile</TabsTrigger>
-    <TabsTrigger value="edit">Edit</TabsTrigger>
     <TabsTrigger value="certificates">Certificates</TabsTrigger>
   </TabsList>
   <TabsContent value="profile"><ProfileUI data={userData}/></TabsContent>
-  <TabsContent value="edit"><Edit username={userData.username}/></TabsContent>
   <TabsContent value="certificates"><Certificates/></TabsContent>
 </Tabs>
-{pathname?.split("/")[1]}
 
       
       </MaxWidthWrapper>
@@ -96,4 +82,4 @@ const ProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, gith
   );
 };
 
-export default ProfileTabs;
+export default MyProfileTabs;
