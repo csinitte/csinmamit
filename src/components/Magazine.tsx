@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as React from "react";
 import HTMLFlipBook from "react-pageflip";
 import Image from 'next/image';
