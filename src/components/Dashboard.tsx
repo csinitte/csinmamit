@@ -11,6 +11,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import AnimatedGradientText from './AnimatedGradientText';
 import {  Highlights } from './Highlights';
 import Testimonials from './testimonials';
+import { Magazine } from './Magazine';
 
 
 
@@ -173,6 +174,13 @@ const Dashboard:React.FC<DashboardProps> = ({ name }) => {
 </div>
 
 <Testimonials/>
+
+<AnimatedGradientText className='pb-4'>
+        Magazine
+      </AnimatedGradientText>
+      <div className='w-3/4 mx-auto cursor-pointer overflow-hidden rounded-lg flex items-center justify-center flex-col'>
+      <Magazine/>
+</div>
       
       </MaxWidthWrapper>
 
