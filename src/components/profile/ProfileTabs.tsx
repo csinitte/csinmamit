@@ -87,7 +87,6 @@ const ProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, gith
   <TabsContent value="edit"><Edit username={userData.username}/></TabsContent>
   <TabsContent value="certificates"><Certificates/></TabsContent>
 </Tabs>
-{pathname?.split("/")[1]}
 
       
       </MaxWidthWrapper>

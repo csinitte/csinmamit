@@ -50,8 +50,6 @@ interface ProfileProps {
 
 const Edit:React.FC<ProfileProps> = ({username}) => {
 
-    
-
     const { data: userData, error } = trpc.getProfile.useQuery({ username });
     
   const form = useForm<z.infer<typeof formSchema>>({
@@ -129,7 +127,7 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
         pfp: form.getValues('pfp')
       });
 
-      console.log('Done', values);
+      console.log('Done on god', values);
       redirect('/myprofile')
     } catch (error) {
       console.error('Error creating team:', error);

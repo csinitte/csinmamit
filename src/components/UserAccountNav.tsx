@@ -71,6 +71,12 @@ const UserAccountNav = async ({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
+          <Link href='/myprofile'>Your Profile</Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
           <Link href='/dashboard'>Dashboard</Link>
         </DropdownMenuItem>
 

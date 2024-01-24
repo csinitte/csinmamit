@@ -8,6 +8,11 @@ import Image from 'next/image';
 import { RotateLoader } from 'react-spinners';
 import { motion, useAnimation } from 'framer-motion';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import AnimatedGradientText from './AnimatedGradientText';
+import {  Highlights } from './Highlights';
+import Testimonials from './testimonials';
+
+
 
 interface DashboardProps {
   name : string
@@ -155,6 +160,22 @@ const Dashboard:React.FC<DashboardProps> = ({ name }) => {
           </div>
         </div>
       </div>
+
+      
+      <MaxWidthWrapper>
+
+      <AnimatedGradientText className='pb-4'>
+        Highlights
+      </AnimatedGradientText>
+      <p className=" text-zinc-700 sm-text-l font-semibold text-center pb-5">We have successfully reached out many events. As we reflect back, here are some of the events organized by CSI!</p>
+      <div className='w-3/4 mx-auto cursor-pointer overflow-hidden rounded-lg flex items-center justify-center flex-col'>
+  <Highlights />
+</div>
+
+<Testimonials/>
+      
+      </MaxWidthWrapper>
+
     </>
   );
 };
