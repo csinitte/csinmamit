@@ -79,6 +79,7 @@ const Profile = async  () => {
   let github = userData?.github || "";
   let linkedin = userData?.linkedin || "";
   let phonenumber = userData?.phonenumber || "";
+  let usn = userData?.usn || "";
 
   
 
@@ -86,7 +87,7 @@ const Profile = async  () => {
 
   return (
     <>
-      <ProfileTabs name={name} username={username} pfp={pfp} bio={bio} branch={branch} github={github} linkedin={linkedin} role={role} phonenumber={phonenumber}/>
+      <ProfileTabs name={name} usn={usn.toUpperCase()} username={username} pfp={pfp} bio={bio} branch={branch} github={github} linkedin={linkedin} role={role} phonenumber={phonenumber}/>
     </>
   );
 };

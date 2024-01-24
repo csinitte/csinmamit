@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { buttonVariants } from "@/components/ui/button";
-import { GithubIcon, LinkedinIcon } from "lucide-react";
+import { GithubIcon, Linkedin, LinkedinIcon } from "lucide-react";
 import Image from "next/image";
 import { RotateLoader } from 'react-spinners'
 import Link from 'next/link';
@@ -36,7 +36,8 @@ interface EventData {
     branch: string,
     github: string,
     linkedin: string,
-    role: string
+    role: string,
+    usn: string
   }
   
 
@@ -69,6 +70,30 @@ interface EventData {
           <span className="font-bold text-slate-400">Role: </span>
           {data.role}
         </h4>
+        <h4>
+          <span className="font-bold text-slate-400">USN: </span>
+          {data.usn}
+        </h4>
+        <div className="flex justify-center gap-4 mt-4">
+          <Link
+            className={buttonVariants({
+              variant: "outline",
+              size: "icon",
+              className: "rounded-full transition-colors hover:text-blue-500",
+            })} href={data.linkedin} target='_blank'
+          >
+            <LinkedinIcon size={24} />
+          </Link>
+          <Link
+            className={buttonVariants({
+              variant: "outline",
+              size: "icon",
+              className: "rounded-full  transition-colors hover:text-gray-600",
+            })} href={data.github} target='_blank'
+          >
+            <GithubIcon  size={24} />
+          </Link>
+        </div>
       </>
     );
   };

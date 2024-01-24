@@ -23,9 +23,10 @@ interface TabsProps {
   github: string,
   linkedin: string,
   role: string,
-  phonenumber: string
+  phonenumber: string,
+  usn: string,
 }
-const MyProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, github, linkedin, role, phonenumber}) => {
+const MyProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, github, linkedin, role,usn, phonenumber}) => {
   const [loading, setLoading] = useState(true);
   const controls = useAnimation();
 
@@ -50,7 +51,8 @@ const MyProfileTabs:React.FC<TabsProps> = ({name, username, pfp, bio, branch, gi
     branch: branch,
     github: github,
     linkedin: linkedin,
-    role: role
+    role: role,
+    usn: usn
 
   }
 

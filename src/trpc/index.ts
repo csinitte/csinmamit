@@ -141,50 +141,70 @@ export const appRouter = router({
 
   addMember: publicProcedure.input(
     z.object({
-      name : z.string(),
-      username: z.string(),
-      bio:  z.string(),
-      pfp:  z.string(),
+      name: z.string(),
+      bio: z.string(),
       phonenumber: z.string(),
       branch: z.string(),
       github: z.string(),
+      usn: z.string(),
       linkedin: z.string(),
-  })
+    })
   ).mutation(async ({ ctx, input }) => {
-    const { name, branch, username, bio, pfp, phonenumber, linkedin, github } = input;
-
-
+    const { name, branch, bio, phonenumber, linkedin, github, usn } = input;
+  
     const { getUser } = getKindeServerSession()
     const user = getUser()
-
+  
+    let username = user.given_name?.toLowerCase().replace(" ", "_")
+  
     if (!user.id || !user.email)
       throw new TRPCError({ code: 'UNAUTHORIZED' })
-
+  
     // check if the user is in the database
     const dbUser = await db.members.findFirst({
       where: {
         custid: user.id,
       },
     })
-
+  
     if (!dbUser) {
       // create user in db
       await db.members.create({
         data: {
           custid: user.id,
-          name : name,
-          username: username,
+          name: name,
+          usn: usn,
+          username: username || user.id,
           email: user.email,
-          bio:  bio,
-          pfp:  pfp,
+          bio: bio,
+          pfp: user.picture || "https://github.com/dhanushlnaik.png",
           branch: branch,
           github: github,
           linkedin: linkedin,
-          phonenumber: phonenumber,  
+          phonenumber: phonenumber,
+        },
+      })
+    } else {
+      // update existing user in db
+      await db.members.update({
+        where: {
+          custid: user.id,
+        },
+        data: {
+          name: name,
+          username: username || user.id,
+          email: user.email,
+          bio: bio,
+          usn: usn,
+          pfp: user.picture || "https://github.com/dhanushlnaik.png",
+          branch: branch,
+          github: github,
+          linkedin: linkedin,
+          phonenumber: phonenumber,
         },
       })
     }
-
+  
     return { success: true };
   }),
 

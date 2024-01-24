@@ -34,13 +34,12 @@ import {
 
 const formSchema = z.object({
     name : z.string(),
-    username: z.string(),
     bio:  z.string(),
-    pfp:  z.string(),
     phonenumber: z.string(),
     branch: z.string(),
     github: z.string(),
     linkedin: z.string(),
+    usn: z.string()
 });
 
 
@@ -48,7 +47,9 @@ interface ProfileProps {
     username: string;
   }
 
-const Edit:React.FC<ProfileProps> = ({username}) => {
+const AddTeam:React.FC<ProfileProps> = ({username}) => {
+
+    
 
     const { data: userData, error } = trpc.getProfile.useQuery({ username });
     
@@ -56,9 +57,8 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
         name : userData?.name,
-        username: userData?.username,
         bio:  userData?.bio || "",
-        pfp:  userData?.pfp,
+        usn:  userData?.usn || "",
         branch: userData?.branch|| "",
         github: userData?.github|| "",
         linkedin: userData?.linkedin|| "",
@@ -69,71 +69,32 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
 
   const addEventQuery = trpc.addMember.useMutation();
   const roleOptions = ["Artificial Intelligence & Data Science" ,"Artificial Intelligence & Machine Learning" ,"Biotechnology" ,"Civil Engineering" ,"Computer & Communication Engineering" ,"Computer Science & Engineering" ,"Computer Science (Full Stack Development)" ,"Computer Science (Cyber Security)" ,"Electrical & Electronics Engineering" ,"Electronics & Communication Engineering" ,"Electronics (VLSI Design & Technology)" ,"Electronics & Communication Engineering(ACT)" ,"Information Science & Engineering" ,"Mechanical Engineering" ,"Robotics & Artificial Intelligence"];
-  const [image, setImage] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-    }
-  };
-
-  const uploadImageToStorage = async (file: File): Promise<string> => {
-    const imageRef = ref(storage, 'members/' + file.name);
-  
-    try {
-      const snapshot = await uploadBytesResumable(imageRef, file);
-      console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-  
-      // Get download URL for the file
-      const url = await getDownloadURL(snapshot.ref);
-      console.log('File available at', url);
-  
-      // Return the download URL
-      return url;
-    } catch (error) {
-      console.error('Upload failed', error);
-      throw error; // Rethrow the error to handle it outside this function
-    }
-  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      if (image) {
-        setUploading(true);
-
-        // Upload image to Firebase Storage and get the download URL
-        const imageUrl = await uploadImageToStorage(image);
-        form.setValue('pfp', imageUrl);
         
         console.log(form.getValues())
+
+        await addEventQuery.mutate({
+          name : values.name,
+          bio:  values.bio,
+          branch: values.branch,
+          github: values.github,
+          linkedin: values.linkedin,
+          phonenumber: values.phonenumber, 
+          usn: values.usn,
+        });
+
         toast("User has been created", {
           description: `${values.name} entry created in the database.`,
         })
        
-        router.push('/team')
-        
-      }
-
-      await addEventQuery.mutate({
-        name : values.name,
-        username: values.username,
-        bio:  values.bio,
-        branch: values.branch,
-        github: values.github,
-        linkedin: values.linkedin,
-        phonenumber: values.phonenumber, 
-        pfp: form.getValues('pfp')
-      });
-
-      console.log('Done on god', values);
-      redirect('/myprofile')
+        router.push('/myprofile')
+      console.log('Done', values);
     } catch (error) {
       console.error('Error creating team:', error);
-    } finally {
-      setUploading(false);
-    }
+    } 
   };
 
   return (
@@ -170,23 +131,7 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
               )}
             />
 
-<FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Username"
-                      {...field}
-                      defaultValue={userData?.username || ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
                                   <FormField
               control={form.control}
               name="bio"
@@ -205,23 +150,27 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
               )}
             />
 
-        <FormField
-          control={form.control}
-          name="pfp"  // Update the name attribute to match the form schema
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Upload Image</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+<FormField
+              control={form.control}
+              name="usn"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>USN</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="USN"
+                      {...field}
+                      defaultValue={userData?.bio || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+
+
 
           <FormField
               control={form.control}
@@ -304,18 +253,16 @@ const Edit:React.FC<ProfileProps> = ({username}) => {
             <Button
               type="submit"
               style={{ padding: '10px' }}
-              disabled={uploading}
             >
-              {uploading ? 'Uploading...' : 'Submit'}
+              {'Submit'}
             </Button>
           </form>
         </Form>
         </CardContent>
         </Card>
-        
       
     </MaxWidthWrapper>
   );
 };
 
-export default Edit;
+export default AddTeam;
