@@ -46,6 +46,7 @@ const OtherProfile: React.FC<ProfProps> = ({ username }) => {
     <>
       <MyProfileTabs
         name={name || ""}
+        usn={""}
         username={username}
         pfp={pfp || "/mock.png"}
         bio={bio || ""}
