@@ -5,6 +5,10 @@ import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import { RegisterLink, getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect, useRouter } from "next/navigation";
+import AnimatedGradientText from "@/components/AnimatedGradientText";
+import Testimonials from "@/components/testimonials";
+import { Highlights } from "@/components/Highlights";
+import Dashboardsec from "@/components/profile/Dashboardsec";
 
 export default function Home() {
   const { getUser } = getKindeServerSession()
@@ -86,6 +90,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+          <Dashboardsec/>
     </>
   )
 }
+  

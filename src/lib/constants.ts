@@ -72,3 +72,42 @@ export const TestimonialList = [
       `,
     },
   ];
+
+export const FacultyList = [
+  {
+    image: "",
+    name: "Dr. Sharada U Shenoy",
+    branch: "HOD - AIML",
+    pos: "Student Branch Counsellor"
+  },
+  {
+    image: "",
+    name: "Dr. Shabari Shedthi B",
+    branch: "Dept. of CSE",
+    pos: "Faculty Coordinators"
+  },
+  {
+    image: "",
+    name: "Prof. Prateeksha Hegde N",
+    branch: "Dept. of ISE",
+    pos: "Faculty Coordinators"
+  },
+  {
+    image: "",
+    name: "Prof. Arhath",
+    branch: "Dept. of MCA",
+    pos: "Faculty Coordinators"
+  },
+  {
+    image: "",
+    name: "Prof. Sneha Shetty",
+    branch: "Dept. of AIML",
+    pos: "Faculty Coordinators"
+  },
+  {
+    image: "",
+    name: "Dr. Chithra K",
+    branch: "Dept. of CSE",
+    pos: "Faculty Coordinators"
+  },
+]
