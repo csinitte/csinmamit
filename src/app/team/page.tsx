@@ -7,7 +7,8 @@ import Image from "next/image";
 import { RotateLoader } from 'react-spinners'
 import { trpc } from '../_trpc/client';
 import Link from 'next/link';
-import AnimatedGradientText from '@/components/AnimatedGradientText';
+import AnimatedGradientText, { AnimatedGradientTexth2 } from '@/components/AnimatedGradientText';
+import { FacultyList } from '@/lib/constants';
 
 // Loader component
 const Loader = () => (
@@ -25,6 +26,39 @@ interface TeamMemberProps {
   github: string;
   imageSrc: string;
 }
+
+interface FacProps {
+  name: string;
+  position: string;
+  imageSrc: string;
+  branch: string;
+}
+
+const Faculty: React.FC<FacProps> = ({ name, position,branch, imageSrc }) => {
+  return (
+    <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-6 hover:ring-blue-500 transition-all">
+      <div className="flex justify-center items-center gap-4 p-4">
+      <div className="relative w-48 h-48 overflow-hidden rounded-md">
+        <Image
+          src={imageSrc}
+          width={250}
+          height={250}
+          alt="main-image"
+          quality={100}
+          className="object-cover w-full h-full rounded-md"
+        
+        />
+        </div>
+      </div>
+      <div className="text-center">
+        <h2 className="text-2xl font-bold">{name}</h2>
+        <p className="text-red-500 font-semibold">{branch}</p>
+        <p className="text-blue-500">{position}</p>
+
+      </div>
+    </div>
+  );
+};
 
 const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, github, imageSrc }) => {
   return (
@@ -132,16 +166,30 @@ const Team = () => {
       <div className='mt-10 mb-10'>
       <AnimatedGradientText>Meet the Team</AnimatedGradientText>
       <p className="mt-5 max-w-prose text-zinc-700 sm-text-lg font-semibold underline">CSI NMAMIT - 2024</p>
+      <div className='mt-5 mb-5'>
+      
       </div>
+      </div>
+
+
       
       {loading ? (
         <Loader />
       ) : (
+        <>
+        <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Faculty</h2>
+        <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
+        {FacultyList.map((member, index) => (
+          <Faculty key={index} {...member} />
+        ))}
+      </div>
+        <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Team</h2>
         <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
           {teamMembers.map((member, index) => (
             <TeamMember key={index} {...member} />
           ))}
         </div>
+        </>
       )}
 
       

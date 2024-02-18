@@ -73,41 +73,73 @@ export const TestimonialList = [
     },
   ];
 
+
 export const FacultyList = [
   {
-    image: "",
+    imageSrc: "/faculty/sharadha.jpg",
     name: "Dr. Sharada U Shenoy",
     branch: "HOD - AIML",
-    pos: "Student Branch Counsellor"
+    position: "Student Branch Counsellor"
   },
   {
-    image: "",
+    imageSrc:  "/faculty/shabari.jpg",
     name: "Dr. Shabari Shedthi B",
     branch: "Dept. of CSE",
-    pos: "Faculty Coordinators"
+    position: "Faculty Coordinators"
   },
   {
-    image: "",
-    name: "Prof. Prateeksha Hegde N",
+    imageSrc:  "/faculty/pratheeksha.jpg",
+    name: "Prof. Prateeksha",
     branch: "Dept. of ISE",
-    pos: "Faculty Coordinators"
+    position: "Faculty Coordinators"
   },
   {
-    image: "",
+    imageSrc:  "/faculty/arhant.jpg",
     name: "Prof. Arhath",
     branch: "Dept. of MCA",
-    pos: "Faculty Coordinators"
+    position: "Faculty Coordinators"
   },
   {
-    image: "",
+    imageSrc:  "/faculty/sneha.jpg",
     name: "Prof. Sneha Shetty",
     branch: "Dept. of AIML",
-    pos: "Faculty Coordinators"
+    position: "Faculty Coordinators"
   },
   {
-    image: "",
+    imageSrc:  "/faculty/chithra.jpg",
     name: "Dr. Chithra K",
     branch: "Dept. of CSE",
-    pos: "Faculty Coordinators"
+    position: "Faculty Coordinators"
   },
+]
+
+export const Events2024 = [
+  {
+  imageSrc: "/eventsimg/2024/bytebrawl.png",
+  eventName: "Byte Brawl"
+},
+{
+  imageSrc: "/eventsimg/2024/careerconnect.png",
+  eventName: "Career Connect"
+},
+{
+  imageSrc: "/eventsimg/2024/coding blackout.png",
+  eventName: "Coding Blackout"
+},
+{
+  imageSrc: "/eventsimg/2024/datadive.png",
+  eventName: "Data Dive"
+},
+{
+  imageSrc: "/eventsimg/2024/debug.png",
+  eventName: "Debug Your Soul"
+},
+{
+  imageSrc: "/eventsimg/2024/genmeet.png",
+  eventName: "General Meet"
+},
+{
+  imageSrc: "/eventsimg/2024/onlineodyssey.png",
+  eventName: "Online Odyssey"
+},
 ]

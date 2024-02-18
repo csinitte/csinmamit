@@ -5,6 +5,7 @@ import styled, { keyframes } from "styled-components";
 import { RotateLoader } from 'react-spinners';
 import Temp from '@/components/events/Temp';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Temp2024 from '@/components/events/Event2024';
 
 const Events = () => {
   const [loading, setLoading] = useState(true);
@@ -36,11 +37,13 @@ const Events = () => {
     <TabsTrigger value="2020">2020-2021</TabsTrigger>
     <TabsTrigger value="2021">2021-2022</TabsTrigger>
     <TabsTrigger value="2022">2022-2023</TabsTrigger>
+    <TabsTrigger value="2024">2023-2024</TabsTrigger>
   </TabsList>
   <TabsContent value="2019"><Temp date='2019' /></TabsContent>
   <TabsContent value="2020"><Temp date='2020' /></TabsContent>
   <TabsContent value="2021"><Temp date='2021' /></TabsContent>
   <TabsContent value="2022"><Temp date='2022' /></TabsContent>
+  <TabsContent value="2024"><Temp2024/></TabsContent>
   
 </Tabs>
 
