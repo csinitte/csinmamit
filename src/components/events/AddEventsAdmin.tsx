@@ -250,7 +250,7 @@ const AddEventsAdmin = () => {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
+                <Calendar
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}

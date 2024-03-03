@@ -21,16 +21,14 @@ import {
 
 function formatDate(inputDate:Date) {
   // Convert string to date object
-  let date = inputDate;
+
+  let date = new Date(inputDate);
 
   // Extract day, month, and year
   let day = date.getUTCDate();
   let month = date.getUTCMonth() + 1; // Month starts from 0
   let year = date.getUTCFullYear();
-
-  // Format the date
-  let formattedDate = `${day}/${month < 10 ? '0' + month : month}/${year}`;
-
+  let formattedDate = `${day}/${month}/${year}`;
   return formattedDate;
 }
 
