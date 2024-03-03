@@ -125,7 +125,7 @@ const AddEventsAdmin = () => {
       await addEventQuery.mutate({
         eventname: values.eventname,
         category: values.category,
-        date: new Date(values.date), // Convert the date string to a Date object
+        date: values.date.toDateString(), // Convert the date string to a Date object
         registered: values.registered,
         organizers: values.organizers,
         description: values.description,

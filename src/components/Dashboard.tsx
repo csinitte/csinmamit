@@ -173,7 +173,6 @@ const Dashboard:React.FC<DashboardProps> = ({ name }) => {
   <Highlights />
 </div>
 
-<Testimonials/>
 
 {/* <AnimatedGradientText className='pb-4'>
         Magazine

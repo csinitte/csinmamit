@@ -25,7 +25,7 @@ export const Highlights = () => {
 
   return (
 
-    <AwesomeSlider>
+    <AwesomeSlider className="pb-10">
               {imgList.map((imageUrl, index) => (
                     <div
                     data-src={imageUrl}

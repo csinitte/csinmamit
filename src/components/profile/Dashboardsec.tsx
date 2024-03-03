@@ -53,7 +53,7 @@ const Dashboardsec= () => {
   <Highlights />
 </div>
 
-<Testimonials/>
+{/* <Testimonials/> */}
 
 {/* <AnimatedGradientText className='pb-4'>
         Magazine
