@@ -49,7 +49,7 @@ export const appRouter = router({
     z.object({
       eventname: z.string(),
       category   : z.string(),
-      date: z.string(),
+      date: z.date(),
       registered: z.number(),
       organizers: z.string(),
       description: z.string(),
