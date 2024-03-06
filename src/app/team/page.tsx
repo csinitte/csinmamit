@@ -9,6 +9,7 @@ import { trpc } from '../_trpc/client';
 import Link from 'next/link';
 import AnimatedGradientText, { AnimatedGradientTexth2 } from '@/components/AnimatedGradientText';
 import { FacultyList } from '@/lib/constants';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Loader component
 const Loader = () => (
@@ -177,18 +178,34 @@ const Team = () => {
         <Loader />
       ) : (
         <>
-        <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Faculty</h2>
+     
+
+            <Tabs defaultValue="fac" >
+      <TabsList>
+        <TabsTrigger value="fac">Faculty</TabsTrigger>
+        <TabsTrigger value="team">Team</TabsTrigger>
+      </TabsList>
+      <TabsContent value="fac">
+      <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Faculty</h2>
         <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
-        {FacultyList.map((member, index) => (
+      {FacultyList.map((member, index) => (
           <Faculty key={index} {...member} />
         ))}
-      </div>
-        <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Team</h2>
+        </div>
+      </TabsContent>
+      <TabsContent value="team">
+      <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Team</h2>
         <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
           {teamMembers.map((member, index) => (
             <TeamMember key={index} {...member} />
           ))}
         </div>
+      </TabsContent>
+      
+    </Tabs>
+
+      
+
         </>
       )}
 

@@ -81,6 +81,16 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
               </>
             ) : (
               <>
+              <li>
+                <Link
+                    onClick={() =>
+                      closeOnCurrent('/myprofile')
+                    }
+                    className='flex items-center w-full font-semibold'
+                    href='/myprofile'>
+                    Profile
+                  </Link>
+                </li>
                 <li>
                   <Link
                     onClick={() =>
