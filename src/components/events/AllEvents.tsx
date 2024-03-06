@@ -71,7 +71,7 @@ const EventCard: React.FC<EventProps> = ({ eventname, category, date, registered
             <Button>Know More</Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="flex flex-row gap-4 p-4 w-3/4 h-96">
+        <DialogContent className="flex flex-row gap-4 p-4 w-3/4 h-105">
           <div className="w-1/2">
             <Image src={imageLink} width={500} height={500} objectFit='cover' alt="main-image" quality={100} className="w-500 h-500 hover:cursor-pointer" />
           </div>
