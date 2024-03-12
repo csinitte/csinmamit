@@ -34,12 +34,12 @@ const Events = () => {
         </div>
         <Tabs defaultValue="All" >
   <TabsList>
-    <TabsTrigger value="2019">2019</TabsTrigger>
-    <TabsTrigger value="2020">2020</TabsTrigger>
-    <TabsTrigger value="2021">2021</TabsTrigger>
-    <TabsTrigger value="2022">2022</TabsTrigger>
-    <TabsTrigger value="2024">2023</TabsTrigger>
-    <TabsTrigger value="All">2024</TabsTrigger>
+    <TabsTrigger value="2019">2019-2020</TabsTrigger>
+    <TabsTrigger value="2020">2020-2021</TabsTrigger>
+    <TabsTrigger value="2021">2021-2022</TabsTrigger>
+    <TabsTrigger value="2022">2022-2023</TabsTrigger>
+    <TabsTrigger value="2024">2023-2024</TabsTrigger>
+    <TabsTrigger value="All">2024-</TabsTrigger>
   </TabsList>
   <TabsContent value="2019"><Temp date='2019' /></TabsContent>
   <TabsContent value="2020"><Temp date='2020' /></TabsContent>

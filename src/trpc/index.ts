@@ -274,6 +274,38 @@ export const appRouter = router({
     return { dbE };
   }),
 
+  getCertificate: publicProcedure
+  .query(async ({ input }) => {
+
+    const { getUser } = getKindeServerSession();
+    const user = getUser();
+
+    if (!user.id || !user.email) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    // Check if the user is authorized to fetch certificates for the specified user
+
+    // Check if the user exists in the database
+    const dbUser = await db.members.findFirst({
+      where: {
+        custid: user.id,
+      },
+    });
+
+    if (!dbUser) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+    }
+
+    // Fetch certificates for the user
+    const certificates = await db.certificate.findMany({
+      where: {
+        memberId: dbUser.id,
+      },
+    });
+
+    return certificates;
+  }),
 
 
  
