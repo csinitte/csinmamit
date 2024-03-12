@@ -180,7 +180,7 @@ const Team = () => {
         <>
      
 
-            <Tabs defaultValue="fac" >
+            <Tabs defaultValue="team" >
       <TabsList>
         <TabsTrigger value="fac">Faculty</TabsTrigger>
         <TabsTrigger value="team">Team</TabsTrigger>

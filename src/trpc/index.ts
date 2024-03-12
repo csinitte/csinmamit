@@ -131,6 +131,50 @@ export const appRouter = router({
     return { success: true };
   }),
 
+  addCertificate: publicProcedure.input(
+    z.object({
+      userId: z.string(),
+      certificateName: z.string(),
+      certificateLink: z.string(),
+    })
+  ).mutation(async ({ ctx, input }) => {
+    const { userId, certificateName, certificateLink } = input;
+  
+    const { getUser } = getKindeServerSession();
+    const user = getUser();
+  
+    if (!user.id || !user.email) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+  
+    // Check if the user is authorized to add a certificate to the specified user
+    if (user.id !== userId) {
+      throw new TRPCError({ code: 'FORBIDDEN', message: 'User is not authorized to add a certificate for this user' });
+    }
+  
+    // Check if the user exists in the database
+    const dbUser = await db.members.findFirst({
+      where: {
+        custid: userId,
+      },
+    });
+  
+    if (!dbUser) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+    }
+  
+    // Add the certificate to the user's record in the database
+    await db.certificate.create({
+      data: {
+        name: certificateName,
+        link: certificateLink,
+        memberId: dbUser.id,
+      },
+    });
+  
+    return { success: true };
+  }),  
+
 
   addMember: publicProcedure.input(
     z.object({
@@ -229,6 +273,7 @@ export const appRouter = router({
     const dbE = await db.event.findMany();
     return { dbE };
   }),
+
 
 
  
