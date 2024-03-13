@@ -65,7 +65,7 @@ const EventCard: React.FC<EventProps> = ({ eventname, category, date, registered
         <h2 className="text-xl font-bold">{eventname}</h2>
       </div>
 
-      <Dialog>
+      {/* <Dialog>
         <DialogTrigger>
           <div className="text-center pt-4 pb-4">
             <Button>Know More</Button>
@@ -92,7 +92,7 @@ const EventCard: React.FC<EventProps> = ({ eventname, category, date, registered
           </div>
         </DialogContent>
 
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };
