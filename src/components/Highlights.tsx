@@ -6,7 +6,8 @@ import eventData from '@/lib/eventdata.json';
 import AwesomeSlider from "react-awesome-slider";
 
 
-const imgList = ['/eve/evee (1).jpg', '/eve/evee (10).jpg', '/eve/evee (11).jpg', '/eve/evee (12).jpg', '/eve/evee (13).jpg', '/eve/evee (14).jpg', '/eve/evee (2).jpg', '/eve/evee (3).jpg', '/eve/evee (4).jpg', '/eve/evee (5).jpg', '/eve/evee (6).jpg', '/eve/evee (7).jpg', '/eve/evee (8).jpg', '/eve/evee (9).jpg']
+const imgList = ['/eve/event (1).jpg', '/eve/event (2).jpg', '/eve/event (3).jpg', '/eve/event (4).jpg', '/eve/event (5).jpg', '/eve/event (6).jpg', '/eve/event (7).jpg', '/eve/event (8).jpg', '/eve/event (9).jpg'];
+
 export const Highlights = () => {
   return (
     <AwesomeSlider className="pb-10">
