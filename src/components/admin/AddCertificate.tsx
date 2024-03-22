@@ -1,38 +1,44 @@
 // Import necessary modules and components
 "use client";
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { trpc } from '@/app/_trpc/client';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { toast } from 'sonner';
-import MaxWidthWrapper from '../MaxWidthWrapper';
-import { storage } from '../../../firebase';
-import { AnimatedGradientTexth2 } from '../AnimatedGradientText';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/app/_trpc/client";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { toast } from "sonner";
+import MaxWidthWrapper from "../MaxWidthWrapper";
+import { storage } from "../../../firebase";
+import { AnimatedGradientTexth2 } from "../AnimatedGradientText";
 
 const formSchema = z.object({
   userId: z.string(), // Remove userId from props and add it to the form schema
   certificateName: z.string(),
   certificateLink: z.string().url({
-    message: 'Please enter a valid URL.',
+    message: "Please enter a valid URL.",
   }),
 });
 
 const UploadCertificate: React.FC = () => {
-  const userId = ''; // Set userId here or fetch it from your authentication context
+  const userId = ""; // Set userId here or fetch it from your authentication context
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       userId: userId,
-      certificateName: '',
-      certificateLink: '',
+      certificateName: "",
+      certificateLink: "",
     },
   });
 
@@ -49,11 +55,11 @@ const UploadCertificate: React.FC = () => {
 
       uploadCertificate(file)
         .then((url) => {
-          form.setValue('certificateLink', url);
+          form.setValue("certificateLink", url);
         })
         .catch((error) => {
-          console.error('Error uploading certificate:', error);
-          toast.error('Error uploading certificate');
+          console.error("Error uploading certificate:", error);
+          toast.error("Error uploading certificate");
         })
         .finally(() => {
           setUploading(false);
@@ -62,20 +68,20 @@ const UploadCertificate: React.FC = () => {
   };
 
   const uploadCertificate = async (file: File): Promise<string> => {
-    const certificateRef = ref(storage, 'certificates/' + file.name);
+    const certificateRef = ref(storage, "certificates/" + file.name);
 
     try {
       const snapshot = await uploadBytesResumable(certificateRef, file);
-      console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+      console.log("Uploaded", snapshot.totalBytes, "bytes.");
 
       // Get download URL for the file
       const url = await getDownloadURL(snapshot.ref);
-      console.log('File available at', url);
+      console.log("File available at", url);
 
       // Return the download URL
       return url;
     } catch (error) {
-      console.error('Upload failed', error);
+      console.error("Upload failed", error);
       throw error; // Rethrow the error to handle it outside this function
     }
   };
@@ -88,19 +94,22 @@ const UploadCertificate: React.FC = () => {
         userId: values.userId,
       });
 
-      toast.success('Certificate uploaded successfully');
-      console.log(values)
+      toast.success("Certificate uploaded successfully");
+      console.log(values);
     } catch (error) {
-      console.error('Error uploading certificate:', error);
-      toast.error('Error uploading certificate');
+      console.error("Error uploading certificate:", error);
+      toast.error("Error uploading certificate");
     }
   };
 
   return (
     <MaxWidthWrapper>
       <AnimatedGradientTexth2>Certificate</AnimatedGradientTexth2>
-      <Form {...form} >
-        <form onSubmit={form.handleSubmit(onSubmit)} style={{ padding: '20px' }}>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          style={{ padding: "20px" }}
+        >
           <FormField
             control={form.control}
             name="userId"
@@ -137,8 +146,12 @@ const UploadCertificate: React.FC = () => {
             )}
           />
 
-          <Button type="submit" disabled={uploading} style={{ marginTop: '20px' }}>
-            {uploading ? 'Uploading...' : 'Submit'}
+          <Button
+            type="submit"
+            disabled={uploading}
+            style={{ marginTop: "20px" }}
+          >
+            {uploading ? "Uploading..." : "Submit"}
           </Button>
         </form>
       </Form>

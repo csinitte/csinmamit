@@ -1,21 +1,23 @@
-"use client"
-import { useState, useEffect } from 'react';
+"use client";
+import { useState, useEffect } from "react";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { buttonVariants } from "@/components/ui/button";
 import { GithubIcon, LinkedinIcon } from "lucide-react";
 import Image from "next/image";
-import { RotateLoader } from 'react-spinners'
-import { trpc } from '../_trpc/client';
-import Link from 'next/link';
-import AnimatedGradientText, { AnimatedGradientTexth2 } from '@/components/AnimatedGradientText';
-import { FacultyList } from '@/lib/constants';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { RotateLoader } from "react-spinners";
+import { trpc } from "../_trpc/client";
+import Link from "next/link";
+import AnimatedGradientText, {
+  AnimatedGradientTexth2,
+} from "@/components/AnimatedGradientText";
+import { FacultyList } from "@/lib/constants";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Loader component
 const Loader = () => (
   <div className="flex items-center justify-center h-screen">
     {/* You can customize the loader's appearance here */}
-    
+
     <RotateLoader color="#2563eb" />
   </div>
 );
@@ -35,46 +37,49 @@ interface FacProps {
   branch: string;
 }
 
-const Faculty: React.FC<FacProps> = ({ name, position,branch, imageSrc }) => {
+const Faculty: React.FC<FacProps> = ({ name, position, branch, imageSrc }) => {
   return (
     <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-6 hover:ring-blue-500 transition-all">
       <div className="flex justify-center items-center gap-4 p-4">
-      <div className="relative w-48 h-48 overflow-hidden rounded-md">
-        <Image
-          src={imageSrc}
-          width={250}
-          height={250}
-          alt="main-image"
-          quality={100}
-          className="object-cover w-full h-full rounded-md"
-        
-        />
+        <div className="relative w-48 h-48 overflow-hidden rounded-md">
+          <Image
+            src={imageSrc}
+            width={250}
+            height={250}
+            alt="main-image"
+            quality={100}
+            className="object-cover w-full h-full rounded-md"
+          />
         </div>
       </div>
       <div className="text-center">
         <h2 className="text-2xl font-bold">{name}</h2>
         <p className="text-red-500 font-semibold">{branch}</p>
         <p className="text-blue-500">{position}</p>
-
       </div>
     </div>
   );
 };
 
-const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, github, imageSrc }) => {
+const TeamMember: React.FC<TeamMemberProps> = ({
+  name,
+  position,
+  linkedin,
+  github,
+  imageSrc,
+}) => {
   return (
     <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-6 hover:ring-blue-500 transition-all">
       <div className="flex justify-center items-center gap-4 p-4">
-      <div className="relative w-48 h-48 overflow-hidden rounded-md">
-        <Image
-          src={imageSrc}
-          width={250}
-          height={250}
-          alt="main-image"
-          quality={100}
-          className="object-cover w-full h-full rounded-md"
-        
-        />
+        <div className="relative w-48 h-48 overflow-hidden rounded-md">
+          <Image
+            src={imageSrc}
+            width={250}
+            height={250}
+            alt="main-image"
+            quality={100}
+            className="object-cover w-full h-full rounded-md"
+          />
         </div>
       </div>
       <div className="text-center">
@@ -86,7 +91,9 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
               variant: "outline",
               size: "icon",
               className: "rounded-full transition-colors hover:text-blue-500",
-            })} href={linkedin} target='_blank'
+            })}
+            href={linkedin}
+            target="_blank"
           >
             <LinkedinIcon size={24} />
           </Link>
@@ -95,9 +102,11 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
               variant: "outline",
               size: "icon",
               className: "rounded-full  transition-colors hover:text-gray-600",
-            })} href={github} target='_blank'
+            })}
+            href={github}
+            target="_blank"
           >
-            <GithubIcon  size={24} />
+            <GithubIcon size={24} />
           </Link>
         </div>
       </div>
@@ -108,40 +117,72 @@ const TeamMember: React.FC<TeamMemberProps> = ({ name, position, linkedin, githu
 const Team = () => {
   const [loading, setLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState<TeamMemberProps[]>([]);
-  const roleOptions = ["Chairman", "Vice Chairman", "Secretary", "Treasurer", "Joint Secretary",  "Student Advisor" , "Program Committee Head", "Program Committee Co-Head", "Social Media Head", "Web Editor Head", "Web Editor Co-Head", "MC Committee Head", "MC Committee Co-Head", "Graphic Committee Head", "Graphic Committee Co-Head", "Magazine Committee Head", "Magazine Committee Co-Head", "Photography Committee Head", "Photography Committee Co-Head", "Android Domain Head", "Android Domain Co-Head", "Web Domain Head", "Web Domain Co-Head", "AIML Domain Head", "AIML Domain Co-Head", "CyberSecurity Domain Head", "CyberSecurity Domain Co-Head", "Final Year Representative", "Third Year Representative", "Second Year Representative"];
+  const roleOptions = [
+    "Chairman",
+    "Vice Chairman",
+    "Secretary",
+    "Treasurer",
+    "Joint Secretary",
+    "Student Advisor",
+    "Program Committee Head",
+    "Program Committee Co-Head",
+    "Social Media Head",
+    "Web Editor Head",
+    "Web Editor Co-Head",
+    "MC Committee Head",
+    "MC Committee Co-Head",
+    "Graphic Committee Head",
+    "Graphic Committee Co-Head",
+    "Magazine Committee Head",
+    "Magazine Committee Co-Head",
+    "Photography Committee Head",
+    "Photography Committee Co-Head",
+    "Android Domain Head",
+    "Android Domain Co-Head",
+    "Web Domain Head",
+    "Web Domain Co-Head",
+    "AIML Domain Head",
+    "AIML Domain Co-Head",
+    "CyberSecurity Domain Head",
+    "CyberSecurity Domain Co-Head",
+    "Final Year Representative",
+    "Third Year Representative",
+    "Second Year Representative",
+  ];
 
   useEffect(() => {
     // Fetch team data using HTTP request
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/trpc/getTeam');
+        const response = await fetch("/api/trpc/getTeam");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
 
-        console.log('Fetched data:', data);
+        console.log("Fetched data:", data);
 
         // Assuming the actual data structure matches what you expect
-        const dataa = data?.result?.data?.dbF ;
+        const dataa = data?.result?.data?.dbF;
 
         // Map dbF to your TeamMemberProps
         const mappedTeamMembers = dataa.map((member: any) => ({
           name: member.name,
           position: member.role,
-          linkedin: member.linkedin || '',
-          github: member.github || '',
-          imageSrc: member.imageLink || '/default-image.png', // Provide a default image source
+          linkedin: member.linkedin || "",
+          github: member.github || "",
+          imageSrc: member.imageLink || "/default-image.png", // Provide a default image source
         }));
-        const sortedTeamMembers = mappedTeamMembers.sort((a: any, b: any) =>
-        roleOptions.indexOf(a.position) - roleOptions.indexOf(b.position)
-      );
+        const sortedTeamMembers = mappedTeamMembers.sort(
+          (a: any, b: any) =>
+            roleOptions.indexOf(a.position) - roleOptions.indexOf(b.position),
+        );
 
         setTeamMembers(sortedTeamMembers);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching team data:', error);
+        console.error("Error fetching team data:", error);
         setLoading(false);
       }
     };
@@ -153,63 +194,57 @@ const Team = () => {
     // Simulate fetching data
     const fetchData = async () => {
       // Simulate an API request delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setLoading(false);
     };
 
     fetchData();
   }, []);
 
-  console.log(teamMembers)
+  console.log(teamMembers);
 
   return (
     <MaxWidthWrapper className="mb-12 mt-9 sm:mt-12 flex flex-col items-center justify-center text-center">
-      <div className='mt-10 mb-10'>
-      <AnimatedGradientText>Meet the Team</AnimatedGradientText>
-      <p className="mt-5 max-w-prose text-zinc-700 sm-text-lg font-semibold underline">CSI NMAMIT - 2024</p>
-      <div className='mt-5 mb-5'>
-      
-      </div>
+      <div className="mt-10 mb-10">
+        <AnimatedGradientText>Meet the Team</AnimatedGradientText>
+        <p className="mt-5 max-w-prose text-zinc-700 sm-text-lg font-semibold underline">
+          CSI NMAMIT - 2024
+        </p>
+        <div className="mt-5 mb-5"></div>
       </div>
 
-
-      
       {loading ? (
         <Loader />
       ) : (
         <>
-     
-
-            <Tabs defaultValue="team" >
-      <TabsList>
-        <TabsTrigger value="fac">Faculty</TabsTrigger>
-        <TabsTrigger value="team">Team</TabsTrigger>
-      </TabsList>
-      <TabsContent value="fac">
-      <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Faculty</h2>
-        <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
-      {FacultyList.map((member, index) => (
-          <Faculty key={index} {...member} />
-        ))}
-        </div>
-      </TabsContent>
-      <TabsContent value="team">
-      <h2 className='text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600'>Team</h2>
-        <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
-          {teamMembers.map((member, index) => (
-            <TeamMember key={index} {...member} />
-          ))}
-        </div>
-      </TabsContent>
-      
-    </Tabs>
-
-      
-
+          <Tabs defaultValue="team">
+            <TabsList>
+              <TabsTrigger value="fac">Faculty</TabsTrigger>
+              <TabsTrigger value="team">Team</TabsTrigger>
+            </TabsList>
+            <TabsContent value="fac">
+              <h2 className="text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600">
+                Faculty
+              </h2>
+              <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
+                {FacultyList.map((member, index) => (
+                  <Faculty key={index} {...member} />
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="team">
+              <h2 className="text-4xl font-bold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-600">
+                Team
+              </h2>
+              <div className="mt-10 pb-10 flex flex-wrap gap-20 justify-center">
+                {teamMembers.map((member, index) => (
+                  <TeamMember key={index} {...member} />
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </>
       )}
-
-      
     </MaxWidthWrapper>
   );
 };

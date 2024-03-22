@@ -1,13 +1,20 @@
-'use client'
-import { usePathname } from 'next/navigation'
-import { Icons } from './Icons'
-import Link from 'next/link'
-import MaxWidthWrapper from './MaxWidthWrapper';
-import React from 'react'
-import { Button } from './ui/button';
-import BlurImage from './BlurImage';
-import { DiscIcon, Github, Instagram, Linkedin, Newspaper, Twitter, Youtube } from 'lucide-react';
-
+"use client";
+import { usePathname } from "next/navigation";
+import { Icons } from "./Icons";
+import Link from "next/link";
+import MaxWidthWrapper from "./MaxWidthWrapper";
+import React from "react";
+import { Button } from "./ui/button";
+import BlurImage from "./BlurImage";
+import {
+  DiscIcon,
+  Github,
+  Instagram,
+  Linkedin,
+  Newspaper,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 
 const Links = [
   { name: "Home", link: "/" },
@@ -19,15 +26,24 @@ const Links = [
 const social = [
   {
     link: "https://www.instagram.com/csinmamit",
-    icon: <Instagram size={25} className="hover:scale-125 duration-200 hover:text-blue-500" />,
+    icon: (
+      <Instagram
+        size={25}
+        className="hover:scale-125 duration-200 hover:text-blue-500"
+      />
+    ),
     name: "Instagram",
   },
   {
     link: "https://twitter.com/csinmamit",
-    icon: <Twitter size={25} className="hover:scale-125 duration-200 hover:text-blue-500" />,
+    icon: (
+      <Twitter
+        size={25}
+        className="hover:scale-125 duration-200 hover:text-blue-500"
+      />
+    ),
     name: "Twitter",
   },
-
 ];
 
 const footLinks = [
@@ -38,21 +54,15 @@ const footLinks = [
   { name: "Shipping", link: "/shipping" },
 ];
 
-
 const Footer = () => {
   const pathname = usePathname();
-  const pathsToMinimize = [
-    '/verify-email',
-    '/sign-up',
-    '/sign-in',
-  ];
+  const pathsToMinimize = ["/verify-email", "/sign-up", "/sign-in"];
 
   return (
     <footer className="bg-white-50 text-black transition-colors duration-500 relative dark:bg-gray-900/10 dark:text-white border-t border-gray-200">
-
       <div className="border-t border-gray-200 mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8"></div>
       <MaxWidthWrapper>
-      <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <BlurImage
             src="/csi-logo.png"
             width={100}
@@ -60,15 +70,13 @@ const Footer = () => {
             alt="csi_logo"
             priority
           />
-
         </div>
 
         <a className="flex items-center justify-center ml-3 text-center cursor-pointer mt-5 text-lg text-blue-600 font-bold dark:text-gray-100 md:text-xl">
-            Computer Society of India, NMAMIT
-          </a>
+          Computer Society of India, NMAMIT
+        </a>
 
         <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-black dark:text-gray-200">
-
           NMAM Institute of Technology, Nitte, SH1, Karkala, Karnataka, KARKALA,
           NMAMIT 574110, IN
         </p>
@@ -101,13 +109,9 @@ const Footer = () => {
             </li>
           ))}
         </ul>
-
-
       </MaxWidthWrapper>
-
     </footer>
   );
 };
 
 export default Footer;
-

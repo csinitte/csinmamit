@@ -11,7 +11,11 @@ const hue = keyframes`
 
 const AnimatedGradientText = styled.h1`
   color: #8a2be2; /* Dark Blue */
-  background-image: -webkit-linear-gradient(92deg, #8a2be2, #4682b4); /* Dark Blue to Light Blue */
+  background-image: -webkit-linear-gradient(
+    92deg,
+    #8a2be2,
+    #4682b4
+  ); /* Dark Blue to Light Blue */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-animation: ${hue} 10s infinite linear;
@@ -29,7 +33,11 @@ const AnimatedGradientText = styled.h1`
 
 export const AnimatedGradientTexth2 = styled.h5`
   color: #8a2be2; /* Dark Blue */
-  background-image: -webkit-linear-gradient(92deg, #8a2be2, #4682b4); /* Dark Blue to Light Blue */
+  background-image: -webkit-linear-gradient(
+    92deg,
+    #8a2be2,
+    #4682b4
+  ); /* Dark Blue to Light Blue */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-animation: ${hue} 10s infinite linear;
@@ -47,7 +55,11 @@ export const AnimatedGradientTexth2 = styled.h5`
 
 export const AnimatedGradientTexth3 = styled.h5`
   color: #8a2be2; /* Dark Blue */
-  background-image: -webkit-linear-gradient(92deg, #8a2be2, #4682b4); /* Dark Blue to Light Blue */
+  background-image: -webkit-linear-gradient(
+    92deg,
+    #8a2be2,
+    #4682b4
+  ); /* Dark Blue to Light Blue */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-animation: ${hue} 10s infinite linear;
@@ -62,7 +74,5 @@ export const AnimatedGradientTexth3 = styled.h5`
   text-rendering: optimizelegibility;
   -moz-osx-font-smoothing: grayscale;
 `;
-
-
 
 export default AnimatedGradientText;

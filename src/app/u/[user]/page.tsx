@@ -1,10 +1,7 @@
-import Profile from "@/components/Profile"
-
+import Profile from "@/components/Profile";
 
 const User = () => {
-  return (
-    <Profile/>
-  )
-}
+  return <Profile />;
+};
 
-export default User
+export default User;

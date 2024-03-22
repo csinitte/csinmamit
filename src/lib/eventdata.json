@@ -1,171 +1,170 @@
 {
-    "2019": [
-        {
-            "event_name": "CSI Inauguration Day",
-            "img": "/eventsimg/2019/inauguration_cover.jpeg"
-        },
-        {
-            "event_name": "Talk on Ergonomics",
-            "img": "/eventsimg/2019/ergonomics_cover.jpg"
-        },
-        {
-            "event_name": "Lock The Logo",
-            "img": "/eventsimg/2019/locklogo_cover.jpeg"
-        },
-        {
-            "event_name": "Android Development Workshop",
-            "img": "/eventsimg/2019/android_cover.jpeg"
-        },
-        {
-            "event_name": "Inquizitive",
-            "img": "/eventsimg/2019/inquiz_cover.jpeg"
-        },
-        {
-            "event_name": "Web Development Workshop",
-            "img": "/eventsimg/2019/web_cover.jpeg"
-        },
-        {
-            "event_name": "Cloud Computing",
-            "img": "/eventsimg/2019/cloud.jpg"
-        },
-        {
-            "event_name": "Kahaani Mein Twist",
-            "img": "/eventsimg/2019/kahani.jpg"
-        },
-        {
-            "event_name": "Lip Sync",
-            "img": "/eventsimg/2019/lipsync.jpg"
-        },
-        {
-            "event_name": "Minute to Win it",
-            "img": "/eventsimg/2019/minute.jpg"
-        },
-        {
-            "event_name": "R Programming Workshop",
-            "img": "/eventsimg/2019/r_programming.jpg"
-        }
-
-    ],
-    "2020" : [
-        {
-            "event_name": "Introduction to IOT",
-            "img": "/eventsimg/2020/IOT.jpg"
-        },
-        {
-            "event_name": "Azure ML Workshop",
-            "img": "/eventsimg/2020/ML.jpg"
-        },
-        {
-            "event_name": "Artice Writing",
-            "img": "/eventsimg/2020/pandamic_trough_you_eyes.jpg"
-        },
-        {
-            "event_name": "Vantage Point",
-            "img": "/eventsimg/2020/vantage.jpg"
-        },
-        {
-            "event_name": "Android Webinar",
-            "img": "/eventsimg/2020/android_webinar.jpg"
-        },
-        {
-            "event_name": "Web Development Workshop",
-            "img": "/eventsimg/2020/webdev.jpg"
-        },
-        {
-            "event_name": "Memepathi",
-            "img": "/eventsimg/2020/memepathi.jpg"
-        },
-        {
-            "event_name": "Web Piracy",
-            "img": "/eventsimg/2020/webpiracy.jpg"
-        },
-        {
-            "event_name": "Alankaar",
-            "img": "/eventsimg/2020/Alankar.jpg"
-        },
-        {
-            "event_name": "Animate It!",
-            "img": "/eventsimg/2020/animate.jpg"
-        },
-        {
-            "event_name": "Quizdom",
-            "img": "/eventsimg/2020/quizdom.jpg"
-        },
-        {
-            "event_name": "Codathon",
-            "img": "/eventsimg/2020/codathon.jpg"
-        }
-    ],
-    "2021": [
-        {
-            "event_name": "CSI Inauguration Day",
-            "img": "/eventsimg/2021/csii.jpeg"
-        },
-        {
-            "event_name": "Lock the Logo",
-            "img": "/eventsimg/2021/gtl.png"
-        },
-        {
-            "event_name": "QUADX",
-            "img": "/eventsimg/2021/quadx.jpg"
-        },
-        {
-            "event_name": "Product Development Bootcamp",
-            "img": "/eventsimg/2021/product.png"
-        },
-        {
-            "event_name": "Animix",
-            "img": "/eventsimg/2021/animix.png"
-        },
-        {
-            "event_name": "Salesforce Workshop",
-            "img": "/eventsimg/2021/salesforce.png"
-        },
-        {
-            "event_name": "Memory Management Workshop",
-            "img": "/eventsimg/2021/memory.jpeg"
-        },
-        {
-            "event_name": "Arcs Of Gaming",
-            "img": "/eventsimg/2021/arcs.png"
-        },
-        {
-            "event_name": "Debugged",
-            "img": "/eventsimg/2021/de.png"
-        },
-        {
-            "event_name": "ML Workshop",
-            "img": "/eventsimg/2021/ml.png"
-        },
-        {
-            "event_name": "Placement Prep",
-            "img": "/eventsimg/2021/pp.png"
-        }
-    ],
-    "2022" : [
-        {
-            "event_name": "CSI Inauguration Day",
-            "img": "/eventsimg/2022/e5.jpeg"
-        },
-        {
-            "event_name": "How to be placement ready?",
-            "img": "/eventsimg/2022/e1.jpeg"
-        },
-        {
-            "event_name": "Cybersecurity Awareness",
-            "img": "/eventsimg/2022/e2.jpeg"
-        },
-        {
-            "event_name": "Crypto Investment Worskhop",
-            "img": "/eventsimg/2022/e3.jpeg"
-        },
-        {
-            "event_name": "Shutter Hunt",
-            "img": "/eventsimg/2022/e4.jpeg"
-        },
-        {
-            "event_name": "Black Wall",
-            "img": "/eventsimg/2022/e6.jpeg"
-        }
-    ]
+  "2019": [
+    {
+      "event_name": "CSI Inauguration Day",
+      "img": "/eventsimg/2019/inauguration_cover.jpeg"
+    },
+    {
+      "event_name": "Talk on Ergonomics",
+      "img": "/eventsimg/2019/ergonomics_cover.jpg"
+    },
+    {
+      "event_name": "Lock The Logo",
+      "img": "/eventsimg/2019/locklogo_cover.jpeg"
+    },
+    {
+      "event_name": "Android Development Workshop",
+      "img": "/eventsimg/2019/android_cover.jpeg"
+    },
+    {
+      "event_name": "Inquizitive",
+      "img": "/eventsimg/2019/inquiz_cover.jpeg"
+    },
+    {
+      "event_name": "Web Development Workshop",
+      "img": "/eventsimg/2019/web_cover.jpeg"
+    },
+    {
+      "event_name": "Cloud Computing",
+      "img": "/eventsimg/2019/cloud.jpg"
+    },
+    {
+      "event_name": "Kahaani Mein Twist",
+      "img": "/eventsimg/2019/kahani.jpg"
+    },
+    {
+      "event_name": "Lip Sync",
+      "img": "/eventsimg/2019/lipsync.jpg"
+    },
+    {
+      "event_name": "Minute to Win it",
+      "img": "/eventsimg/2019/minute.jpg"
+    },
+    {
+      "event_name": "R Programming Workshop",
+      "img": "/eventsimg/2019/r_programming.jpg"
+    }
+  ],
+  "2020": [
+    {
+      "event_name": "Introduction to IOT",
+      "img": "/eventsimg/2020/IOT.jpg"
+    },
+    {
+      "event_name": "Azure ML Workshop",
+      "img": "/eventsimg/2020/ML.jpg"
+    },
+    {
+      "event_name": "Artice Writing",
+      "img": "/eventsimg/2020/pandamic_trough_you_eyes.jpg"
+    },
+    {
+      "event_name": "Vantage Point",
+      "img": "/eventsimg/2020/vantage.jpg"
+    },
+    {
+      "event_name": "Android Webinar",
+      "img": "/eventsimg/2020/android_webinar.jpg"
+    },
+    {
+      "event_name": "Web Development Workshop",
+      "img": "/eventsimg/2020/webdev.jpg"
+    },
+    {
+      "event_name": "Memepathi",
+      "img": "/eventsimg/2020/memepathi.jpg"
+    },
+    {
+      "event_name": "Web Piracy",
+      "img": "/eventsimg/2020/webpiracy.jpg"
+    },
+    {
+      "event_name": "Alankaar",
+      "img": "/eventsimg/2020/Alankar.jpg"
+    },
+    {
+      "event_name": "Animate It!",
+      "img": "/eventsimg/2020/animate.jpg"
+    },
+    {
+      "event_name": "Quizdom",
+      "img": "/eventsimg/2020/quizdom.jpg"
+    },
+    {
+      "event_name": "Codathon",
+      "img": "/eventsimg/2020/codathon.jpg"
+    }
+  ],
+  "2021": [
+    {
+      "event_name": "CSI Inauguration Day",
+      "img": "/eventsimg/2021/csii.jpeg"
+    },
+    {
+      "event_name": "Lock the Logo",
+      "img": "/eventsimg/2021/gtl.png"
+    },
+    {
+      "event_name": "QUADX",
+      "img": "/eventsimg/2021/quadx.jpg"
+    },
+    {
+      "event_name": "Product Development Bootcamp",
+      "img": "/eventsimg/2021/product.png"
+    },
+    {
+      "event_name": "Animix",
+      "img": "/eventsimg/2021/animix.png"
+    },
+    {
+      "event_name": "Salesforce Workshop",
+      "img": "/eventsimg/2021/salesforce.png"
+    },
+    {
+      "event_name": "Memory Management Workshop",
+      "img": "/eventsimg/2021/memory.jpeg"
+    },
+    {
+      "event_name": "Arcs Of Gaming",
+      "img": "/eventsimg/2021/arcs.png"
+    },
+    {
+      "event_name": "Debugged",
+      "img": "/eventsimg/2021/de.png"
+    },
+    {
+      "event_name": "ML Workshop",
+      "img": "/eventsimg/2021/ml.png"
+    },
+    {
+      "event_name": "Placement Prep",
+      "img": "/eventsimg/2021/pp.png"
+    }
+  ],
+  "2022": [
+    {
+      "event_name": "CSI Inauguration Day",
+      "img": "/eventsimg/2022/e5.jpeg"
+    },
+    {
+      "event_name": "How to be placement ready?",
+      "img": "/eventsimg/2022/e1.jpeg"
+    },
+    {
+      "event_name": "Cybersecurity Awareness",
+      "img": "/eventsimg/2022/e2.jpeg"
+    },
+    {
+      "event_name": "Crypto Investment Worskhop",
+      "img": "/eventsimg/2022/e3.jpeg"
+    },
+    {
+      "event_name": "Shutter Hunt",
+      "img": "/eventsimg/2022/e4.jpeg"
+    },
+    {
+      "event_name": "Black Wall",
+      "img": "/eventsimg/2022/e6.jpeg"
+    }
+  ]
 }

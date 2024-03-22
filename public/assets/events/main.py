@@ -9,6 +9,6 @@ print("Files and directories in '", path, "' :")
 print(dir_list)
 li = []
 for i in dir_list:
-    a = f"/eve/{i}"
+    a = f"/highlights/{i}"
     li.append(a)
 print(li)
