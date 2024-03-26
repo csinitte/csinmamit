@@ -42,7 +42,6 @@ const Events = () => {
               <TabsTrigger value="2021">2021-2022</TabsTrigger>
               <TabsTrigger value="2022">2022-2023</TabsTrigger>
               <TabsTrigger value="2023">2023-2024</TabsTrigger>
-              <TabsTrigger value="2024">2024-2025</TabsTrigger>
             </TabsList>
             <TabsContent value="2019">
               <Temp date="2019" />
@@ -58,9 +57,6 @@ const Events = () => {
             </TabsContent>
             <TabsContent value="2023">
             <Temp date="2023" />
-            </TabsContent>
-            <TabsContent value="2024">
-            <Temp date="2024" />
             </TabsContent>
           </Tabs>
         </>
