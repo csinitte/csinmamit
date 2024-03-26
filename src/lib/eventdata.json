@@ -169,92 +169,64 @@
   ],
   "2023": [
     {
-      "event_name": "Bug Bash",
-      "img": "/eventsimg/2023/Bug Bash.jpg"
-    },
-    {
-      "event_name": "Byte Brawl",
-      "img": "/eventsimg/2023/Byte Brawl.heic"
-    },
-    {
-      "event_name": "Career Connect",
-      "img": "/eventsimg/2023/Career Connect.heic"
-    },
-    {
-      "event_name": "Classic Tech-Charades",
-      "img": "/eventsimg/2023/Classic Tech-Charades.jpg"
-    },
-    {
-      "event_name": "Code It Less",
-      "img": "/eventsimg/2023/Code It Less.jpg"
-    },
-    {
-      "event_name": "CSI Week Day-1",
-      "img": "/eventsimg/2023/CSI Week Day-1.jpg"
-    },
-    {
-      "event_name": "CSI Week Day-3",
-      "img": "/eventsimg/2023/CSI Week Day-3.jpg"
-    },
-    {
-      "event_name": "CSI Week Day-4",
-      "img": "/eventsimg/2023/CSI Week Day-4.jpg"
-    },
-    {
-      "event_name": "CSI Week Day-5",
-      "img": "/eventsimg/2023/CSI Week Day-5.jpg"
+      "event_name": "Mind Meld",
+      "img": "/eventsimg/2023/Mind Meld.webp"
     },
     {
       "event_name": "Debug Your Soul",
       "img": "/eventsimg/2023/Debug Your Soul.webp"
     },
     {
-      "event_name": "Devapp 2.0",
-      "img": "/eventsimg/2023/Devapp 2.0.jpg"
-    },
-    {
-      "event_name": "Enhancing Vision with CNN",
-      "img": "/eventsimg/2023/Enhancing Vision with CNN.jpg"
-    },
-    {
-      "event_name": "Get Set Go 2.0",
-      "img": "/eventsimg/2023/Get Set Go 2.0.jpg"
+      "event_name": "Online Odyssey",
+      "img": "/eventsimg/2023/Online Odyssey.heic"
     },
     {
       "event_name": "Logomania",
       "img": "/eventsimg/2023/Logomania.heic"
     },
     {
-      "event_name": "Mind Meld",
-      "img": "/eventsimg/2023/Mind Meld.webp"
-    },
-    {
-      "event_name": "MySql Bootcamp",
-      "img": "/eventsimg/2023/MySql Bootcamp.jpg"
-    },
-    {
-      "event_name": "NODEJS Workshop",
-      "img": "/eventsimg/2023/NODEJS Workshop.jpg"
-    },
-    {
-      "event_name": "Online Odyssey",
-      "img": "/eventsimg/2023/Online Odyssey.heic"
+      "event_name": "Career Connect",
+      "img": "/eventsimg/2023/Career Connect.heic"
     },
     {
       "event_name": "Shutter Spark",
       "img": "/eventsimg/2023/Shutter Spark.heic"
     },
     {
-      "event_name": "The Art of Resume Writing",
-      "img": "/eventsimg/2023/The Art of Resume Writing.jpg"
+      "event_name": "Byte Brawl",
+      "img": "/eventsimg/2023/Byte Brawl.heic"
     },
     {
-      "event_name": "The Web We Weave",
-      "img": "/eventsimg/2023/The Web We Weave.jpg"
+      "event_name": "Kickstart Cyber Security",
+      "img": "/eventsimg/2024/Kickstart Cyber Security.heic"
     },
     {
-      "event_name": "Universal Trivia",
-      "img": "/eventsimg/2023/Universal Trivia.jpg"
+      "event_name": "Classic Tech Charades 2.0",
+      "img": "/eventsimg/2024/Classic Tech Charades 2.0.heic"
+    },
+    {
+      "event_name": "Data Dive",
+      "img": "/eventsimg/2024/Data Dive.heic"
+    },
+    {
+      "event_name": "General Meeting",
+      "img": "/eventsimg/2024/General Meeting.heic"
+    },
+    {
+      "event_name": "Tech Security",
+      "img": "/eventsimg/2024/Tech Security.heic"
+    },
+    {
+      "event_name": "Technical Tresure Hunt",
+      "img": "/eventsimg/2024/Technical Tresure Hunt.heic"
+    },
+    {
+      "event_name": "The Entrepreneurial Drive",
+      "img": "/eventsimg/2024/The Entrepreneurial Drive.heic"
+    },
+    {
+      "event_name": "Web Alchemy",
+      "img": "/eventsimg/2024/Web Alchemy.heic"
     }
   ],
   "2024": [
@@ -270,10 +242,7 @@
       "event_name": "General Meeting",
       "img": "/eventsimg/2024/General Meeting.heic"
     },
-    {
-      "event_name": "Kickstart Cyber Security",
-      "img": "/eventsimg/2024/Kickstart Cyber Security.heic"
-    },
+
     {
       "event_name": "Tech Security",
       "img": "/eventsimg/2024/Tech Security.heic"
