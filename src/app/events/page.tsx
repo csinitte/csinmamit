@@ -35,14 +35,14 @@ const Events = () => {
               here are some of the events organized by CSI!
             </p>
           </div>
-          <Tabs defaultValue="All">
+          <Tabs defaultValue="2023">
             <TabsList>
               <TabsTrigger value="2019">2019-2020</TabsTrigger>
               <TabsTrigger value="2020">2020-2021</TabsTrigger>
               <TabsTrigger value="2021">2021-2022</TabsTrigger>
               <TabsTrigger value="2022">2022-2023</TabsTrigger>
-              <TabsTrigger value="2024">2023-2024</TabsTrigger>
-              <TabsTrigger value="All">2024-</TabsTrigger>
+              <TabsTrigger value="2023">2023-2024</TabsTrigger>
+              <TabsTrigger value="2024">2024-2025</TabsTrigger>
             </TabsList>
             <TabsContent value="2019">
               <Temp date="2019" />
@@ -56,11 +56,11 @@ const Events = () => {
             <TabsContent value="2022">
               <Temp date="2022" />
             </TabsContent>
-            <TabsContent value="2024">
-              <Temp2024 />
+            <TabsContent value="2023">
+            <Temp date="2023" />
             </TabsContent>
-            <TabsContent value="All">
-              <AllEvents />
+            <TabsContent value="2024">
+            <Temp date="2024" />
             </TabsContent>
           </Tabs>
         </>

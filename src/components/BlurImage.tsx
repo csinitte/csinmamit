@@ -23,7 +23,7 @@ const BlurImage: FunctionComponent<BlurImageProps> = (props) => {
           ? "scale-110 blur-lg grayscale"
           : "scale-100 blur-0 grayscale-0"
       }`}
-      onLoadingComplete={() => setLoading(false)}
+      onLoad={() => setLoading(false)}
     />
   );
 };
