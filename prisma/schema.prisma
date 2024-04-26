@@ -2,24 +2,154 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
+// prisma/schema.prisma
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+// Necessary for Next auth
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? // @db.Text
+    access_token      String? // @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? // @db.Text
+    session_state     String?
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  custid      String    @unique
-  email       String    @unique
-  role        String    @default("user")
-  joinedDate  DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  phone         String?
+  branch        String?
+  year          Int?
+  emailVerified DateTime?
+  username      String?            @unique
+  image         String?
+  role          String?            @default("user")
+  bio           String?            @db.Text
+  isAdmin       Boolean            @default(false)
+  accounts      Account[]
+  github String   @default("/")
+  linkedin String? @default("/")
+  sessions      Session[]
+  Certificate   Certificate[]
+  Events        EventParticipant[]
 }
 
+// user - branch year username role bio 
+// add certificate 
+// add event
+
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model Certificate {
+  id      String           @id @unique @default(cuid())
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  date    DateTime         @default(now())
+  type    CertificateTypes
+  event   Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId Int
+  desc    String?          @db.Text
+
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Event {
+  id           Int                @id @unique @default(autoincrement())
+  name         String
+  date         DateTime
+  isAvailable  Boolean            @default(true)
+  attended     Int
+  type         EventTypes
+  images       Json?
+  organizer    String
+  description  String             @db.Text
+  amount       Int?               @default(0)
+  filter       EventFilter
+  certificates Certificate[]
+  participants EventParticipant[]
+
+  @@index([name])
+}
+
+enum CertificateTypes {
+  Participation
+  Winner
+  RunnerUp
+  SpecialRecognition
+  Volunteer
+}
+
+enum EventTypes {
+  Workshop
+  Seminar
+  Gaming
+  Talk
+  CyberSecurity
+  OpenSource
+  AndroidDevelopment
+  WebDevelopment
+  Hackathon
+  CodingContest
+}
+
+enum EventFilter {
+  Year2017to2020
+  Year2020to2021
+  Year2021to2022
+  Year2022to2023
+  Year2023to2024
+}
+
+model EventParticipant {
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+
+  @@id([userId,eventId])
+  @@unique([userId,eventId])
+  @@index([userId])
+  @@index([eventId])
+}
+
+
 model Team {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int    @id @unique @default(autoincrement())
   custid      String    @unique
   email       String    @unique
   name        String
@@ -29,42 +159,3 @@ model Team {
   github      String?
   imageLink   String?
 }
-
-model Event{
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  eventname   String
-  category    String
-  date        DateTime  @default(now())
-  registered  Int?
-  organizers  String
-  description String
-  imageLink   String?
-}
-
-model Members {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  custid      String    @unique
-  name        String
-  username    String    @unique
-  email       String    @unique
-  role        String    @default("Member")
-  pfp         String
-  phonenumber String?
-  usn         String?
-  bio         String?
-  branch      String?
-  phone       String?
-  linkedin    String?
-  github      String?
-  certificate Certificate?
-}
-
-model Certificate {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  link     String
-  name     String
-  memberId String    @unique @db.ObjectId
-  member   Members?  @relation(fields: [memberId], references: [id])
-}
-
-

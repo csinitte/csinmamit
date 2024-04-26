@@ -1,19 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { buttonVariants } from "@/components/ui/button";
-import { GithubIcon, LinkedinIcon } from "lucide-react";
+
 import Image from "next/image";
 import { RotateLoader } from "react-spinners";
-import Link from "next/link";
-import AnimatedGradientText from "@/components/AnimatedGradientText";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import eventData from "~/data/event.json";
+import MaxWidthWrapper from "../layout/max-width-wrapper";
 
-import eventData from "@/lib/eventdata.json";
-import { eventTabs } from "@/lib/utils";
 interface EventData {
-  [key: string]: { event_name: string; img: string }[];
-}
+    [date: string]: { event_name: string; img: string }[];
+  }
+
 
 // Loader component
 const Loader = () => (
