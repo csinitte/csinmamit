@@ -13,7 +13,7 @@ const Links = [
 ];
 const social = [
   {
-    link: "https://www.instagram.com/csinmamit",
+    link: "https://www.instagram.com/csi_nmamit",
     icon: (
       <InstagramLogoIcon className="duration-200 hover:scale-125 hover:text-blue-500" />
     ),
