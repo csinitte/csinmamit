@@ -113,19 +113,29 @@ model Event {
 
 model Team {
   id String @id @default(cuid())
+  custid      String    @unique
+  email       String    @unique
 
   name          String?
   leaderId      String?
   transactionId String?
-  eventId       String
+  eventId       String?
+
+  branch      String
+  role        String
+  linkedin    String?
+  github      String?
+  imageLink   String?
 
   user     User[]     @relation("UserTeam")
-  event    Event      @relation(fields: [eventId], references: [id])
-  position WinnerType @default(TO_BE_DETERMINED)
+  event    Event?      @relation(fields: [eventId], references: [id])
+  position WinnerType? @default(TO_BE_DETERMINED)
 
-  attended    Boolean @default(false)
-  isConfirmed Boolean @default(false)
+  attended    Boolean? @default(false)
+  isConfirmed Boolean? @default(false)
 }
+
+
 
 enum EventType {
   SOLO

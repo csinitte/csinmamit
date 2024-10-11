@@ -4,28 +4,18 @@ import { Card, CardContent } from "../ui/card";
 import {
   BookText,
   LinkedinIcon,
-  ChevronDown,
   CircleUserRound,
   Phone,
   GitBranch,
   UserCheck
 } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../ui/command";
 import { useForm } from 'react-hook-form';
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { api } from "~/utils/api";
 import { z } from "zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
 
 const formSchema = z.object({
   name : z.string(),
