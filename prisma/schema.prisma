@@ -2,42 +2,42 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 // prisma/schema.prisma
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   // uncomment next line if you use Prisma <5.10
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -48,114 +48,100 @@ model User {
   branch        String?
   year          Int?
   emailVerified DateTime?
-  username      String?            @unique
+  username      String?   @unique
   image         String?
-  role          String?            @default("user")
-  bio           String?            @db.Text
-  isAdmin       Boolean            @default(false)
+  role          String?   @default("user")
+  bio           String?   @db.Text
+  isAdmin       Boolean   @default(false)
   accounts      Account[]
-  github String   @default("/")
-  linkedin String? @default("/")
+  github        String    @default("/")
+  linkedin      String?   @default("/")
   sessions      Session[]
-  Certificate   Certificate[]
-  Events        EventParticipant[]
+
+  Team Team[] @relation("UserTeam")
 }
-
-// user - branch year username role bio 
-// add certificate 
-// add event
-
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
 
-model Certificate {
-  id      String           @id @unique @default(cuid())
-  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-  date    DateTime         @default(now())
-  type    CertificateTypes
-  event   Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId Int
-  desc    String?          @db.Text
+model Core {
+  id String @id @default(cuid())
 
-  @@index([eventId])
-  @@index([userId])
+  name     String
+  email    String?
+  branch   String
+  position String
+  linkedin String?
+  github   String?
+  imageSrc String
+
+  year  Int
+  order Int
 }
 
 model Event {
-  id           Int                @id @unique @default(autoincrement())
-  name         String
-  date         DateTime
-  isAvailable  Boolean            @default(true)
-  attended     Int
-  type         EventTypes
-  images       Json?
-  organizer    String
-  description  String             @db.Text
-  amount       Int?               @default(0)
-  filter       EventFilter
-  certificates Certificate[]
-  participants EventParticipant[]
+  id String @id @default(cuid())
 
-  @@index([name])
+  title       String
+  description String?
+  brief       String?
+  image       String
+  date        DateTime
+  time        String?
+  venue       String?
+
+  qr       String?
+  entryFee Int?          @default(0)
+  category EventCategory // when the event is happening
+  type     EventType // solo or team
+
+  minTeamSize Int  @default(1)
+  maxTeamSize Int  @default(1)
+  maxTeams    Int?
+
+  participants Team[]
+  guests       String[]
+
+  published              Boolean @default(false)
+  registrationsAvailable Boolean @default(true)
 }
-
-enum CertificateTypes {
-  Participation
-  Winner
-  RunnerUp
-  SpecialRecognition
-  Volunteer
-}
-
-enum EventTypes {
-  Workshop
-  Seminar
-  Gaming
-  Talk
-  CyberSecurity
-  OpenSource
-  AndroidDevelopment
-  WebDevelopment
-  Hackathon
-  CodingContest
-}
-
-enum EventFilter {
-  Year2017to2020
-  Year2020to2021
-  Year2021to2022
-  Year2022to2023
-  Year2023to2024
-}
-
-model EventParticipant {
-  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId Int
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-
-  @@id([userId,eventId])
-  @@unique([userId,eventId])
-  @@index([userId])
-  @@index([eventId])
-}
-
 
 model Team {
-  id          Int    @id @unique @default(autoincrement())
-  custid      String    @unique
-  email       String    @unique
-  name        String
-  branch      String
-  role        String
-  linkedin    String?
-  github      String?
-  imageLink   String?
+  id String @id @default(cuid())
+
+  name          String?
+  leaderId      String?
+  transactionId String?
+  eventId       String
+
+  user     User[]     @relation("UserTeam")
+  event    Event      @relation(fields: [eventId], references: [id])
+  position WinnerType @default(TO_BE_DETERMINED)
+
+  attended    Boolean @default(false)
+  isConfirmed Boolean @default(false)
+}
+
+enum EventType {
+  SOLO
+  TEAM
+}
+
+enum EventCategory {
+  PREVIOUS
+  UPCOMING
+  CURRENT
+}
+
+enum WinnerType {
+  FIRST
+  SECOND
+  THIRD
+  PARTICIPATION
+  TO_BE_DETERMINED
 }
