@@ -8,6 +8,7 @@ import { Faculty } from "~/components/team/faculty-cards";
 import { Fade } from "react-awesome-reveal";
 import { coremem } from "~/data/core";
 import { TeamMember } from "~/components/team/team-cards";
+import { api } from "~/utils/api";
 const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 const roleOptions = [
@@ -70,6 +71,12 @@ export default function Team() {
       roleOptions.indexOf(a.position) - roleOptions.indexOf(b.position),
   );
 
+  const allCoreMembers = api.core.getCoreMembers.useQuery().data;
+
+  useEffect(() => {
+    console.log("members : ", allCoreMembers);
+  }, [allCoreMembers]);
+  
   return (
     <MaxWidthWrapper className="mb-12 mt-9 flex flex-col items-center justify-center text-center sm:mt-12">
       <Fade triggerOnce cascade>
