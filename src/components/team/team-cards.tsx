@@ -5,13 +5,15 @@ import { GitHubLogoIcon as GithubIcon } from "@radix-ui/react-icons";
 import { LinkedinIcon } from "lucide-react";
 
 interface TeamMemberProps {
+  email: string | null;
   name: string;
-  email: string;
   branch: string;
   position: string;
-  linkedin: string;
-  github: string;
+  linkedin: string | null;
+  github: string | null;
   imageSrc: string;
+  year: number;
+  order: number;
 }
 
 export const TeamMember: React.FC<TeamMemberProps> = ({
@@ -20,6 +22,8 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
   linkedin,
   github,
   imageSrc,
+  year,
+  order
 }) => {
   return (
     <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 transition-all hover:ring-blue-500 lg:-m-4 lg:rounded-2xl lg:p-6">
@@ -45,7 +49,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "rounded-full transition-colors hover:text-blue-500",
             })}
-            href={linkedin}
+            href={linkedin || "#"}
             target="_blank"
           >
             <LinkedinIcon size={24} />
@@ -56,7 +60,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "rounded-full  transition-colors hover:text-gray-600",
             })}
-            href={github}
+            href={github || "#"}
             target="_blank"
           >
             <GithubIcon />

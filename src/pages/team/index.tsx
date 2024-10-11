@@ -6,7 +6,7 @@ import Loader from "~/components/ui/loader";
 import localFont from "next/font/local";
 import { Faculty } from "~/components/team/faculty-cards";
 import { Fade } from "react-awesome-reveal";
-import { coremem } from "~/data/core";
+// import { coremem } from "~/data/core";
 import { TeamMember } from "~/components/team/team-cards";
 import { api } from "~/utils/api";
 const myFont = localFont({ src: "../../pages/obscura.otf" });
@@ -45,47 +45,31 @@ const roleOptions = [
 ];
 
 export interface CoreMember {
-  email: string;
+  email: string | null;
   name: string;
   branch: string;
   position: string;
-  linkedin: string;
-  github: string;
+  linkedin: string | null;
+  github: string | null;
   imageSrc: string;
+  year: number;
+  order: number;
 }
 
 export default function Team() {
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    // Simulate loading delay with setTimeout
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Adjust the delay time as needed (in milliseconds)
 
- const { data: teamData, isLoading, isError } = api.team.getTeam.useQuery();
+    // Clean up the timeout to avoid memory leaks
+    return () => clearTimeout(delay);
+  }, []); // Empty dependency array to run only once on component mount
 
- // Simulate loading delay
- useEffect(() => {
-   const delay = setTimeout(() => {
-     setLoading(false);
-   }, 2000);
+  const { data: teamMembers } = api.core.getCoreMembers.useQuery();
 
-   return () => clearTimeout(delay);
- }, []);
-
- // Ensure data exists and map it correctly before using it
- const sortedTeamMembers: CoreMember[] = teamData?.dbF?.map((member) => ({
-   email: member.email,
-   name: member.name ?? "Unknown",
-   branch: member.branch,
-   position: member.role, // Assuming `role` maps to `position`
-   linkedin: member.linkedin ?? "",
-   github: member.github ?? "",
-   imageSrc: member.imageLink ?? "", // Assuming there's an image field
- }))?.sort(
-   (a, b) =>
-     roleOptions.indexOf(a.position) - roleOptions.indexOf(b.position)
- ) ?? [];
-
- // Check if there are errors in the query
- if (isError) {
-   return <div>Error loading team members.</div>;
- }
   return (
     <MaxWidthWrapper className="mb-12 mt-9 flex flex-col items-center justify-center text-center sm:mt-12">
       <Fade triggerOnce cascade>
@@ -125,9 +109,12 @@ export default function Team() {
                   Team
                 </h2> */}
                 <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
-                  {sortedTeamMembers.map((member, index) => (
-                    <TeamMember key={index} {...member} />
-                  ))}
+                  {teamMembers &&
+                    teamMembers
+                      .sort((a, b) => a.order - b.order)
+                      .map((member, index) => (
+                        <TeamMember key={index} {...member} />
+                      ))}
                 </div>
               </TabsContent>
             </Tabs>
