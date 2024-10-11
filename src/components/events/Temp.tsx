@@ -6,9 +6,8 @@ import { RotateLoader } from "react-spinners";
 import eventData from "~/data/event.json";
 import MaxWidthWrapper from "../layout/max-width-wrapper";
 
-interface EventData {
-    [date: string]: { event_name: string; img: string }[];
-  }
+type EventData = Record<string, { event_name: string; img: string }[]>;
+
 
 
 // Loader component

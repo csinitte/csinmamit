@@ -13,6 +13,7 @@ const config = {
   rules: {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
+    "no-empty-interface": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
