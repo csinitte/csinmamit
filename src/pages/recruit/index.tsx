@@ -94,7 +94,30 @@ const membershipPlans = [
 // Add Razorpay script
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: new (options: {
+      key: string;
+      amount: number;
+      currency: string;
+      name: string;
+      description: string;
+      order_id: string;
+      handler: (response: {
+        razorpay_order_id: string;
+        razorpay_payment_id: string;
+        razorpay_signature: string;
+      }) => void;
+      prefill?: {
+        name?: string;
+        email?: string;
+        contact?: string;
+      };
+      theme?: {
+        color?: string;
+      };
+    }) => {
+      open: () => void;
+      on(event: string, handler: (response: { error: { description?: string } }) => void): void;
+    };
   }
 }
 
@@ -144,7 +167,7 @@ export default function RecruitPage() {
   const submitRecruitMutation = api.recruit.submitRecruitForm.useMutation({
     onSuccess: (recruit) => {
       // After successful form submission, initiate payment
-      initiatePayment(recruit.recruit.id);
+      void initiatePayment(recruit.recruit.id);
     },
     onError: (error) => {
       console.error("Error submitting form:", error);
@@ -172,10 +195,15 @@ export default function RecruitPage() {
         }),
       });
 
-      const orderData = await orderResponse.json();
+      const orderData = await orderResponse.json() as {
+        error?: string;
+        amount: number;
+        currency: string;
+        orderId: string;
+      };
 
       if (!orderResponse.ok) {
-        throw new Error(orderData.error || 'Failed to create order');
+        throw new Error(orderData.error ?? 'Failed to create order');
       }
 
       // Initialize Razorpay payment
@@ -186,7 +214,11 @@ export default function RecruitPage() {
         name: 'CSI NMAMIT',
         description: `CSI Membership - ${selectedPlan}`,
         order_id: orderData.orderId,
-        handler: async function (response: any) {
+        handler: async function (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) {
           try {
             // Verify payment
             const verifyResponse = await fetch('/api/razorpay/verify-payment', {
@@ -201,7 +233,9 @@ export default function RecruitPage() {
               }),
             });
 
-            const verifyData = await verifyResponse.json();
+            const verifyData = await verifyResponse.json() as {
+              success: boolean;
+            };
 
             if (verifyData.success) {
               toast.success('Payment successful! Welcome to CSI NMAMIT! 🎉 Check your email for confirmation.');
@@ -234,9 +268,9 @@ export default function RecruitPage() {
       razorpay.open();
       
       // Handle payment failures
-      razorpay.on('payment.failed', function (response: any) {
+      razorpay.on('payment.failed', function (response: { error: { description?: string } }) {
         console.error('Payment failed:', response.error);
-        toast.error(`Payment failed: ${response.error.description || 'Unknown error'}. Please try again.`);
+        toast.error(`Payment failed: ${response.error.description ?? 'Unknown error'}. Please try again.`);
       });
       
     } catch (error) {
@@ -286,7 +320,7 @@ export default function RecruitPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700">
-                  Welcome to the registration form for becoming an official member of the Computer Society of India (CSI) through our Student Branch at NMAMIT. By filling out this form, you'll gain access to various benefits and networking opportunities within the tech community.
+                  Welcome to the registration form for becoming an official member of the Computer Society of India (CSI) through our Student Branch at NMAMIT. By filling out this form, you&apos;ll gain access to various benefits and networking opportunities within the tech community.
                 </p>
                 
                 <div className="rounded-lg bg-blue-50 p-4">
@@ -509,7 +543,7 @@ export default function RecruitPage() {
                        setValue("membershipPlan", value);
                        const plan = membershipPlans.find(p => p.name === value);
                        setSelectedPlan(value);
-                       setSelectedPlanPrice(plan?.price || 0);
+                       setSelectedPlanPrice(plan?.price ?? 0);
                      }}>
                        <SelectTrigger className={errors.membershipPlan ? "border-red-500" : ""}>
                          <SelectValue placeholder="Select membership plan" />

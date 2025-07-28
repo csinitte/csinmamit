@@ -9,25 +9,13 @@ import {
   GitBranch,
   UserCheck
 } from "lucide-react";
-import { useForm } from 'react-hook-form';
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { api } from "~/utils/api";
-import { z } from "zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
-  name : z.string(),
-  bio:  z.string(),
-  phone : z.string(),
-  branch: z.string(),
-  github: z.string(),
-  linkedin: z.string(),
-});
 const branches = ["Artificial Intelligence & Data Science" ,"Artificial Intelligence & Machine Learning" ,"Biotechnology" ,"Civil Engineering" ,"Computer & Communication Engineering" ,"Computer Science & Engineering" ,"Computer Science (Full Stack Development)" ,"Computer Science (Cyber Security)" ,"Electrical & Electronics Engineering" ,"Electronics & Communication Engineering" ,"Electronics (VLSI Design & Technology)" ,"Electronics & Communication Engineering(ACT)" ,"Information Science & Engineering" ,"Mechanical Engineering" ,"Robotics & Artificial Intelligence"];
-
-import { zodResolver } from '@hookform/resolvers/zod';
 
 export const EditProfile = () => {
 
@@ -39,8 +27,6 @@ export const EditProfile = () => {
   const userData = api.user.getUserData.useQuery({ userid: id }).data;
   const router = useRouter();
   if (!user) router.push("/");
-  const [openbranchList, setOpenbranchList] = useState(false);
-  const [branchvalue, setbranchvalue] = useState("");
   const editProfile = api.user.editUserData.useMutation();
   
   const [formData, setFormData] = useState({
@@ -52,17 +38,7 @@ export const EditProfile = () => {
     phone: userData?.phone ?? "",
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-        name : userData?.name ?? "",
-        bio:  userData?.bio ?? "",
-        branch: userData?.branch ?? "",
-        github: userData?.github ?? "",
-        linkedin: userData?.linkedin ?? "",
-        phone: userData?.phone ?? "",
-    },
-  });
+
 
 
   const onSubmit = async () => {

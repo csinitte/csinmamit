@@ -1,11 +1,9 @@
-import { GitPullRequestIcon, LinkedinIcon } from "lucide-react";
+import { LinkedinIcon, Github } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { buttonVariants } from "~/components/ui/button";
-import localFont from "next/font/local";
 import { api } from "~/utils/api";
 export default function Profile() {
   const { data: session } = useSession();
@@ -108,7 +106,7 @@ export default function Profile() {
                                 href={userData?.github ?? "/"}
                                 target="_blank"
                               >
-                                <GitPullRequestIcon size={24} />
+                                <Github size={24} />
                               </Link>
                             </div>
                           </div>

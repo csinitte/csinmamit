@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import Razorpay from 'razorpay';
 
 const razorpay = new Razorpay({
@@ -12,7 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { amount, currency = 'INR', receipt } = req.body;
+    const { amount, currency = 'INR', receipt } = req.body as {
+      amount: number;
+      currency?: string;
+      receipt: string;
+    };
 
     if (!amount || !receipt) {
       return res.status(400).json({ error: 'Amount and receipt are required' });
@@ -24,7 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       receipt,
     };
 
-    const order = await razorpay.orders.create(options);
+    const order = await razorpay.orders.create(options) as {
+      id: string;
+      amount: number;
+      currency: string;
+    };
 
     res.status(200).json({
       orderId: order.id,

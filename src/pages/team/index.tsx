@@ -11,38 +11,7 @@ import { TeamMember } from "~/components/team/team-cards";
 import { api } from "~/utils/api";
 const myFont = localFont({ src: "../../pages/obscura.otf" });
 
-const roleOptions = [
-  "Chairman",
-  "Vice Chairman",
-  "Secretary",
-  "Treasurer",
-  "Joint Secretary",
-  "Student Advisor",
-  "Program Committee Head",
-  "Program Committee Co-Head",
-  "Social Media Head",
-  "Web Editor Head",
-  "Web Editor Co-Head",
-  "MC Committee Head",
-  "MC Committee Co-Head",
-  "Graphic Committee Head",
-  "Graphic Committee Co-Head",
-  "Magazine Committee Head",
-  "Magazine Committee Co-Head",
-  "Photography Committee Head",
-  "Photography Committee Co-Head",
-  "Android Domain Head",
-  "Android Domain Co-Head",
-  "Web Domain Head",
-  "Web Domain Co-Head",
-  "AIML Domain Head",
-  "AIML Domain Co-Head",
-  "CyberSecurity Domain Head",
-  "CyberSecurity Domain Co-Head",
-  "Final Year Representative",
-  "Third Year Representative",
-  "Second Year Representative",
-];
+
 
 export interface CoreMember {
   email: string | null;
@@ -109,12 +78,16 @@ export default function Team() {
                   Team
                 </h2> */}
                 <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
-                  {teamMembers &&
-                    teamMembers
-                      .sort((a, b) => a.order - b.order)
-                      .map((member, index) => (
-                        <TeamMember key={index} {...member} />
-                      ))}
+                  {teamMembers
+                    ?.sort((a, b) => a.order - b.order)
+                    .map((member, index) => (
+                      <TeamMember 
+                        key={index} 
+                        {...member} 
+                        _year={member.year}
+                        _order={member.order}
+                      />
+                    ))}
                 </div>
               </TabsContent>
             </Tabs>

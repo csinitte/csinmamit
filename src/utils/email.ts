@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 import { env } from '~/env';
 
 // Create transporter
@@ -15,9 +15,9 @@ const createTransporter = () => {
     return null;
   }
 
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: env.SMTP_HOST,
-    port: parseInt(env.SMTP_PORT || '587'),
+    port: parseInt(env.SMTP_PORT ?? '587'),
     secure: false, // true for 465, false for other ports
     auth: {
       user: env.SMTP_USER,
@@ -26,7 +26,7 @@ const createTransporter = () => {
     tls: {
       rejectUnauthorized: false
     }
-  });
+  }) as nodemailer.Transporter;
 };
 
 // Send welcome email
@@ -45,7 +45,7 @@ export const sendWelcomeEmail = async (
   const membershipPlanText = membershipPlan.replace('-', ': ');
 
   const mailOptions = {
-    from: env.SMTP_FROM_EMAIL || env.SMTP_USER,
+    from: env.SMTP_FROM_EMAIL ?? env.SMTP_USER,
     to: email,
     subject: 'Welcome to CSI NMAMIT! 🎉',
     html: `
@@ -107,7 +107,9 @@ export const sendWelcomeEmail = async (
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions) as {
+      messageId: string;
+    };
     console.log(`Welcome email sent to ${email}`);
     console.log('Message ID:', info.messageId);
     return true;
@@ -117,9 +119,9 @@ export const sendWelcomeEmail = async (
     // Type-safe error logging
     if (error && typeof error === 'object' && 'code' in error) {
       console.error('Error details:', {
-        code: (error as any).code,
-        command: (error as any).command,
-        response: (error as any).response
+        code: (error as { code?: string }).code,
+        command: (error as { command?: string }).command,
+        response: (error as { response?: string }).response
       });
     }
     

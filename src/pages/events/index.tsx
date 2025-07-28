@@ -1,7 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-import { RotateLoader } from "react-spinners";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
 import Temp from "~/components/events/Temp";
@@ -9,7 +6,6 @@ import localFont from "next/font/local";
 const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 const Events = () => {
-  const [loading, setLoading] = useState(true);
 
   return (
     <MaxWidthWrapper className="mb-12 mt-9 sm:mt-12 flex flex-col items-center justify-center text-center">
@@ -57,39 +53,3 @@ const Events = () => {
 
 export default Events;
 
-const hue = keyframes`
-  from {
-    filter: hue-rotate(240deg); /* Dark Blue */
-  }
-  to {
-    filter: hue-rotate(-60deg); /* Pink */
-  }
-`;
-
-const AnimatedGradientText = styled.h1`
-  color: #8a2be2; /* Dark Blue */
-  background-image: -webkit-linear-gradient(
-    92deg,
-    #8a2be2,
-    #ff69b4
-  ); /* Dark Blue to Pink */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-animation: ${hue} 10s infinite linear;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-feature-settings: "kern";
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 48px;
-  overflow-wrap: break-word;
-  text-align: center;
-  text-rendering: optimizelegibility;
-  -moz-osx-font-smoothing: grayscale;
-`;
-
-const Loader = () => (
-  <div className="flex items-center justify-center h-screen">
-    <RotateLoader color="#8a2be2" />
-  </div>
-);
