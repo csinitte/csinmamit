@@ -23,7 +23,20 @@ export const recruitRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       try {
         // Parse DD/MM/YYYY format to Date object
-        const [day, month, year] = input.dateOfBirth.split('/').map(Number);
+        const dateParts = input.dateOfBirth.split('/');
+        if (dateParts.length !== 3) {
+          throw new Error("Invalid date format. Expected DD/MM/YYYY");
+        }
+        
+        const day = Number(dateParts[0]);
+        const month = Number(dateParts[1]);
+        const year = Number(dateParts[2]);
+        
+        // Validate that all parts are valid numbers
+        if (isNaN(day) || isNaN(month) || isNaN(year)) {
+          throw new Error("Invalid date values");
+        }
+        
         const dateOfBirth = new Date(year, month - 1, day);
 
         const recruit = await db.recruit.create({

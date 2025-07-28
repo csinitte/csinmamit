@@ -113,11 +113,16 @@ export const sendWelcomeEmail = async (
     return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);
-    console.error('Error details:', {
-      code: error.code,
-      command: error.command,
-      response: error.response
-    });
+    
+    // Type-safe error logging
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('Error details:', {
+        code: (error as any).code,
+        command: (error as any).command,
+        response: (error as any).response
+      });
+    }
+    
     return false;
   }
 }; 

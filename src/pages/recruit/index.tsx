@@ -49,6 +49,7 @@ const recruitFormSchema = z.object({
       if (!email) return true; // Optional field
       if (!email.includes('@')) return false; // Basic email format check
       const domain = email.split('@')[1]?.toLowerCase();
+      if (!domain) return false; // Check if domain exists
       const blockedDomains = [
         'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 
         'aol.com', 'icloud.com', 'protonmail.com', 'mail.com',
@@ -558,7 +559,6 @@ export default function RecruitPage() {
             </Card>
               </>
             )}
-          )}
           </div>
         </Fade>
       </MaxWidthWrapper>
