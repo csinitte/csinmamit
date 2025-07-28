@@ -24,7 +24,14 @@ const recruitFormSchema = z.object({
     .min(1, "Date of birth is required")
     .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Please use DD/MM/YYYY format")
     .refine((date) => {
-      const [day, month, year] = date.split('/').map(Number);
+      const parts = date.split('/').map(Number);
+      const [day, month, year] = parts;
+      
+      // Check if all parts are valid numbers
+      if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+        return false;
+      }
+      
       const dateObj = new Date(year, month - 1, day);
       return dateObj.getDate() === day && 
              dateObj.getMonth() === month - 1 && 
