@@ -28,10 +28,17 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
-    FIREBASE_TOKEN : z.string(),
-    FIREBASE_URL: z.string(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    FIREBASE_TOKEN : z.string().optional(),
+    FIREBASE_URL: z.string().optional(),
+          RAZORPAY_KEY_ID: z.string().optional(),
+      RAZORPAY_KEY_SECRET: z.string().optional(),
+      SMTP_HOST: z.string().optional(),
+      SMTP_PORT: z.string().optional(),
+      SMTP_USER: z.string().optional(),
+      SMTP_PASS: z.string().optional(),
+      SMTP_FROM_EMAIL: z.string().optional(),
   },
 
   /**
@@ -40,7 +47,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
   },
 
   /**
@@ -56,6 +63,14 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     FIREBASE_TOKEN : process.env.FIREBASE_TOKEN,
     FIREBASE_URL : process.env.FIREBASE_URL,
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
+    SMTP_FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

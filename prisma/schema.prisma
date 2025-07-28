@@ -148,6 +148,24 @@ enum EventCategory {
   CURRENT
 }
 
+model Recruit {
+  id String @id @default(cuid())
+
+  name            String
+  dateOfBirth     DateTime
+  usn             String
+  yearOfStudy     String
+  branch          String
+  mobileNumber    String
+  personalEmail   String
+  collegeEmail    String?
+  membershipPlan  String
+  csiIdea         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum WinnerType {
   FIRST
   SECOND
