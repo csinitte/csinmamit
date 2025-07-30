@@ -1,0 +1,41 @@
+
+
+# Enhanced Security Rules for Cursor AI
+
+# Disallow editing production environment file only
+pattern: **/.env
+policy: readonly
+
+# Disallow editing secret directories
+pattern: **/secrets/**
+policy: readonly
+pattern: **/private/**
+policy: readonly
+pattern: config/secret/**
+policy: readonly
+
+# Disallow dangerous JavaScript patterns
+pattern: **/*.js
+forbid: ["eval", "require('child_process')", "child_process", "exec", "spawn", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY", "document.write", "innerHTML"]
+
+# Disallow dangerous TypeScript patterns
+pattern: **/*.ts
+forbid: ["eval", "require('child_process')", "child_process", "exec", "spawn", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+
+# Enforce docstrings on JavaScript functions
+pattern: **/*.js
+requireDocstring: true
+
+# Enforce docstrings on TypeScript functions
+pattern: **/*.ts
+requireDocstring: true
+
+# Protect certificate and key files
+pattern: **/*.pem
+policy: readonly
+pattern: **/*.key
+policy: readonly
+pattern: **/*.crt
+policy: readonly
+pattern: **/*.p12
+policy: readonly

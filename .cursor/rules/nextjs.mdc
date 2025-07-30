@@ -1,0 +1,52 @@
+# Next.js Development Rules for CSI NMAMIT
+
+# Next.js App Router and Pages Router patterns
+pattern: src/pages/**/*.tsx
+requireDocstring: true
+forbid: ["getServerSideProps", "getStaticProps", "getInitialProps"]
+enforceNaming: kebabCase
+
+# API Routes security
+pattern: src/pages/api/**/*.ts
+requireDocstring: true
+forbid: ["process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+enforceNaming: kebabCase
+
+# tRPC Router patterns
+pattern: src/server/api/routers/**/*.ts
+requireDocstring: true
+forbid: ["eval", "child_process", "exec", "spawn"]
+enforceNaming: camelCase
+maxFunctionsPerFile: 20
+
+# Component patterns
+pattern: src/components/**/*.tsx
+requireDocstring: true
+enforceNaming: PascalCase
+maxLines: 300
+
+# Utility functions
+pattern: src/utils/**/*.ts
+requireDocstring: true
+enforceNaming: camelCase
+maxFunctionsPerFile: 15
+
+# Environment validation
+pattern: src/env.js
+policy: readonly
+
+# Prisma schema
+pattern: prisma/schema.prisma
+policy: readonly
+
+# Authentication patterns
+pattern: src/server/auth.ts
+policy: readonly
+
+# Database operations
+pattern: src/server/db.ts
+policy: readonly
+description:
+globs:
+alwaysApply: false
+---

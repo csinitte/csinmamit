@@ -1,0 +1,63 @@
+# .kiro/rules.yml - Kiro AI Security Configuration
+
+rules:
+  # JavaScript security rules
+  - match: "**/*.js"
+    forbid:
+      - "eval"
+      - "child_process"
+      - "exec"
+      - "spawn"
+      - "process.env.SECRET"
+      - "process.env.PASSWORD"
+      - "process.env.API_KEY"
+      - "document.write"
+      - "innerHTML"
+    requireDoc: true
+    maxFunctionsPerFile: 12
+
+  # TypeScript security rules
+  - match: "**/*.ts"
+    forbid:
+      - "eval"
+      - "child_process"
+      - "exec"
+      - "spawn"
+      - "process.env.SECRET"
+      - "process.env.PASSWORD"
+      - "process.env.API_KEY"
+    requireDoc: true
+    maxFunctionsPerFile: 12
+
+  # Production environment file protection
+  - match: "**/.env"
+    mode: readonly
+
+  # Secret directory protection
+  - match: "**/secrets/**"
+    mode: readonly
+  - match: "**/private/**"
+    mode: readonly
+  - match: "config/secret/**"
+    mode: readonly
+
+  # Code quality rules
+  - match: "src/**/*"
+    maxLines: 350
+    minCommentsPercent: 5
+
+  # Naming conventions
+  - match: "**/routes/**"
+    enforceNaming: camelCase
+
+exclude:
+  - node_modules/
+  - build/
+  - dist/
+  - secrets/
+  - private/
+  - coverage/
+  - *.log
+  - *.pem
+  - *.key
+  - *.crt 

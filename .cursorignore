@@ -1,0 +1,14 @@
+node_modules/
+.env
+build/
+dist/
+*.log
+*.pem
+coverage/
+config/secret/
+*.key
+*.pem
+*.crt
+*.p12
+secrets/
+private/
