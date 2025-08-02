@@ -37,7 +37,7 @@ const Hero: FunctionComponent = () => {
           <div className="mt-8 flex flex-wrap justify-center gap-4 lg:gap-8">
             {status === "loading" ? (
               <Loader />
-            ) : "authenticated" ? (
+            ) : status === "authenticated" ? (
               <>
                 <Link
                   className={buttonVariants({

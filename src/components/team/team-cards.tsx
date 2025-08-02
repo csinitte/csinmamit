@@ -5,7 +5,7 @@ import { GitHubLogoIcon as GithubIcon } from "@radix-ui/react-icons";
 import { LinkedinIcon } from "lucide-react";
 
 interface TeamMemberProps {
-  email: string | null;
+  // email: string | null;
   name: string;
   branch: string;
   position: string;
@@ -35,7 +35,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
             height={250}
             alt="main-image"
             quality={100}
-            className="h-full w-full rounded-md object-cover"
+            className="h-full w-full rounded-md object-cover object-[center_20%]"
           />
         </div>
       </div>

@@ -8,44 +8,47 @@ import { Faculty } from "~/components/team/faculty-cards";
 import { Fade } from "react-awesome-reveal";
 // import { coremem } from "~/data/core";
 import { TeamMember } from "~/components/team/team-cards";
-import { api } from "~/utils/api";
+// import { api } from "~/utils/api"; 
 const myFont = localFont({ src: "../../pages/obscura.otf" });
+import { CoreMembers } from "~/components/team/team-data"; // Importing static core members data
+// Static list of core team members (manually maintained).
+// Update or add team members here as needed.
 
-const roleOptions = [
-  "Chairman",
-  "Vice Chairman",
-  "Secretary",
-  "Treasurer",
-  "Joint Secretary",
-  "Student Advisor",
-  "Program Committee Head",
-  "Program Committee Co-Head",
-  "Social Media Head",
-  "Web Editor Head",
-  "Web Editor Co-Head",
-  "MC Committee Head",
-  "MC Committee Co-Head",
-  "Graphic Committee Head",
-  "Graphic Committee Co-Head",
-  "Magazine Committee Head",
-  "Magazine Committee Co-Head",
-  "Photography Committee Head",
-  "Photography Committee Co-Head",
-  "Android Domain Head",
-  "Android Domain Co-Head",
-  "Web Domain Head",
-  "Web Domain Co-Head",
-  "AIML Domain Head",
-  "AIML Domain Co-Head",
-  "CyberSecurity Domain Head",
-  "CyberSecurity Domain Co-Head",
-  "Final Year Representative",
-  "Third Year Representative",
-  "Second Year Representative",
-];
+// const roleOptions = [
+//   "Chairman",
+//   "Vice Chairman",
+//   "Secretary",
+//   "Treasurer",
+//   "Joint Secretary",
+//   "Student Advisor",
+//   "Program Committee Head",
+//   "Program Committee Co-Head",
+//   "Social Media Head",
+//   "Web Editor Head",
+//   "Web Editor Co-Head",
+//   "MC Committee Head",
+//   "MC Committee Co-Head",
+//   "Graphic Committee Head",
+//   "Graphic Committee Co-Head",
+//   "Magazine Committee Head",
+//   "Magazine Committee Co-Head",
+//   "Photography Committee Head",
+//   "Photography Committee Co-Head",
+//   "Android Domain Head",
+//   "Android Domain Co-Head",
+//   "Web Domain Head",
+//   "Web Domain Co-Head",
+//   "AIML Domain Head",
+//   "AIML Domain Co-Head",
+//   "CyberSecurity Domain Head",
+//   "CyberSecurity Domain Co-Head",
+//   "Final Year Representative",
+//   "Third Year Representative",
+//   "Second Year Representative",
+// ];
 
 export interface CoreMember {
-  email: string | null;
+  // email: string | null;
   name: string;
   branch: string;
   position: string;
@@ -68,7 +71,11 @@ export default function Team() {
     return () => clearTimeout(delay);
   }, []); // Empty dependency array to run only once on component mount
 
-  const { data: teamMembers } = api.core.getCoreMembers.useQuery();
+  // Removed backend query (api.core.getCoreMembers) since we now use a static CoreMembers array.
+  // Uncomment the following line if you want to fetch team members from the backend.
+  // Note: Ensure the backend API is set up to return the correct data structure.
+
+  // const { data: teamMembers } = api.core.getCoreMembers.useQuery(); 
 
   return (
     <MaxWidthWrapper className="mb-12 mt-9 flex flex-col items-center justify-center text-center sm:mt-12">
@@ -80,7 +87,7 @@ export default function Team() {
             Meet the Team
           </h1>
           <p className="sm-text-lg mt-5 max-w-prose font-semibold text-zinc-700 underline">
-            CSI NMAMIT - 2024
+            CSI NMAMIT - 2025
           </p>
           <div className="mb-5 mt-5"></div>
         </div>
@@ -109,12 +116,22 @@ export default function Team() {
                   Team
                 </h2> */}
                 <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
-                  {teamMembers &&
-                    teamMembers
+                    {/* Uncomment the following lines to fetch team members from the backend API.
+                    Note: Ensure the backend API is set up to return the correct data structure. */}
+                    {/* {teamMembers &&
+                      teamMembers
                       .sort((a, b) => a.order - b.order)
                       .map((member, index) => (
                         <TeamMember key={index} {...member} />
-                      ))}
+                    ))} */}
+
+                    {/* Rendering core team members from static array.
+                    Sorted by custom `order` field to maintain display order */}
+
+                    {CoreMembers.sort((a, b) => a.order - b.order).map((member, index) => (
+                      <TeamMember key={index} {...member} />
+                    ))}
+
                 </div>
               </TabsContent>
             </Tabs>
@@ -124,3 +141,5 @@ export default function Team() {
     </MaxWidthWrapper>
   );
 }
+
+
