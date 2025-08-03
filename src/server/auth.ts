@@ -45,7 +45,7 @@ export const getServerAuthSession = async (ctx: {
 }) => {
   // Extract token from Authorization header or cookies
   const authHeader = ctx.req.headers.authorization;
-  const token = authHeader?.replace('Bearer ', '') || ctx.req.cookies['firebase-token'];
+  const token = authHeader?.replace('Bearer ', '') ?? ctx.req.cookies['firebase-token'];
   
   if (!token) {
     return null;

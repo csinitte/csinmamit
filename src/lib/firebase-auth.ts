@@ -41,9 +41,9 @@ export const useAuth = () => {
       if (firebaseUser) {
         setUser({
           id: firebaseUser.uid,
-          name: firebaseUser.displayName || undefined,
-          email: firebaseUser.email || undefined,
-          image: firebaseUser.photoURL || undefined,
+          name: firebaseUser.displayName ?? undefined,
+          email: firebaseUser.email ?? undefined,
+          image: firebaseUser.photoURL ?? undefined,
         });
       } else {
         setUser(null);

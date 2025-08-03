@@ -64,12 +64,12 @@ export const userRouter = createTRPCRouter({
                 // Only return the fields we need to avoid large payloads
                 return {
                     id: userDoc.id,
-                    name: data?.name || "",
-                    bio: data?.bio || "",
-                    branch: data?.branch || "",
-                    github: data?.github || "",
-                    linkedin: data?.linkedin || "",
-                    phone: data?.phone || "",
+                    name: (data?.name as string) ?? "",
+                    bio: (data?.bio as string) ?? "",
+                    branch: (data?.branch as string) ?? "",
+                    github: (data?.github as string) ?? "",
+                    linkedin: (data?.linkedin as string) ?? "",
+                    phone: (data?.phone as string) ?? "",
                 };
             }
             return null;

@@ -33,9 +33,14 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
             src={imageSrc}
             width={250}
             height={250}
-            alt="main-image"
+            alt={`${name} - ${position}`}
             quality={100}
             className="h-full w-full rounded-md object-cover"
+            onError={(e) => {
+              // Fallback to placeholder image if URL fails
+              const target = e.target as HTMLImageElement;
+              target.src = "https://via.placeholder.com/250x250/cccccc/666666?text=No+Image";
+            }}
           />
         </div>
       </div>
@@ -60,7 +65,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "rounded-full  transition-colors hover:text-gray-600",
             })}
-            href={github ?? "#"}
+            href={github ? `https://github.com/${github}` : "#"}
             target="_blank"
           >
             <GithubIcon />

@@ -50,7 +50,7 @@ export const teamRouter = createTRPCRouter({
             role: role,
             linkedin: linkedin,
             github: github,
-            imageLink: imageLink || "",
+            imageLink: imageLink ?? "",
             createdAt: new Date(),
             updatedAt: new Date(),
           });

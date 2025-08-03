@@ -1,5 +1,5 @@
-import { getFirestore, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { app } from "./firebase-auth";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { db } from "../../firebase";
 
 /**
  * Add a certificate URL to a user's certificates array
@@ -8,7 +8,6 @@ import { app } from "./firebase-auth";
  */
 export const addCertificateToUser = async (userId: string, certificateUrl: string) => {
   try {
-    const db = getFirestore(app);
     const userRef = doc(db, 'users', userId);
     
     await updateDoc(userRef, {
@@ -31,7 +30,6 @@ export const addCertificateToUser = async (userId: string, certificateUrl: strin
  */
 export const removeCertificateFromUser = async (userId: string, certificateUrl: string) => {
   try {
-    const db = getFirestore(app);
     const userRef = doc(db, 'users', userId);
     
     await updateDoc(userRef, {
@@ -54,7 +52,6 @@ export const removeCertificateFromUser = async (userId: string, certificateUrl: 
  */
 export const setUserCertificates = async (userId: string, certificateUrls: string[]) => {
   try {
-    const db = getFirestore(app);
     const userRef = doc(db, 'users', userId);
     
     await updateDoc(userRef, {
@@ -76,13 +73,13 @@ export const setUserCertificates = async (userId: string, certificateUrls: strin
  */
 export const getUserCertificates = async (userId: string) => {
   try {
-    const db = getFirestore(app);
+    const { getDoc } = await import("firebase/firestore");
     const userRef = doc(db, 'users', userId);
-    const userDoc = await userRef.get();
+    const userDoc = await getDoc(userRef);
     
     if (userDoc.exists()) {
       const data = userDoc.data();
-      return data?.certificates || [];
+      return (data?.certificates as string[]) ?? [];
     }
     
     return [];

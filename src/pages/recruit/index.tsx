@@ -167,7 +167,11 @@ export default function RecruitPage() {
   const submitRecruitMutation = api.recruit.submitRecruitForm.useMutation({
     onSuccess: (recruit) => {
       // After successful form submission, initiate payment
-      void initiatePayment(recruit.recruit.id);
+      if (recruit.recruit.id) {
+        void initiatePayment(recruit.recruit.id);
+      } else {
+        toast.error("Error: Recruit ID not found");
+      }
     },
     onError: (error) => {
       console.error("Error submitting form:", error);

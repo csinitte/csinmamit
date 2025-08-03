@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { buttonVariants } from "~/components/ui/button";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { app } from "~/lib/firebase-auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
 import { useState, useEffect } from "react";
 
 export default function Profile() {
   const { user } = useAuth();
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [certificates, setCertificates] = useState<string[]>([]);
   
@@ -23,13 +23,12 @@ export default function Profile() {
       }
 
       try {
-        const db = getFirestore(app);
         const userDoc = await getDoc(doc(db, 'users', user.id));
         
         if (userDoc.exists()) {
           const data = userDoc.data();
           setUserData(data);
-          setCertificates(data.certificates || []);
+          setCertificates((data.certificates as string[]) ?? []);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -38,7 +37,7 @@ export default function Profile() {
       }
     };
 
-    loadUserData();
+    void loadUserData();
   }, [user?.id]);
 
   return (
@@ -88,30 +87,30 @@ export default function Profile() {
                               <h1
                                 className={`bg-gradient-to-b from-blue-600 to-violet-400 bg-clip-text pb-4 text-center text-4xl font-black text-transparent`}
                               >
-                                {userData?.name || user?.name}
+                                {(userData?.name as string) ?? user?.name}
                               </h1>
                             </div>
                             <div>
-                              <h1>@{userData?.name || user?.name}</h1>
+                              <h1>@{(userData?.name as string) ?? user?.name}</h1>
                             </div>
 
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Bio :{" "}
                               </span>
-                              {userData?.bio || "No bio available"}
+                              {(userData?.bio as string) ?? "No bio available"}
                             </h4>
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Branch :{" "}
                               </span>
-                              {userData?.branch || "Not specified"}
+                              {(userData?.branch as string) ?? "Not specified"}
                             </h4>
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Role:{" "}
                               </span>
-                              {userData?.role || "User"}
+                              {(userData?.role as string) ?? "User"}
                             </h4>
                             <div className="mt-4 flex justify-center gap-4">
                               <Link
@@ -121,23 +120,28 @@ export default function Profile() {
                                   className:
                                     "rounded-full transition-colors hover:text-blue-500",
                                 })}
-                                href={userData?.linkedin ?? "/"}
+                                href={(userData?.linkedin as string) ?? "/"}
                                 target="_blank"
                               >
                                 <LinkedinIcon size={24} />
                               </Link>
-                              <Link
-                                className={buttonVariants({
-                                  variant: "outline",
-                                  size: "icon",
-                                  className:
-                                    "rounded-full  transition-colors hover:text-gray-600",
-                                })}
-                                href={userData?.github ? `https://github.com/${userData.github}` : "/"}
-                                target="_blank"
-                              >
-                                <Github size={24} />
-                              </Link>
+                              {(() => {
+                                const githubUrl = (userData?.github as string) ?? "";
+                                return (
+                                  <Link
+                                    className={buttonVariants({
+                                      variant: "outline",
+                                      size: "icon",
+                                      className:
+                                        "rounded-full  transition-colors hover:text-gray-600",
+                                    })}
+                                    href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
+                                    target="_blank"
+                                  >
+                                    <Github size={24} />
+                                  </Link>
+                                );
+                              })()}
                             </div>
                           </div>
                         </div>

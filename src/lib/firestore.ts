@@ -57,6 +57,24 @@ export interface Core {
   order: number;
 }
 
+export interface TeamMember {
+  id?: string;
+  name: string;
+  email?: string;
+  branch: string;
+  position: string;
+  linkedin?: string;
+  github?: string;
+  imageSrc: string;
+  year: number;
+  order: number;
+  phone?: string;
+  bio?: string;
+  role?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface Event {
   id?: string;
   title: string;
@@ -122,10 +140,11 @@ export class FirestoreService<T> {
 
   async getAll(): Promise<T[]> {
     const querySnapshot = await getDocs(this.collectionRef);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+    const result = querySnapshot.docs.map(docSnapshot => ({
+      id: docSnapshot.id,
+      ...docSnapshot.data()
     })) as T[];
+    return result;
   }
 
   async getById(id: string): Promise<T | null> {
@@ -191,27 +210,27 @@ export class FirestoreService<T> {
     await deleteDoc(docRef);
   }
 
-  async findOne(field: string, value: any): Promise<T | null> {
+  async findOne(field: string, value: unknown): Promise<T | null> {
     const q = query(this.collectionRef, where(field, "==", value), limit(1));
     const querySnapshot = await getDocs(q);
     
-    if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0];
+    if (!querySnapshot.empty && querySnapshot.docs[0]) {
+      const docSnapshot: QueryDocumentSnapshot = querySnapshot.docs[0];
       return {
-        id: doc.id,
-        ...doc.data()
+        id: docSnapshot.id,
+        ...docSnapshot.data()
       } as T;
     }
     return null;
   }
 
-  async findMany(field: string, value: any): Promise<T[]> {
+  async findMany(field: string, value: unknown): Promise<T[]> {
     const q = query(this.collectionRef, where(field, "==", value));
     const querySnapshot = await getDocs(q);
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+    return querySnapshot.docs.map(docSnapshot => ({
+      id: docSnapshot.id,
+      ...docSnapshot.data()
     })) as T[];
   }
 
@@ -219,9 +238,9 @@ export class FirestoreService<T> {
     const q = query(this.collectionRef, orderBy(orderByField, direction));
     const querySnapshot = await getDocs(q);
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+    return querySnapshot.docs.map(docSnapshot => ({
+      id: docSnapshot.id,
+      ...docSnapshot.data()
     })) as T[];
   }
 }
@@ -229,6 +248,7 @@ export class FirestoreService<T> {
 // Specific service instances
 export const userService = new FirestoreService<User>('users');
 export const coreService = new FirestoreService<Core>('core');
+export const teamMemberService = new FirestoreService<TeamMember>('team-members');
 export const eventService = new FirestoreService<Event>('events');
 export const teamService = new FirestoreService<Team>('teams');
 export const recruitService = new FirestoreService<Recruit>('recruits'); 

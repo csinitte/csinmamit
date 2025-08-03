@@ -2,6 +2,7 @@ import { postRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { userRouter } from "./routers/user";
 import { coreRouter } from "./routers/core";
+import { teamMembersRouter } from "./routers/team-members";
 import { teamRouter } from "./routers/team";
 import { recruitRouter } from "./routers/recruit";
 /**
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   post: postRouter,
   user : userRouter,
   core: coreRouter,
+  teamMembers: teamMembersRouter,
   team: teamRouter,
   recruit: recruitRouter
 });

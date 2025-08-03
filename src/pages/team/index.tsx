@@ -37,7 +37,10 @@ export default function Team() {
     return () => clearTimeout(delay);
   }, []); // Empty dependency array to run only once on component mount
 
-  const { data: teamMembers } = api.core.getCoreMembers.useQuery();
+  const { data: teamMembers, isLoading: teamLoading, error: teamError } = api.teamMembers.getAll.useQuery();
+  
+  // Extract the actual array from the tRPC response
+  const teamMembersArray = teamMembers;
 
   return (
     <MaxWidthWrapper className="mb-12 mt-9 flex flex-col items-center justify-center text-center sm:mt-12">
@@ -53,47 +56,61 @@ export default function Team() {
           </p>
           <div className="mb-5 mt-5"></div>
         </div>
+      </Fade>
 
-        {loading ? (
+      {loading ? (
+        <Fade triggerOnce>
           <Loader />
-        ) : (
-          <>
-            <Tabs defaultValue="team">
-              <TabsList>
-                <TabsTrigger value="fac">Faculty</TabsTrigger>
-                <TabsTrigger value="team">Team</TabsTrigger>
-              </TabsList>
-              <TabsContent value="fac">
-                {/* <h2 className="mt-4 bg-gradient-to-r from-blue-400 to-red-600 bg-clip-text text-4xl font-bold text-transparent">
-                  Faculty
-                </h2> */}
-                <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
-                  {FacultyList.map((member, index) => (
-                    <Faculty key={index} {...member} />
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="team">
-                {/* <h2 className="mt-4 bg-gradient-to-r from-blue-400 to-red-600 bg-clip-text text-4xl font-bold text-transparent">
-                  Team
-                </h2> */}
-                <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
-                  {teamMembers
-                    ?.sort((a, b) => a.order - b.order)
+        </Fade>
+      ) : (
+        <Fade triggerOnce>
+          <Tabs defaultValue="team">
+            <TabsList>
+              <TabsTrigger value="fac">Faculty</TabsTrigger>
+              <TabsTrigger value="team">Team</TabsTrigger>
+            </TabsList>
+            <TabsContent value="fac">
+              <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
+                {FacultyList.map((member, index) => (
+                  <Faculty key={index} {...member} />
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="team">
+              <div className="mt-10 flex flex-wrap justify-center gap-20 pb-10">
+                {teamLoading ? (
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+                    <p className="mt-2 text-sm text-gray-600">Loading team members...</p>
+                  </div>
+                ) : teamError ? (
+                  <div className="text-center text-red-500">
+                    <p>Error loading team members. Please try again later.</p>
+                  </div>
+                ) : teamMembersArray && Array.isArray(teamMembersArray) && teamMembersArray.length > 0 ? (
+                  teamMembersArray
+                    .sort((a, b) => a.order - b.order)
                     .map((member, index) => (
                       <TeamMember 
                         key={index} 
                         {...member} 
+                        email={member.email ?? null}
+                        linkedin={member.linkedin ?? null}
+                        github={member.github ?? null}
                         _year={member.year}
                         _order={member.order}
                       />
-                    ))}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </>
-        )}
-      </Fade>
+                    ))
+                ) : (
+                  <div className="text-center text-gray-500">
+                    <p>No team members available at the moment.</p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </Fade>
+      )}
     </MaxWidthWrapper>
   );
 }

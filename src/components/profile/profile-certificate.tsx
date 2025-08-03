@@ -1,8 +1,8 @@
 import Image from "next/image";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
 import { useAuth } from "~/lib/firebase-auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { app } from "~/lib/firebase-auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
 import { useState, useEffect } from "react";
 
 const Certificates = () => {
@@ -19,12 +19,11 @@ const Certificates = () => {
       }
 
       try {
-        const db = getFirestore(app);
         const userDoc = await getDoc(doc(db, 'users', user.id));
         
         if (userDoc.exists()) {
           const data = userDoc.data();
-          setCertificates(data.certificates || []);
+          setCertificates((data.certificates as string[]) ?? []);
         }
       } catch (error) {
         console.error('Error loading certificates:', error);
@@ -33,7 +32,7 @@ const Certificates = () => {
       }
     };
 
-    loadCertificates();
+    void loadCertificates();
   }, [user?.id]);
 
   if (isLoading) {

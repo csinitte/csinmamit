@@ -15,8 +15,8 @@ import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { useAuth } from "~/lib/firebase-auth";
 import { useRouter } from "next/navigation";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { app } from "~/lib/firebase-auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
 
 const branches = ["Artificial Intelligence & Data Science" ,"Artificial Intelligence & Machine Learning" ,"Biotechnology" ,"Civil Engineering" ,"Computer & Communication Engineering" ,"Computer Science & Engineering" ,"Computer Science (Full Stack Development)" ,"Computer Science (Cyber Security)" ,"Electrical & Electronics Engineering" ,"Electronics & Communication Engineering" ,"Electronics (VLSI Design & Technology)" ,"Electronics & Communication Engineering(ACT)" ,"Information Science & Engineering" ,"Mechanical Engineering" ,"Robotics & Artificial Intelligence"];
 
@@ -24,7 +24,16 @@ export const EditProfile = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    bio: string;
+    branch: string;
+    github: string;
+    linkedin: string;
+    phone: string;
+    role: string;
+    certificates: string[];
+  }>({
     name: "",
     bio: "",
     branch: "",
@@ -47,25 +56,24 @@ export const EditProfile = () => {
       }
 
       try {
-        const db = getFirestore(app);
         const userDoc = await getDoc(doc(db, 'users', user.id));
         
         if (userDoc.exists()) {
           const data = userDoc.data();
           setFormData({
-            name: data.name || "",
-            bio: data.bio || "",
-            branch: data.branch || "",
-            github: data.github || "",
-            linkedin: data.linkedin || "",
-            phone: data.phone || "",
-            role: data.role || "User", // Load role from Firestore
-            certificates: data.certificates || [], // Load certificates from Firestore
+            name: (data.name as string) ?? "",
+            bio: (data.bio as string) ?? "",
+            branch: (data.branch as string) ?? "",
+            github: (data.github as string) ?? "",
+            linkedin: (data.linkedin as string) ?? "",
+            phone: (data.phone as string) ?? "",
+            role: (data.role as string) ?? "User", // Load role from Firestore
+            certificates: (data.certificates as string[]) ?? [], // Load certificates from Firestore
           });
         } else {
           // For new users, initialize with default values including role
           setFormData({
-            name: user?.name || "",
+            name: user?.name ?? "",
             bio: "",
             branch: "",
             github: "",
@@ -86,8 +94,8 @@ export const EditProfile = () => {
       }
     };
 
-    loadUserData();
-  }, [user?.id]);
+    void loadUserData();
+  }, [user?.id, user?.name]);
 
   // Show loading state while authentication is being checked
   if (loading || isLoading) {
@@ -103,7 +111,7 @@ export const EditProfile = () => {
 
   // Check authentication after loading is complete
   if (!user) {
-    router.push("/");
+            void router.push("/");
     return null;
   }
 
@@ -129,7 +137,6 @@ export const EditProfile = () => {
 
       setIsSubmitting(true);
 
-      const db = getFirestore(app);
       await setDoc(doc(db, 'users', user.id), {
         name: formData.name.trim(),
         bio: formData.bio.trim() || "",
@@ -147,7 +154,7 @@ export const EditProfile = () => {
         style: { backgroundColor: '#10b981', color: 'white' }
       });
      
-      router.push('/profile')
+      void router.push('/profile')
     } catch (error) {
       console.error('Error updating profile:', error);
       toast.error("Failed to update profile. Please try again.", {
@@ -162,7 +169,7 @@ export const EditProfile = () => {
     <>
       <form onSubmit={(e) => {
         e.preventDefault();
-        onSubmit();
+        void onSubmit();
       }}>
         <Card className="w-1/2 text-left mx-auto " suppressHydrationWarning>
           <CardContent className="p-4">
