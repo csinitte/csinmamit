@@ -128,18 +128,18 @@ export default function Profile() {
                               {(() => {
                                 const githubUrl = (userData?.github as string) ?? "";
                                 return (
-                                  <Link
-                                    className={buttonVariants({
-                                      variant: "outline",
-                                      size: "icon",
-                                      className:
-                                        "rounded-full  transition-colors hover:text-gray-600",
-                                    })}
+                              <Link
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  size: "icon",
+                                  className:
+                                    "rounded-full  transition-colors hover:text-gray-600",
+                                })}
                                     href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
-                                    target="_blank"
-                                  >
-                                    <Github size={24} />
-                                  </Link>
+                                target="_blank"
+                              >
+                                <Github size={24} />
+                              </Link>
                                 );
                               })()}
                             </div>

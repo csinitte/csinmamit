@@ -168,7 +168,7 @@ export default function RecruitPage() {
     onSuccess: (recruit) => {
       // After successful form submission, initiate payment
       if (recruit.recruit.id) {
-        void initiatePayment(recruit.recruit.id);
+      void initiatePayment(recruit.recruit.id);
       } else {
         toast.error("Error: Recruit ID not found");
       }
