@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { teamService } from "~/lib/firestore";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -16,7 +16,7 @@ export const postRouter = createTRPCRouter({
       };
     }),
 
-  getTeam: protectedProcedure.query(() => {
-    return db.team.findMany();
+  getTeam: protectedProcedure.query(async () => {
+    return await teamService.getAll();
   }),
 });

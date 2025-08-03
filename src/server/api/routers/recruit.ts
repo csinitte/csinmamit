@@ -3,7 +3,7 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { recruitService } from "~/lib/firestore";
 import { sendWelcomeEmail } from "~/utils/email";
 
 export const recruitRouter = createTRPCRouter({
@@ -39,19 +39,17 @@ export const recruitRouter = createTRPCRouter({
         
         const dateOfBirth = new Date(year, month - 1, day);
 
-        const recruit = await db.recruit.create({
-          data: {
-            name: input.name,
-            dateOfBirth: dateOfBirth,
-            usn: input.usn,
-            yearOfStudy: input.yearOfStudy,
-            branch: input.branch,
-            mobileNumber: input.mobileNumber,
-            personalEmail: input.personalEmail,
-            collegeEmail: input.collegeEmail,
-            membershipPlan: input.membershipPlan,
-            csiIdea: input.csiIdea,
-          },
+        const recruit = await recruitService.create({
+          name: input.name,
+          dateOfBirth: dateOfBirth,
+          usn: input.usn,
+          yearOfStudy: input.yearOfStudy,
+          branch: input.branch,
+          mobileNumber: input.mobileNumber,
+          personalEmail: input.personalEmail,
+          collegeEmail: input.collegeEmail,
+          membershipPlan: input.membershipPlan,
+          csiIdea: input.csiIdea,
         });
 
         // Send welcome email
@@ -76,9 +74,7 @@ export const recruitRouter = createTRPCRouter({
 
   getAllRecruits: publicProcedure.query(async () => {
     try {
-      const recruits = await db.recruit.findMany({
-        orderBy: { createdAt: "desc" },
-      });
+      const recruits = await recruitService.findManyOrdered('createdAt', 'desc');
       return recruits;
     } catch (error) {
       console.error("Error fetching recruits:", error);

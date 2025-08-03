@@ -1,4 +1,3 @@
-import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import { DoorClosed, DoorOpen } from "lucide-react";
 import Image from "next/image";
@@ -10,9 +9,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useAuth } from "~/lib/firebase-auth";
+
 export default function AuthButton() {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user, signInWithGoogle, signOut } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <>
       {user ? (
@@ -30,11 +47,11 @@ export default function AuthButton() {
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-0.5 leading-none">
                 <p className="text-sm font-medium text-black">
-                  {session?.user.name}
+                  {user.name}
                 </p>
 
                 <p className="w-[200px] truncate text-xs text-zinc-700">
-                  {user?.email}
+                  {user.email}
                 </p>
               </div>
             </div>
@@ -56,7 +73,7 @@ export default function AuthButton() {
             <DropdownMenuItem className="cursor-pointer">
               <Button
                 variant={"destructive"}
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="w-full"
               >
                 Sign Out <DoorClosed />
@@ -67,9 +84,7 @@ export default function AuthButton() {
       ) : (
         <Button
           className="gap-2"
-          onClick={async () => {
-            await signIn();
-          }}
+          onClick={handleSignIn}
         >
           Log In <DoorOpen />
         </Button>
