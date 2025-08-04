@@ -22,6 +22,7 @@ const config = {
       "lh3.googleusercontent.com",
       "firebasestorage.googleapis.com",
       "github.com",
+      "res.cloudinary.com",
     ],
   },
 };
