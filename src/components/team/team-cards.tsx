@@ -12,8 +12,8 @@ interface TeamMemberProps {
   linkedin: string | null;
   github: string | null;
   imageSrc: string;
-  year: number;
-  order: number;
+  _year: number;
+  _order: number;
 }
 
 export const TeamMember: React.FC<TeamMemberProps> = ({
@@ -22,8 +22,8 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
   linkedin,
   github,
   imageSrc,
-  year,
-  order
+  _year,
+  _order
 }) => {
   return (
     <div className="-m-1 sm:-m-2 rounded-lg sm:rounded-xl bg-gray-900/5 p-3 sm:p-4 ring-1 ring-inset ring-gray-900/10 transition-all hover:ring-blue-500 lg:-m-4 lg:rounded-2xl lg:p-6">
@@ -49,7 +49,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "h-8 w-8 sm:h-10 sm:w-10 rounded-full transition-colors hover:text-blue-500",
             })}
-            href={linkedin || "#"}
+            href={linkedin ?? "#"}
             target="_blank"
             aria-label={`${name}'s LinkedIn`}
           >
@@ -61,7 +61,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "h-8 w-8 sm:h-10 sm:w-10 rounded-full transition-colors hover:text-gray-600",
             })}
-            href={github || "#"}
+            href={github ? `https://github.com/${github}` : "#"}
             target="_blank"
             aria-label={`${name}'s GitHub`}
           >

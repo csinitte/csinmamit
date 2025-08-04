@@ -70,6 +70,15 @@ export function Navbar() {
               >
                 Team
               </Link>
+              {/* <Link
+                href="/recruit"
+                className={buttonVariants({
+                  variant: "ghost",
+                  size: "sm",
+                })}
+              >
+                Join CSI
+              </Link> */}
               <AuthButton />
             </div>
 

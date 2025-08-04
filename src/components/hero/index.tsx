@@ -1,4 +1,4 @@
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "~/lib/firebase-auth";
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { type FunctionComponent } from "react";
@@ -7,8 +7,16 @@ import Loader from "../ui/loader";
 import { ArrowRight } from "lucide-react";
 
 const Hero: FunctionComponent = () => {
-  const { data: session, status } = useSession();
-  const user = session?.user;
+  const { user, loading, signInWithGoogle } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
+  };
+
   return (
     <section className="bg-white text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white px-4 sm:px-6 lg:px-8">
       <div className="mb-12 mt-8 sm:mt-14 lg:mt-28 flex flex-col items-center justify-center text-center">
@@ -20,7 +28,7 @@ const Hero: FunctionComponent = () => {
         <Fade triggerOnce cascade>
           {user ? (
             <h1 className="max-w-4xl text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold px-4">
-              Welcome back! <br></br>
+              Welcome back! <br />
               <span className="text-blue-600">{user.name}</span>
             </h1>
           ) : (
@@ -35,24 +43,22 @@ const Hero: FunctionComponent = () => {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4 lg:gap-8 px-4">
-            {status === "loading" ? (
+            {loading ? (
               <Loader />
-            ) : status === "authenticated" ? (
-              <>
-                <Link
-                  className={buttonVariants({
-                    size: "default",
-                    className: "mt-5 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3",
-                  })}
-                  href={"/events"}
-                  target="_blank"
-                >
-                  Explore Events <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                </Link>
-              </>
+            ) : user ? (
+              <Link
+                className={buttonVariants({
+                  size: "default",
+                  className: "mt-5 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3",
+                })}
+                href={"/events"}
+                target="_blank"
+              >
+                Explore Events <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              </Link>
             ) : (
               <Button 
-                onClick={() => signIn("google")}
+                onClick={handleSignIn}
                 className="text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
               >
                 Sign In

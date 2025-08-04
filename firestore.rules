@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read/write their own user data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Allow users to update their certificates array
+      allow update: if request.auth != null && request.auth.uid == userId && 
+        (resource.data.diff(resource.data).affectedKeys().hasOnly(['certificates', 'updatedAt']) || 
+         resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'bio', 'branch', 'github', 'linkedin', 'phone', 'role', 'updatedAt']));
+    }
+    
+    // Allow public read access to core team members, only admins can write
+    match /core/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Allow public read access to team members, authenticated users can write (temporary for testing)
+    match /team-members/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Allow public read access to events, only admins can write
+    match /events/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Allow authenticated users to create and manage teams
+    match /teams/{document=**} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+        (resource.data.custid == request.auth.uid || request.auth.token.admin == true);
+      allow delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Allow authenticated users to create recruit applications
+    // Only admins can read, update, or delete recruit data
+    match /recruits/{document=**} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && request.auth.token.admin == true;
+      allow delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Default deny all other access for security
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

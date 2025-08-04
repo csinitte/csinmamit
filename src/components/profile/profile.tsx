@@ -1,17 +1,44 @@
-import { GitPullRequestIcon, LinkedinIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Head from "next/head";
+import { LinkedinIcon, Github } from "lucide-react";
+import { useAuth } from "~/lib/firebase-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { buttonVariants } from "~/components/ui/button";
-import localFont from "next/font/local";
-import { api } from "~/utils/api";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { useState, useEffect } from "react";
+
 export default function Profile() {
-  const { data: session } = useSession();
-  const user = session?.user;
-  const id = user?.id ?? " ";
-  const userData = api.user.getUserData.useQuery({ userid: id }).data;
+  const { user } = useAuth();
+  const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [certificates, setCertificates] = useState<string[]>([]);
+  
+  // Load user data from Firestore
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.id));
+        
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setUserData(data);
+          setCertificates((data.certificates as string[]) ?? []);
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadUserData();
+  }, [user?.id]);
 
   return (
     <>
@@ -60,30 +87,30 @@ export default function Profile() {
                               <h1
                                 className={`bg-gradient-to-b from-blue-600 to-violet-400 bg-clip-text pb-4 text-center text-4xl font-black text-transparent`}
                               >
-                                {userData?.name}
+                                {(userData?.name as string) ?? user?.name}
                               </h1>
                             </div>
                             <div>
-                              <h1>@{userData?.name}</h1>
+                              <h1>@{(userData?.name as string) ?? user?.name}</h1>
                             </div>
 
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Bio :{" "}
                               </span>
-                              {userData?.bio}
+                              {(userData?.bio as string) ?? "No bio available"}
                             </h4>
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Branch :{" "}
                               </span>
-                              {userData?.branch}
+                              {(userData?.branch as string) ?? "Not specified"}
                             </h4>
                             <h4>
                               <span className="font-bold text-slate-400">
                                 Role:{" "}
                               </span>
-                              {userData?.role}
+                              {(userData?.role as string) ?? "User"}
                             </h4>
                             <div className="mt-4 flex justify-center gap-4">
                               <Link
@@ -93,11 +120,14 @@ export default function Profile() {
                                   className:
                                     "rounded-full transition-colors hover:text-blue-500",
                                 })}
-                                href={userData?.linkedin ?? "/"}
+                                href={(userData?.linkedin as string) ?? "/"}
                                 target="_blank"
                               >
                                 <LinkedinIcon size={24} />
                               </Link>
+                              {(() => {
+                                const githubUrl = (userData?.github as string) ?? "";
+                                return (
                               <Link
                                 className={buttonVariants({
                                   variant: "outline",
@@ -105,11 +135,13 @@ export default function Profile() {
                                   className:
                                     "rounded-full  transition-colors hover:text-gray-600",
                                 })}
-                                href={userData?.github ?? "/"}
+                                    href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
                                 target="_blank"
                               >
-                                <GitPullRequestIcon size={24} />
+                                <Github size={24} />
                               </Link>
+                                );
+                              })()}
                             </div>
                           </div>
                         </div>
@@ -132,7 +164,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <>
-                  <h1>TODO</h1>
+                  <h1>Please sign in to view your profile</h1>
                 </>
               )}
             </Fade>

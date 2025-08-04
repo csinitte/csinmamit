@@ -1,0 +1,48 @@
+# Database and Prisma Rules for CSI NMAMIT
+
+# Prisma schema protection
+pattern: prisma/schema.prisma
+policy: readonly
+description: "Prisma schema should not be modified by AI to prevent data loss"
+
+# Database connection
+pattern: src/server/db.ts
+policy: readonly
+description: "Database connection configuration should not be modified by AI"
+
+# Database migrations
+pattern: prisma/migrations/**/*
+policy: readonly
+description: "Database migrations should not be modified by AI"
+
+# tRPC database procedures
+pattern: src/server/api/routers/**/*.ts
+enforce:
+  inputValidation: true
+  outputValidation: true
+  errorHandling: true
+  transactionUsage: true
+
+# Database queries
+pattern: **/*.ts
+forbid: ["prisma.$queryRaw", "prisma.$executeRaw"]
+enforce:
+  usePrismaClient: true
+  useTransactions: true
+
+# Model definitions
+pattern: src/server/api/routers/**/*.ts
+enforce:
+  useZodValidation: true
+  useTypeSafety: true
+  useErrorHandling: true
+
+# Database environment variables
+pattern: **/*.ts
+forbid: ["process.env.DATABASE_URL"]
+enforce:
+  useEnvValidation: true
+description:
+globs:
+alwaysApply: false
+---

@@ -1,8 +1,4 @@
-import Head from "next/head";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import Profile from "~/components/profile/profile";
-import { EditProfile } from "~/components/profile/profile-edit";
 import { AddTeam } from "~/components/team/add-team";
 export default function AddTeamm() {
   return (
