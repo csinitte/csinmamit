@@ -107,7 +107,7 @@ export const CoreMembers: CoreMember[] = [
   },
   {
     name: "Prashith Shetty",
-    position: "Technical Team",
+    position: "Technical (Lead)",
     branch: "CSE",
     year: 3,
     linkedin: "https://www.linkedin.com/in/prashith-shetty-a91508244/",
