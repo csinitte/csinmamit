@@ -1,21 +1,31 @@
 import { z } from "zod";
-import { getFirestore } from "firebase-admin/firestore";
+import { getAdminFirestore, isFirebaseAdminConfigured } from "~/server/firebase-admin";
 
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
 
-// teamRouter is correct as is
 export const teamRouter = createTRPCRouter({
   getTeam: publicProcedure.query(async () => {
-    const db = getFirestore();
-    const querySnapshot = await db.collection('teams').get();
-    const teams = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    return { dbF: teams };
+    try {
+      // Check if Firebase Admin is configured
+      if (!isFirebaseAdminConfigured()) {
+        console.warn('Firebase Admin not properly configured. Team data fetch skipped.');
+        return { dbF: [] };
+      }
+      
+      const db = getAdminFirestore();
+      const querySnapshot = await db.collection('teams').get();
+      const teams = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      return { dbF: teams };
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+      return { dbF: [] };
+    }
   }),
   addTeam: publicProcedure
   .input(z.object({
@@ -34,8 +44,13 @@ export const teamRouter = createTRPCRouter({
   }))
   .mutation(async ({input})=> {
       try {
+        // Check if Firebase Admin is configured
+        if (!isFirebaseAdminConfigured()) {
+          throw new Error('Firebase Admin not properly configured');
+        }
+        
         const { userid, email, name, branch, role, linkedin, github, imageLink } = input;
-        const db = getFirestore();
+        const db = getAdminFirestore();
         
         // Check if user already exists in teams collection
         const userQuery = await db.collection('teams').where('custid', '==', userid).limit(1).get();

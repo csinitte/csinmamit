@@ -1,24 +1,19 @@
 import { type GetServerSidePropsContext } from "next";
-import { getAuth } from "firebase-admin/auth";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-
-// Initialize Firebase Admin if not already initialized
-if (getApps().length === 0) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
-}
+import { getAdminAuth, isFirebaseAdminConfigured } from "./firebase-admin";
 
 /**
  * Firebase Auth helper functions
  */
 export const verifyFirebaseToken = async (token: string) => {
   try {
-    const decodedToken = await getAuth().verifyIdToken(token);
+    // Check if Firebase Admin is configured
+    if (!isFirebaseAdminConfigured()) {
+      console.warn('Firebase Admin not properly configured. Token verification skipped.');
+      return null;
+    }
+    
+    const auth = getAdminAuth();
+    const decodedToken = await auth.verifyIdToken(token);
     return decodedToken;
   } catch (error) {
     console.error('Error verifying Firebase token:', error);
@@ -28,7 +23,14 @@ export const verifyFirebaseToken = async (token: string) => {
 
 export const getFirebaseUser = async (uid: string) => {
   try {
-    const userRecord = await getAuth().getUser(uid);
+    // Check if Firebase Admin is configured
+    if (!isFirebaseAdminConfigured()) {
+      console.warn('Firebase Admin not properly configured. User fetch skipped.');
+      return null;
+    }
+    
+    const auth = getAdminAuth();
+    const userRecord = await auth.getUser(uid);
     return userRecord;
   } catch (error) {
     console.error('Error getting Firebase user:', error);

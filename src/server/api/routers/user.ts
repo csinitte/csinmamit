@@ -1,26 +1,10 @@
 import { z } from "zod";
-import { getFirestore } from "firebase-admin/firestore";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getAdminFirestore, isFirebaseAdminConfigured } from "~/server/firebase-admin";
 
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-
-// Initialize Firebase Admin if not already initialized
-if (getApps().length === 0) {
-  try {
-    initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }),
-    });
-  } catch (error) {
-    console.error('Error initializing Firebase Admin:', error);
-  }
-}
 
 export const userRouter = createTRPCRouter({
     ping: publicProcedure
@@ -56,7 +40,13 @@ export const userRouter = createTRPCRouter({
                 return null;
             }
             
-            const db = getFirestore();
+            // Check if Firebase Admin is configured
+            if (!isFirebaseAdminConfigured()) {
+                console.warn('Firebase Admin not properly configured. User data fetch skipped.');
+                return null;
+            }
+            
+            const db = getAdminFirestore();
             const userDoc = await db.collection('users').doc(input.userid).get();
             
             if (userDoc.exists) {
@@ -95,7 +85,12 @@ export const userRouter = createTRPCRouter({
                 throw new Error('User ID is required');
             }
             
-            const db = getFirestore();
+            // Check if Firebase Admin is configured
+            if (!isFirebaseAdminConfigured()) {
+                throw new Error('Firebase Admin not properly configured');
+            }
+            
+            const db = getAdminFirestore();
             await db.collection('users').doc(input.userid).set({
                 name: input.name,
                 bio: input.bio,
