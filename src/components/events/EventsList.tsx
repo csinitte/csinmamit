@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { getEventsByYear } from '~/lib/firestore';
 import type { Event } from '~/lib/firestore';
@@ -11,28 +12,28 @@ const EventsList: React.FC<EventsListProps> = ({ date }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const yearNumber = parseInt(date);
-        const fetchedEvents = await getEventsByYear(yearNumber);
-        // Filter out the Web Designing Workshop event
-        const filteredEvents = fetchedEvents.filter(
-          event => !(event.title === 'Web Designing Workshop' && event.year === 2019)
-        );
-        setEvents(filteredEvents);
-      } catch (err) {
-        console.error('Error fetching events:', err);
-        setError('Failed to load events');
-      } finally {
-        setLoading(false);
-      }
-    };
+    useEffect(() => {
+      const fetchEvents = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          const yearNumber = parseInt(date);
+          const fetchedEvents = await getEventsByYear(yearNumber);
+          // Filter out the Web Designing Workshop event
+          const filteredEvents = fetchedEvents.filter(
+            event => !(event.title === 'Web Designing Workshop' && event.year === 2019)
+          );
+          setEvents(filteredEvents);
+        } catch (err) {
+          console.error('Error fetching events:', err);
+          setError('Failed to load events');
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    fetchEvents();
-  }, [date]);
+      void fetchEvents();
+    }, [date]);
 
   if (loading) {
     return (
@@ -67,11 +68,12 @@ const EventsList: React.FC<EventsListProps> = ({ date }) => {
         >
           {event.cloudinaryUrl && (
             <div className="relative w-full h-40 sm:h-48 mb-3 sm:mb-4">
-              <img 
-                src={event.cloudinaryUrl} 
+              <Image
+                src={event.cloudinaryUrl}
                 alt={event.title}
-                className="w-full h-full object-cover rounded-md"
+                className="object-cover rounded-md"
                 loading="lazy"
+                fill
               />
             </div>
           )}

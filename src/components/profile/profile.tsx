@@ -1,4 +1,4 @@
-import { LinkedinIcon, Github } from "lucide-react";
+atimport { LinkedinIcon, Github } from "lucide-react";
 import { useAuth } from "~/lib/firebase-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,14 +11,11 @@ import { useState, useEffect } from "react";
 export default function Profile() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [certificates, setCertificates] = useState<string[]>([]);
   
   // Load user data from Firestore
   useEffect(() => {
     const loadUserData = async () => {
       if (!user?.id) {
-        setIsLoading(false);
         return;
       }
 
@@ -28,12 +25,9 @@ export default function Profile() {
         if (userDoc.exists()) {
           const data = userDoc.data();
           setUserData(data);
-          setCertificates((data.certificates as string[]) ?? []);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

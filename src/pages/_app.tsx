@@ -1,6 +1,6 @@
-import { type AppType } from "next/app";
+import App, { type AppType } from "next/app";
 import { Poppins } from "next/font/google";
-import { api } from "~/utils/api";
+// import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { Navbar } from "~/components/layout/navbar";
 import Footer from "~/components/layout/footer";
@@ -26,4 +26,4 @@ const MyApp: AppType = ({
   );
 };
 
-export default api.withTRPC(MyApp);
+export default MyApp;
