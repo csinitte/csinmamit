@@ -18,7 +18,25 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 
-const branches = ["Artificial Intelligence & Data Science" ,"Artificial Intelligence & Machine Learning" ,"Biotechnology" ,"Civil Engineering" ,"Computer & Communication Engineering" ,"Computer Science & Engineering" ,"Computer Science (Full Stack Development)" ,"Computer Science (Cyber Security)" ,"Electrical & Electronics Engineering" ,"Electronics & Communication Engineering" ,"Electronics (VLSI Design & Technology)" ,"Electronics & Communication Engineering(ACT)" ,"Information Science & Engineering" ,"Mechanical Engineering" ,"Robotics & Artificial Intelligence"];
+const branches = [
+  "Artificial Intelligence & Data Science",
+  "Artificial Intelligence & Machine Learning Engineering", 
+  "Biotechnology Engineering",
+  "Civil Engineering",
+  "Computer & Communication Engineering",
+  "Computer Science & Engineering",
+  "Computer Science & Engineering (Cyber Security)",
+  "Electrical & Electronics Engineering",
+  "Electronics & Communication Engineering",
+  "Electronics Engineering (VLSI Design & Technology)",
+  "Electronics & Communication (Advanced Communication Technology)",
+  "Information Science & Engineering",
+  "Mechanical Engineering",
+  "Robotics & Artificial Intelligence Engineering",
+  "MCA",
+];
+
+const yearOptions = ["1st", "2nd", "3rd", "4th"];
 
 export const EditProfile = () => {
   const { user, loading } = useAuth();
@@ -33,6 +51,14 @@ export const EditProfile = () => {
     phone: string;
     role: string;
     certificates: string[];
+    // New fields for membership
+    dateOfBirth: string;
+    usn: string;
+    yearOfStudy: string;
+    personalEmail: string;
+    collegeEmail: string;
+    csiIdea: string;
+    csiIdNumber: string; // New CSI ID number field
   }>({
     name: "",
     bio: "",
@@ -40,8 +66,16 @@ export const EditProfile = () => {
     github: "",
     linkedin: "",
     phone: "",
-    role: "User", // Add role with default value "User"
-    certificates: [], // Add certificates array
+    role: "User",
+    certificates: [],
+    // New fields with default values
+    dateOfBirth: "",
+    usn: "",
+    yearOfStudy: "",
+    personalEmail: "",
+    collegeEmail: "",
+    csiIdea: "",
+    csiIdNumber: "", // Initialize CSI ID number
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,11 +101,19 @@ export const EditProfile = () => {
             github: (data.github as string) ?? "",
             linkedin: (data.linkedin as string) ?? "",
             phone: (data.phone as string) ?? "",
-            role: (data.role as string) ?? "User", // Load role from Firestore
-            certificates: (data.certificates as string[]) ?? [], // Load certificates from Firestore
+            role: (data.role as string) ?? "User",
+            certificates: (data.certificates as string[]) ?? [],
+            // Load new fields
+            dateOfBirth: (data.dateOfBirth as string) ?? "",
+            usn: (data.usn as string) ?? "",
+            yearOfStudy: (data.yearOfStudy as string) ?? "",
+            personalEmail: (data.personalEmail as string) ?? "",
+            collegeEmail: (data.collegeEmail as string) ?? "",
+            csiIdea: (data.csiIdea as string) ?? "",
+            csiIdNumber: (data.csiIdNumber as string) ?? "",
           });
         } else {
-          // For new users, initialize with default values including role
+          // For new users, initialize with default values
           setFormData({
             name: user?.name ?? "",
             bio: "",
@@ -79,8 +121,16 @@ export const EditProfile = () => {
             github: "",
             linkedin: "",
             phone: "",
-            role: "User", // Default role for new users
-            certificates: [], // Default empty certificates array
+            role: "User",
+            certificates: [],
+            // New fields with default values
+            dateOfBirth: "",
+            usn: "",
+            yearOfStudy: "",
+            personalEmail: user?.email ?? "",
+            collegeEmail: user?.email ?? "",
+            csiIdea: "",
+            csiIdNumber: "",
           });
         }
       } catch (error) {
@@ -95,7 +145,7 @@ export const EditProfile = () => {
     };
 
     void loadUserData();
-  }, [user?.id, user?.name]);
+  }, [user?.id, user?.name, user?.email]);
 
   // Show loading state while authentication is being checked
   if (loading || isLoading) {
@@ -132,6 +182,47 @@ export const EditProfile = () => {
         return;
       }
 
+      // Validate personal email
+      if (formData.personalEmail && !formData.personalEmail.includes('@')) {
+        toast.error("Please enter a valid personal email address", {
+          style: { backgroundColor: '#ef4444', color: 'white' }
+        });
+        return;
+      }
+
+      // Validate college email - must be a college domain
+      if (formData.collegeEmail) {
+        if (!formData.collegeEmail.includes('@')) {
+          toast.error("Please enter a valid college email address", {
+            style: { backgroundColor: '#ef4444', color: 'white' }
+          });
+          return;
+        }
+        
+        const domain = formData.collegeEmail.split('@')[1]?.toLowerCase();
+        if (!domain) {
+          toast.error("Please enter a valid college email address", {
+            style: { backgroundColor: '#ef4444', color: 'white' }
+          });
+          return;
+        }
+        
+        const blockedDomains = [
+          'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 
+          'aol.com', 'icloud.com', 'protonmail.com', 'mail.com',
+          'yandex.com', 'zoho.com', 'fastmail.com', 'tutanota.com',
+          'gmial.com', 'gamil.com', 'gmai.com', 'gmal.com', // Common typos
+          'outlok.com', 'outloook.com', 'hotmai.com', 'yhoo.com'
+        ];
+        
+        if (blockedDomains.includes(domain)) {
+          toast.error("Please use your college email address (e.g., @nmamit.in), not a personal email provider", {
+            style: { backgroundColor: '#ef4444', color: 'white' }
+          });
+          return;
+        }
+      }
+
       // Clean GitHub username - remove any URL parts and extra spaces
       const cleanGithubUsername = formData.github.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
 
@@ -144,8 +235,16 @@ export const EditProfile = () => {
         github: cleanGithubUsername || "",
         linkedin: formData.linkedin.trim() || "",
         phone: formData.phone.trim() || "",
-        role: formData.role, // Include role in saved data
-        certificates: formData.certificates, // Include certificates array
+        role: formData.role,
+        certificates: formData.certificates,
+        // Save new fields
+        dateOfBirth: formData.dateOfBirth.trim() || "",
+        usn: formData.usn.trim() || "",
+        yearOfStudy: formData.yearOfStudy || "",
+        personalEmail: formData.personalEmail.trim() || "",
+        collegeEmail: formData.collegeEmail.trim() || "",
+        csiIdea: formData.csiIdea.trim() || "",
+        csiIdNumber: formData.csiIdNumber.trim() || "",
         updatedAt: new Date(),
       }, { merge: true });
 
@@ -196,6 +295,36 @@ export const EditProfile = () => {
               />
             </div>
 
+            {/* CSI ID Number - Only show for Executive Members and Core Team */}
+            {(formData.role === "EXECUTIVE MEMBER" || formData.role === "Core Team" || formData.role === "Admin") && (
+              <>
+                <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+                  CSI ID Number :
+                </p>
+                <div className="flex">
+                  <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                    <CircleUserRound size={20} />
+                  </span>
+                  <Input
+                    id="csiIdNumber"
+                    value={formData.csiIdNumber}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        csiIdNumber: e.target.value.toUpperCase(),
+                      })
+                    }
+                    type="text"
+                    className="rounded-none rounded-r-lg"
+                    placeholder="e.g., 2024001"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Your unique CSI ID number for ID cards and official records
+                </p>
+              </>
+            )}
+
             <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
               Phone number :
             </p>
@@ -216,6 +345,89 @@ export const EditProfile = () => {
                 maxLength={10}
                 className="rounded-none rounded-r-lg"
               />
+            </div>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              Date of Birth (DD/MM/YYYY) :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <CircleUserRound size={20} />
+              </span>
+              <Input
+                id="dateOfBirth"
+                value={formData.dateOfBirth}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Format as DD/MM/YYYY
+                  const numbers = value.replace(/\D/g, '');
+                  let formatted = numbers;
+                  if (numbers.length > 2) {
+                    formatted = numbers.slice(0, 2) + '/' + numbers.slice(2);
+                  }
+                  if (numbers.length > 4) {
+                    formatted = numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
+                  }
+                  setFormData({
+                    ...formData,
+                    dateOfBirth: formatted,
+                  });
+                }}
+                type="text"
+                className="rounded-none rounded-r-lg"
+                placeholder="DD/MM/YYYY"
+                maxLength={10}
+              />
+            </div>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              USN :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <CircleUserRound size={20} />
+              </span>
+              <Input
+                id="usn"
+                value={formData.usn}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    usn: e.target.value.toUpperCase(),
+                  })
+                }
+                type="text"
+                className="rounded-none rounded-r-lg"
+                placeholder="e.g., NNM24AC001"
+              />
+            </div>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              Year of Study :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <CircleUserRound size={20} />
+              </span>
+              <select
+                id="yearOfStudy"
+                value={formData.yearOfStudy}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    yearOfStudy: e.target.value,
+                  })
+                }
+                className="rounded-none rounded-r-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                aria-label="Select year of study"
+              >
+                <option value="">Select Year</option>
+                {yearOptions.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
@@ -314,6 +526,80 @@ export const EditProfile = () => {
                 placeholder="LinkedIn Profile URL"
               />
             </div>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              Personal Email :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <CircleUserRound size={20} />
+              </span>
+              <Input
+                id="personalEmail"
+                value={formData.personalEmail}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    personalEmail: e.target.value,
+                  })
+                }
+                type="email"
+                className="rounded-none rounded-r-lg"
+                placeholder="your.email@gmail.com"
+              />
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Your personal email address for general communications
+            </p>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              College Email :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <CircleUserRound size={20} />
+              </span>
+              <Input
+                id="collegeEmail"
+                value={formData.collegeEmail}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    collegeEmail: e.target.value,
+                  })
+                }
+                type="email"
+                className="rounded-none rounded-r-lg"
+                placeholder="your.usn@nmamit.in"
+              />
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Your college email address (e.g., @nmamit.in). Personal email providers are not allowed.
+            </p>
+
+            <p className="mb-1 mt-3 block text-sm font-medium text-gray-900 dark:text-white">
+              CSI Idea/Vision :
+            </p>
+            <div className="flex">
+              <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+                <BookText size={20} />
+              </span>
+              <textarea
+                id="csiIdea"
+                value={formData.csiIdea}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    csiIdea: e.target.value,
+                  })
+                }
+                className="rounded-none rounded-r-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500 w-full"
+                placeholder="Share your ideas about CSI and what you hope to contribute..."
+                rows={3}
+              />
+            </div>
+
+
 
             <div className="mt-6 flex justify-center">
               <Button

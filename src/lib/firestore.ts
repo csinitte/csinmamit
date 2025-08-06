@@ -12,6 +12,7 @@ import {
   orderBy, 
   limit,
   serverTimestamp,
+  type Timestamp,
   type DocumentData,
   type QueryDocumentSnapshot,
   type CollectionReference
@@ -19,12 +20,12 @@ import {
 import { db } from '../../firebase';
 
 // Check if we're on the server side and use admin SDK
-let isServer = false;
-try {
-  isServer = typeof window === 'undefined';
-} catch {
-  isServer = true;
-}
+// let isServer = false;
+// try {
+//   isServer = typeof window === 'undefined';
+// } catch {
+//   isServer = true;
+// }
 
 // Types for our data models
 export interface User {
@@ -117,7 +118,7 @@ export interface Team {
 export interface Recruit {
   id?: string;
   name: string;
-  dateOfBirth: Date;
+  dateOfBirth: Date | Timestamp;
   usn: string;
   yearOfStudy: string;
   branch: string;
@@ -126,6 +127,7 @@ export interface Recruit {
   collegeEmail?: string;
   membershipPlan: string;
   csiIdea: string;
+  userId?: string; // Add user ID for permission checking
   createdAt?: Date;
   updatedAt?: Date;
 }

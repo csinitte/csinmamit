@@ -1,94 +1,25 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import Link from "next/link";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Fade } from "react-awesome-reveal";
 import localFont from "next/font/local";
-import { api } from "~/utils/api";
 import { toast, Toaster } from "sonner";
+import { useAuth } from "~/lib/firebase-auth";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { env } from "../../env";
 
 const myFont = localFont({ src: "../../pages/obscura.otf" });
 
-// Form validation schema
-const recruitFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  dateOfBirth: z.string()
-    .min(1, "Date of birth is required")
-    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Please use DD/MM/YYYY format")
-    .refine((date) => {
-      const parts = date.split('/').map(Number);
-      const [day, month, year] = parts;
-      
-      // Check if all parts are valid numbers
-      if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
-        return false;
-      }
-      
-      const dateObj = new Date(year, month - 1, day);
-      return dateObj.getDate() === day && 
-             dateObj.getMonth() === month - 1 && 
-             dateObj.getFullYear() === year &&
-             year >= 1900 && year <= new Date().getFullYear();
-    }, "Please enter a valid date"),
-  usn: z.string().min(1, "USN is required"),
-  yearOfStudy: z.string().min(1, "Year of study is required"),
-  branch: z.string().min(1, "Branch is required"),
-  mobileNumber: z.string().min(10, "Valid mobile number is required"),
-  personalEmail: z.string().email("Valid email is required"),
-  collegeEmail: z.string()
-    .optional()
-    .refine((email) => {
-      if (!email) return true; // Optional field
-      if (!email.includes('@')) return false; // Basic email format check
-      const domain = email.split('@')[1]?.toLowerCase();
-      if (!domain) return false; // Check if domain exists
-      const blockedDomains = [
-        'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 
-        'aol.com', 'icloud.com', 'protonmail.com', 'mail.com',
-        'yandex.com', 'zoho.com', 'fastmail.com', 'tutanota.com',
-        'gmial.com', 'gamil.com', 'gmai.com', 'gmal.com', // Common typos
-        'outlok.com', 'outloook.com', 'hotmai.com', 'yhoo.com'
-      ];
-      return !blockedDomains.includes(domain);
-    }, "Please use your college email address (e.g., @nmamit.in), not a personal email provider"),
-  membershipPlan: z.string().min(1, "Please select a membership plan"),
-  csiIdea: z.string().min(1, "Please share your idea about CSI"),
-});
-
-type RecruitFormData = z.infer<typeof recruitFormSchema>;
-
-const branchOptions = [
-  "Artificial Intelligence & Data Science",
-  "Artificial Intelligence & Machine Learning Engineering",
-  "Biotechnology Engineering",
-  "Civil Engineering",
-  "Computer & Communication Engineering",
-  "Computer Science & Engineering",
-  "Computer Science & Engineering (Cyber Security)",
-  "Electrical & Electronics Engineering",
-  "Electronics & Communication Engineering",
-  "Electronics Engineering (VLSI Design & Technology)",
-  "Electronics & Communication (Advanced Communication Technology)",
-  "Information Science & Engineering",
-  "Mechanical Engineering",
-  "Robotics & Artificial Intelligence Engineering",
-  "MCA",
-];
-
-const yearOptions = ["1st", "2nd", "3rd", "4th"];
-
+// Membership plans with simplified pricing
 const membershipPlans = [
-  { id: "1-year", name: "1-Year Membership: ₹350", price: 350 },
-  { id: "2-year", name: "2-Year Membership: ₹650", price: 650 },
-  { id: "3-year", name: "3-Year Membership: ₹900", price: 900 },
+  { id: "1-year", name: "1 Year", price: 350, years: 1 },
+  { id: "2-year", name: "2 Years", price: 650, years: 2 },
+  { id: "3-year", name: "3 Years", price: 900, years: 3 },
 ];
 
 // Add Razorpay script
@@ -122,25 +53,15 @@ declare global {
 }
 
 export default function RecruitPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<string>("");
   const [selectedPlanPrice, setSelectedPlanPrice] = useState<number>(0);
+  const [selectedYears, setSelectedYears] = useState<number>(0);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  // Function to format date input
-  const formatDateInput = (value: string) => {
-    // Remove all non-digits
-    const numbers = value.replace(/\D/g, '');
-    
-    // Add slashes at appropriate positions
-    if (numbers.length <= 2) {
-      return numbers;
-    } else if (numbers.length <= 4) {
-      return numbers.slice(0, 2) + '/' + numbers.slice(2);
-    } else {
-      return numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
-    }
-  };
+  const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasActiveMembership, setHasActiveMembership] = useState(false);
 
   // Load Razorpay script
   useEffect(() => {
@@ -150,40 +71,58 @@ export default function RecruitPage() {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
     };
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm<RecruitFormData>({
-    resolver: zodResolver(recruitFormSchema),
-  });
-
-  const submitRecruitMutation = api.recruit.submitRecruitForm.useMutation({
-    onSuccess: (recruit) => {
-      // After successful form submission, initiate payment
-      if (recruit.recruit.id) {
-      void initiatePayment(recruit.recruit.id);
-      } else {
-        toast.error("Error: Recruit ID not found");
+  // Load user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
       }
-    },
-    onError: (error) => {
-      console.error("Error submitting form:", error);
-      toast.error("Error submitting form. Please try again.");
-    },
-  });
 
-  const initiatePayment = async (recruitId: string) => {
-    if (!selectedPlanPrice) {
-      toast.error("Please select a membership plan");
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.id));
+        if (userDoc.exists()) {
+          const data = userDoc.data() as Record<string, unknown>;
+          setUserData(data);
+          
+          // Check if user has active membership
+          if (data.membershipEndDate) {
+            const membershipEndDate = data.membershipEndDate as { toDate?: () => Date } | Date;
+            const endDate = typeof membershipEndDate === 'object' && membershipEndDate !== null && 'toDate' in membershipEndDate && typeof membershipEndDate.toDate === 'function'
+              ? membershipEndDate.toDate() 
+              : new Date(membershipEndDate as Date);
+            const today = new Date();
+            setHasActiveMembership(today < endDate);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadUserData();
+  }, [user?.id]);
+
+
+
+  const initiatePayment = async () => {
+    if (!selectedPlanPrice || !user?.id) {
+      setTimeout(() => {
+        toast.error("Please select a membership plan");
+      }, 0);
       return;
     }
+
+    setIsProcessing(true);
 
     try {
       // Create Razorpay order
@@ -195,7 +134,7 @@ export default function RecruitPage() {
         body: JSON.stringify({
           amount: selectedPlanPrice,
           currency: 'INR',
-          receipt: `recruit_${recruitId}`,
+          receipt: `mem_${Date.now()}`,
         }),
       });
 
@@ -212,11 +151,11 @@ export default function RecruitPage() {
 
       // Initialize Razorpay payment
       const options = {
-        key: 'rzp_test_CfJA68nNVTLQg3', // Your new key
+        key: 'rzp_test_CfJA68nNVTLQg3',
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'CSI NMAMIT',
-        description: `CSI Membership - ${selectedPlan}`,
+        description: `CSI Executive Membership - ${selectedPlan}`,
         order_id: orderData.orderId,
         handler: async function (response: {
           razorpay_order_id: string;
@@ -242,26 +181,97 @@ export default function RecruitPage() {
             };
 
             if (verifyData.success) {
-              toast.success('Payment successful! Welcome to CSI NMAMIT! 🎉 Check your email for confirmation.');
-              setIsSuccess(true);
-            } else {
-              toast.error('Payment verification failed. Please contact support.');
+              // Update user membership after successful payment
+              try {
+                const membershipStartDate = new Date();
+                const membershipEndDate = new Date();
+                
+                // Set end date to April 30th of the respective year
+                const currentYear = new Date().getFullYear();
+                const endYear = currentYear + selectedYears;
+                membershipEndDate.setFullYear(endYear);
+                membershipEndDate.setMonth(3); // April (0-indexed)
+                membershipEndDate.setDate(30);
+                
+                // If we're past April 30th of current year, start from next year
+                const currentDate = new Date();
+                if (currentDate.getMonth() > 3 || (currentDate.getMonth() === 3 && currentDate.getDate() > 30)) {
+                  membershipEndDate.setFullYear(endYear + 1);
+                }
+
+                // Update user document with membership data
+                const userRef = doc(db, 'users', user.id);
+                const membershipData = {
+                  membershipType: `${selectedYears}-Year Executive Membership (Until ${membershipEndDate.getFullYear()})`,
+                  membershipStartDate: membershipStartDate,
+                  membershipEndDate: membershipEndDate,
+                  paymentDetails: {
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    amount: selectedPlanPrice, // Use the original price in rupees, not paise
+                    currency: orderData.currency,
+                    paymentDate: new Date(),
+                  },
+                  role: "EXECUTIVE MEMBER",
+                  updatedAt: new Date(),
+                };
+
+                // Check if user document exists, if not create it
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                  // Update existing user document with membership data
+                  await updateDoc(userRef, membershipData);
+                } else {
+                  // Create new user document with membership data
+                  await setDoc(userRef, {
+                    ...membershipData,
+                    name: user.name ?? (userData?.name as string) ?? 'CSI Member',
+                    email: user.email,
+                    createdAt: new Date(),
+                  });
+                }
+
+                setTimeout(() => {
+                  toast.success('Payment successful! Updating your membership...');
+                }, 0);
+                setIsSuccess(true);
+                
+                // Redirect to profile after a short delay
+                setTimeout(() => {
+                  window.location.href = "/profile";
+                }, 2000);
+
+              } catch (error) {
+                console.error('Error updating user membership:', error);
+                setTimeout(() => {
+                  toast.error('Payment successful but failed to update membership. Please contact support.');
+                }, 0);
+              }
+                          } else {
+                setTimeout(() => {
+                  toast.error('Payment verification failed. Please contact support.');
+                }, 0);
+              }
+            } catch (error) {
+              console.error('Payment verification error:', error);
+              setTimeout(() => {
+                toast.error('Payment verification failed. Please contact support.');
+              }, 0);
             }
-          } catch (error) {
-            console.error('Payment verification error:', error);
-            toast.error('Payment verification failed. Please contact support.');
-          }
         },
         modal: {
           ondismiss: function() {
             console.log('Payment modal closed by user');
-            toast.info('Payment was cancelled. You can try again later.');
+            setTimeout(() => {
+              toast.info('Payment was cancelled. You can try again later.');
+            }, 0);
           }
         },
         prefill: {
-          name: watch('name'),
-          email: watch('personalEmail'),
-          contact: watch('mobileNumber'),
+          name: user.name ?? (userData?.name as string) ?? '',
+          email: user.email ?? '',
+          contact: (userData?.phone as string) ?? '',
         },
         theme: {
           color: '#3B82F6',
@@ -274,25 +284,76 @@ export default function RecruitPage() {
       // Handle payment failures
       razorpay.on('payment.failed', function (response: { error: { description?: string } }) {
         console.error('Payment failed:', response.error);
-        toast.error(`Payment failed: ${response.error.description ?? 'Unknown error'}. Please try again.`);
+        setTimeout(() => {
+          toast.error(`Payment failed: ${response.error.description ?? 'Unknown error'}. Please try again.`);
+        }, 0);
       });
       
     } catch (error) {
       console.error('Payment initiation error:', error);
-      toast.error('Failed to initiate payment. Please try again.');
+      setTimeout(() => {
+        toast.error('Failed to initiate payment. Please try again.');
+      }, 0);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const onSubmit = async (data: RecruitFormData) => {
-    setIsSubmitting(true);
-    try {
-      await submitRecruitMutation.mutateAsync(data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
+  const handlePlanSelection = (planName: string) => {
+    const plan = membershipPlans.find(p => p.name === planName);
+    if (plan) {
+      setSelectedPlan(plan.name);
+      setSelectedPlanPrice(plan.price);
+      setSelectedYears(plan.years);
     }
   };
+
+  // Check if membership is enabled
+  if (env.NEXT_PUBLIC_MEMBERSHIP_ENABLED !== "true") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="text-6xl mb-4">🚫</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Membership Registration Closed</h1>
+          <p className="text-gray-600 mb-6">
+            Membership registration is currently closed. Please check back later for updates.
+          </p>
+          <Link href="/" className="text-blue-600 hover:text-blue-700">
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user has active membership
+  if (hasActiveMembership) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="text-6xl mb-4">✅</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Active Membership</h1>
+          <p className="text-gray-600 mb-6">
+            You already have an active membership. No renewal is needed at this time.
+          </p>
+          <Link href="/profile" className="text-blue-600 hover:text-blue-700">
+            View Your Profile
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -311,7 +372,7 @@ export default function RecruitPage() {
                 CSI NMAMIT EXECUTIVE MEMBERSHIP
               </h1>
               <p className="mt-4 text-lg text-gray-600">
-                Join the Computer Society of India (CSI) Membership!
+                Join the Computer Society of India (CSI) Executive Membership!
               </p>
             </div>
 
@@ -324,19 +385,19 @@ export default function RecruitPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700">
-                  Welcome to the registration form for becoming an official member of the Computer Society of India (CSI) through our Student Branch at NMAMIT. By filling out this form, you&apos;ll gain access to various benefits and networking opportunities within the tech community.
+                  Welcome to the Computer Society of India (CSI) Executive Membership at NMAMIT. 
+                  Choose your membership duration and get instant access to exclusive benefits, 
+                  networking opportunities, and professional development resources.
                 </p>
                 
                 <div className="rounded-lg bg-blue-50 p-4">
-                  <h3 className="font-semibold text-blue-800 mb-2">Membership Fees:</h3>
+                  <h3 className="font-semibold text-blue-800 mb-2">Membership Plans:</h3>
                   <ul className="space-y-1 text-blue-700">
-                    <li>• 1-Year Membership: ₹350</li>
-                    <li>• 2-Year Membership: ₹650</li>
-                    <li>• 3-Year Membership: ₹900</li>
+                    <li>• 1-Year Executive Membership: ₹350</li>
+                    <li>• 2-Year Executive Membership: ₹650</li>
+                    <li>• 3-Year Executive Membership: ₹900</li>
                   </ul>
                 </div>
-
-
 
                 <div className="rounded-lg bg-green-50 p-4">
                   <h3 className="font-semibold text-green-800 mb-2">For any queries, please contact:</h3>
@@ -353,248 +414,79 @@ export default function RecruitPage() {
               <Card className="border-green-200 bg-green-50">
                 <CardHeader>
                   <CardTitle className="text-xl font-semibold text-green-800">
-                    🎉 Registration Successful!
+                    🎉 Membership Activated Successfully!
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-green-700">
-                    Congratulations! You have successfully joined CSI NMAMIT. 
-                    Please check your email for confirmation and welcome details.
+                    Congratulations! You are now an Executive Member of CSI NMAMIT. 
+                    You will be redirected to your profile page shortly.
                   </p>
-                  <Button 
-                    onClick={() => {
-                      setIsSuccess(false);
-                      window.location.reload();
-                    }}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    Register Another Member
-                  </Button>
                 </CardContent>
               </Card>
             ) : (
               <>
-                {/* Registration Form */}
+                {/* Membership Selection */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-xl font-semibold">
-                      Membership Registration Form
+                      Select Your Membership Duration
                     </CardTitle>
                     <p className="text-sm text-gray-600">
-                      Fill out this form to secure your membership and become part of a vibrant professional network!
+                      Choose how long you want to be an Executive Member of CSI NMAMIT
                     </p>
                   </CardHeader>
-                  <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Name */}
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-medium">
-                      Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="name"
-                      {...register("name")}
-                      placeholder="Enter your full name"
-                      className={errors.name ? "border-red-500" : ""}
-                    />
-                    {errors.name && (
-                      <p className="text-sm text-red-500">{errors.name.message}</p>
-                    )}
-                  </div>
+                  <CardContent className="space-y-6">
+                    {/* Membership Plan Selection */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Choose your membership duration: <span className="text-red-500">*</span>
+                      </label>
+                      <Select onValueChange={handlePlanSelection}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select membership duration" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {membershipPlans.map((plan) => (
+                            <SelectItem key={plan.id} value={plan.name}>
+                              {plan.name} - ₹{plan.price}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  {/* Date of Birth */}
-                  <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth" className="text-sm font-medium">
-                      Date of Birth <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="dateOfBirth"
-                      type="text"
-                      {...register("dateOfBirth")}
-                      placeholder="DD/MM/YYYY"
-                      maxLength={10}
-                      onChange={(e) => {
-                        const formatted = formatDateInput(e.target.value);
-                        e.target.value = formatted;
-                        setValue("dateOfBirth", formatted);
-                      }}
-                      className={errors.dateOfBirth ? "border-red-500" : ""}
-                    />
-                    {errors.dateOfBirth && (
-                      <p className="text-sm text-red-500">{errors.dateOfBirth.message}</p>
+                    {/* Selected Plan Display */}
+                    {selectedPlan && (
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 className="font-semibold text-blue-800 mb-2">Selected Plan:</h3>
+                        <p className="text-blue-700">
+                          {selectedPlan} Executive Membership - ₹{selectedPlanPrice}
+                        </p>
+                        <p className="text-sm text-blue-600 mt-1">
+                          Duration: {selectedYears} year{selectedYears > 1 ? 's' : ''}
+                        </p>
+                      </div>
                     )}
-                  </div>
 
-                  {/* USN */}
-                  <div className="space-y-2">
-                    <Label htmlFor="usn" className="text-sm font-medium">
-                      USN <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="usn"
-                      {...register("usn")}
-                      placeholder="Enter your USN"
-                      className={errors.usn ? "border-red-500" : ""}
-                    />
-                    {errors.usn && (
-                      <p className="text-sm text-red-500">{errors.usn.message}</p>
-                    )}
-                  </div>
+                    {/* Payment Button */}
+                    <div className="pt-4">
+                      <Button
+                        onClick={initiatePayment}
+                        disabled={!selectedPlan || isProcessing}
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+                      >
+                        {isProcessing ? "Processing..." : `Pay ₹${selectedPlanPrice} & Get Executive Membership`}
+                      </Button>
+                    </div>
 
-                  {/* Year of Study */}
-                  <div className="space-y-2">
-                    <Label htmlFor="yearOfStudy" className="text-sm font-medium">
-                      Year of Study <span className="text-red-500">*</span>
-                    </Label>
-                    <Select onValueChange={(value) => setValue("yearOfStudy", value)}>
-                      <SelectTrigger className={errors.yearOfStudy ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select your year of study" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {yearOptions.map((year) => (
-                          <SelectItem key={year} value={year}>
-                            {year}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.yearOfStudy && (
-                      <p className="text-sm text-red-500">{errors.yearOfStudy.message}</p>
-                    )}
-                  </div>
-
-                  {/* Branch */}
-                  <div className="space-y-2">
-                    <Label htmlFor="branch" className="text-sm font-medium">
-                      Branch <span className="text-red-500">*</span>
-                    </Label>
-                    <Select onValueChange={(value) => setValue("branch", value)}>
-                      <SelectTrigger className={errors.branch ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select your branch" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {branchOptions.map((branch) => (
-                          <SelectItem key={branch} value={branch}>
-                            {branch}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.branch && (
-                      <p className="text-sm text-red-500">{errors.branch.message}</p>
-                    )}
-                  </div>
-
-                  {/* Mobile Number */}
-                  <div className="space-y-2">
-                    <Label htmlFor="mobileNumber" className="text-sm font-medium">
-                      Mobile Number <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="mobileNumber"
-                      {...register("mobileNumber")}
-                      placeholder="Enter your mobile number"
-                      className={errors.mobileNumber ? "border-red-500" : ""}
-                    />
-                    {errors.mobileNumber && (
-                      <p className="text-sm text-red-500">{errors.mobileNumber.message}</p>
-                    )}
-                  </div>
-
-                  {/* Personal Email */}
-                  <div className="space-y-2">
-                    <Label htmlFor="personalEmail" className="text-sm font-medium">
-                      Personal Email ID <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="personalEmail"
-                      type="email"
-                      {...register("personalEmail")}
-                      placeholder="Enter your personal email"
-                      className={errors.personalEmail ? "border-red-500" : ""}
-                    />
-                    {errors.personalEmail && (
-                      <p className="text-sm text-red-500">{errors.personalEmail.message}</p>
-                    )}
-                  </div>
-
-                  {/* College Email */}
-                  <div className="space-y-2">
-                    <Label htmlFor="collegeEmail" className="text-sm font-medium">
-                      College Email ID (if available)
-                    </Label>
-                    <Input
-                      id="collegeEmail"
-                      type="email"
-                      {...register("collegeEmail")}
-                      placeholder="Enter your college email (optional)"
-                      className={errors.collegeEmail ? "border-red-500" : ""}
-                    />
-                    {errors.collegeEmail && (
-                      <p className="text-sm text-red-500">{errors.collegeEmail.message}</p>
-                    )}
-                    <p className="text-xs text-gray-500">
-                      Example: yourname@nmamit.in (Personal email providers like Gmail, Outlook are not allowed)
-                    </p>
-                  </div>
-
-                  {/* Membership Plan */}
-                  <div className="space-y-2">
-                    <Label htmlFor="membershipPlan" className="text-sm font-medium">
-                      Choose your preferred CSI membership plan: <span className="text-red-500">*</span>
-                    </Label>
-                                         <Select onValueChange={(value) => {
-                       setValue("membershipPlan", value);
-                       const plan = membershipPlans.find(p => p.name === value);
-                       setSelectedPlan(value);
-                       setSelectedPlanPrice(plan?.price ?? 0);
-                     }}>
-                       <SelectTrigger className={errors.membershipPlan ? "border-red-500" : ""}>
-                         <SelectValue placeholder="Select membership plan" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {membershipPlans.map((plan) => (
-                           <SelectItem key={plan.id} value={plan.name}>
-                             {plan.name}
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                    {errors.membershipPlan && (
-                      <p className="text-sm text-red-500">{errors.membershipPlan.message}</p>
-                    )}
-                  </div>
-
-                  {/* CSI Idea */}
-                  <div className="space-y-2">
-                    <Label htmlFor="csiIdea" className="text-sm font-medium">
-                      What idea do you currently have about CSI? <span className="text-red-500">*</span>
-                    </Label>
-                    <Textarea
-                      id="csiIdea"
-                      {...register("csiIdea")}
-                      placeholder="Share your thoughts about CSI..."
-                      rows={4}
-                      className={errors.csiIdea ? "border-red-500" : ""}
-                    />
-                    {errors.csiIdea && (
-                      <p className="text-sm text-red-500">{errors.csiIdea.message}</p>
-                    )}
-                  </div>
-
-                  {/* Submit Button */}
-                  <div className="pt-4">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-blue-600 hover:bg-blue-700"
-                    >
-                      {isSubmitting ? "Submitting..." : "Submit Registration"}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
+                    {/* Info */}
+                    <div className="text-center text-sm text-gray-500">
+                      <p>You will be redirected to a secure payment gateway</p>
+                      <p>After successful payment, your membership will be activated immediately</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </>
             )}
           </div>
