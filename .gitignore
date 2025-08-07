@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
+/csinmamit
 
 # testing
 /coverage
@@ -40,3 +42,31 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Security files
+*.key
+*.crt
+*.p12
+*.pem
+secrets/
+private/
+config/secret/
+.env.*
+!.env.example
+
+# AI tool directories - Keep these for team collaboration
+# .claudecode/
+# .gemini/
+# .trae/
+# .cursor/
+# .wrap/
+# .kiro/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

@@ -20,7 +20,14 @@ export const ImageSlider = () => {
     <AwesomeSlider className="pb-10">
       {imgList.map((imageUrl, index) => (
         <div key={index} data-src={imageUrl}>
-          <Image src={imageUrl} alt="Image" width={300} height={200} />
+          <Image 
+            src={imageUrl} 
+            alt="Image" 
+            width={300} 
+            height={200} 
+            style={{ width: 'auto', height: 'auto' }}
+            className="object-cover"
+          />
         </div>
       ))}
     </AwesomeSlider>

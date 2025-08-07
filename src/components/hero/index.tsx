@@ -1,4 +1,4 @@
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "~/lib/firebase-auth";
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { type FunctionComponent } from "react";
@@ -7,8 +7,16 @@ import Loader from "../ui/loader";
 import { ArrowRight } from "lucide-react";
 
 const Hero: FunctionComponent = () => {
-  const { data: session, status } = useSession();
-  const user = session?.user;
+  const { user, loading, signInWithGoogle } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
+  };
+
   return (
     <section className="bg-white text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white">
       <div className="mb-12 mt-14 flex flex-col items-center justify-center text-center sm:mt-28">
@@ -35,9 +43,9 @@ const Hero: FunctionComponent = () => {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4 lg:gap-8">
-            {status === "loading" ? (
+            {loading ? (
               <Loader />
-            ) : "authenticated" ? (
+            ) : user ? (
               <>
                 <Link
                   className={buttonVariants({
@@ -57,7 +65,7 @@ const Hero: FunctionComponent = () => {
                   </Link> */}
               </>
             ) : (
-              <Button onClick={() => signIn("google")}>
+              <Button onClick={handleSignIn}>
                 <a>Sign In</a>
               </Button>
             )}

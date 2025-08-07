@@ -22,19 +22,47 @@ const config = {
       "lh3.googleusercontent.com",
       "firebasestorage.googleapis.com",
       "github.com",
+      "res.cloudinary.com",
+    ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.megavault.in',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.csinmamit.in',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
 
 export default config;
-
-// TODO  Change it Later
-// images: {
-//   remotePatterns: [
-//     {
-//       protocol: 'https',
-//       hostname: 'lh3.googleusercontent.com',
-//       port: '',
-//       pathname: '/**',
-//     },
-//   ],

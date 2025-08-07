@@ -1,11 +1,10 @@
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { Poppins } from "next/font/google";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { Navbar } from "~/components/layout/navbar";
 import Footer from "~/components/layout/footer";
+import { Toaster } from "~/components/ui/sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,18 +12,17 @@ const poppins = Poppins({
   weight: "500",
 });
 
-const MyApp: AppType<{ session: Session | null }> = ({
+const MyApp: AppType = ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps,
 }) => {
   return (
-    <SessionProvider session={session}>
-      <main className={`${poppins.className}`}>
-        <Navbar />
-        <Component {...pageProps} />
-        <Footer />
-      </main>
-    </SessionProvider>
+    <main className={`${poppins.className}`}>
+      <Navbar />
+      <Component {...pageProps} />
+      <Footer />
+      <Toaster />
+    </main>
   );
 };
 

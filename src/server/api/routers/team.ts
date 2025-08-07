@@ -1,16 +1,21 @@
 import { z } from "zod";
+import { getFirestore } from "firebase-admin/firestore";
 
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-import { db } from "~/server/db";
 
 // teamRouter is correct as is
 export const teamRouter = createTRPCRouter({
   getTeam: publicProcedure.query(async () => {
-    const dbF = await db.team.findMany();
-    return { dbF };
+    const db = getFirestore();
+    const querySnapshot = await db.collection('teams').get();
+    const teams = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    return { dbF: teams };
   }),
   addTeam: publicProcedure
   .input(z.object({
@@ -25,22 +30,19 @@ export const teamRouter = createTRPCRouter({
     github: z.string().url({
       message: 'Please enter a valid GitHub profile URL.',
     }),
-    imageLink: z.string().url({
-      message: 'Please enter a valid image URL.',
-    }),
+    imageLink: z.string().optional(),
   }))
   .mutation(async ({input})=> {
-      const { userid, email, name, branch, role, linkedin, github, imageLink } = input;
-      const dbUser = await db.team.findFirst({
-        where: {
-          custid: userid,
-        },
-      });
-      
-      if (!dbUser) {
-        // create user in db
-        await db.team.create({
-          data: {
+      try {
+        const { userid, email, name, branch, role, linkedin, github, imageLink } = input;
+        const db = getFirestore();
+        
+        // Check if user already exists in teams collection
+        const userQuery = await db.collection('teams').where('custid', '==', userid).limit(1).get();
+        
+        if (userQuery.empty) {
+          // Create new team member
+          await db.collection('teams').add({
             custid: userid,
             email: email,
             name: name,
@@ -48,9 +50,15 @@ export const teamRouter = createTRPCRouter({
             role: role,
             linkedin: linkedin,
             github: github,
-            imageLink: imageLink,
-          },
-        });
+            imageLink: imageLink ?? "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        }
+        return { success: true };
+      } catch (error) {
+        console.error('Error in addTeam:', error);
+        throw new Error('Failed to add team member');
       }
   })
 });

@@ -1,6 +1,29 @@
-# Create T3 App
+# CSI NMAMIT - Official Website
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is the official website for CSI (Computer Society of India) NMAMIT chapter, built with the [T3 Stack](https://create-t3.gg/).
+
+## ⚠️ Important Configuration Notes
+
+### Razorpay Integration
+The Razorpay payment gateway is integrated for CSI membership payments. **Important**: The Razorpay key ID is currently hardcoded in the frontend for compatibility reasons.
+
+**File to update:** [`src/pages/recruit/index.tsx`](src/pages/recruit/index.tsx)
+**Line ~211:** Update the `key` property in the Razorpay options object
+
+```typescript
+// Current configuration (update this key for production):
+key: 'rzp_test_CfJA68nNVTLQg3', // Replace with your production key
+```
+
+**Environment Variables:**
+- `RAZORPAY_KEY_ID` - Server-side key (in `.env`)
+- `RAZORPAY_KEY_SECRET` - Server-side secret (in `.env`)
+
+**Note:** dont try to replace the hardcoding of Razorpay key ID Because it tends to give error ``invalid configuration``.
+
+---
+
+## What's next? How do I make an app with this?
 
 ## What's next? How do I make an app with this?
 

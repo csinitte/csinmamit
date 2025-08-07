@@ -6,16 +6,17 @@ import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { api } from "~/utils/api";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/lib/firebase-auth";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 import { storage } from '../../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const formSchema = z.object({
-  name: z.string(),
-  branch: z.string(),
-  role: z.string(),
+  name: z.string().min(1, "Name is required"),
+  branch: z.string().min(1, "Branch is required"),
+  role: z.string().min(1, "Role is required"),
   linkedin: z.string().url({
     message: 'Please enter a valid LinkedIn profile URL.',
   }),
@@ -31,20 +32,17 @@ const roleOptions = ["Chairman", "Vice Chairman", "Secretary", "Treasurer", "Joi
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export const AddTeam = () => {
-  const { data: session } = useSession();
-  const user = session?.user.id;
-  const email = session?.user.email ?? ""; // Ensure email is always a string
-
-  const id = user ?? " ";
- 
+  const { user, loading } = useAuth();
   const router = useRouter();
+  const userId = user?.id;
+  const email = user?.email ?? ""; // Ensure email is always a string
 
-  // if (!user) router.push("/");
-
+  // All hooks must be called before any conditional returns
   const userData = api.team.addTeam.useMutation();
 
   const [image, setImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -63,6 +61,24 @@ export const AddTeam = () => {
       imageLink: "",
     },
   });
+
+  // Show loading state while authentication is being checked
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check authentication after loading is complete
+  if (!user) {
+    router.push("/");
+    return null;
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +101,15 @@ export const AddTeam = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      if (!userId) {
+        toast.error("User not authenticated", {
+          style: { backgroundColor: '#ef4444', color: 'white' }
+        });
+        return;
+      }
+
+      setIsSubmitting(true);
+
       let imageUrl = getValues('imageLink') ?? ""; // Ensure imageLink is a string
       if (image) {
         setUploading(true);
@@ -94,7 +119,7 @@ export const AddTeam = () => {
       }
 
       await userData.mutateAsync({
-        userid: id, // Corrected from 'custid'
+        userid: userId, // Corrected from 'custid'
         email: email,
         name: data.name,
         role: data.role,
@@ -104,13 +129,19 @@ export const AddTeam = () => {
         imageLink: imageUrl,
       });
 
-      toast("User has been created", {
-        description: `${data.name} entry created in the database.`,
+      toast.success("Team member added successfully!", {
+        description: `${data.name} has been added to the team.`,
+        style: { backgroundColor: '#10b981', color: 'white' }
       });
 
       router.push('/profile');
     } catch (error) {
       console.error('Error creating team:', error);
+      toast.error("Failed to add team member. Please try again.", {
+        style: { backgroundColor: '#ef4444', color: 'white' }
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -225,18 +256,32 @@ export const AddTeam = () => {
           {errors.linkedin && <p className="text-red-500">{errors.linkedin.message}</p>}
 
           {/* Image Upload */}
-          <label htmlFor="imageLink" className="mb-1 mt-3 block text-sm font-medium">
+          <label htmlFor="imageUpload" className="mb-1 mt-3 block text-sm font-medium">
             Upload Image:
           </label>
-          <input type="file" onChange={handleImageChange} className="rounded-lg" />
+          <input 
+            id="imageUpload"
+            type="file" 
+            onChange={handleImageChange} 
+            className="rounded-lg"
+            accept="image/*"
+            aria-label="Upload profile image"
+          />
           {errors.imageLink && <p className="text-red-500">{errors.imageLink.message}</p>}
 
           <Button
             onClick={handleSubmit(onSubmit)}
             className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg"
-            disabled={uploading}
+            disabled={uploading || isSubmitting}
           >
-            {uploading ? "Uploading..." : "Submit"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </CardContent>
       </Card>

@@ -1,0 +1,131 @@
+# ai.config.yaml - Enhanced Security Configuration
+
+# === Cursor ===
+cursor:
+  ignore:
+    - node_modules/
+    - .env
+    - coverage/
+    - build/
+    - dist/
+    - *.log
+    - *.pem
+    - *.key
+    - *.crt
+    - secrets/
+    - private/
+  rules:
+    - pattern: "**/.env"
+      policy: readonly
+    - pattern: "**/secrets/**"
+      policy: readonly
+    - pattern: "**/private/**"
+      policy: readonly
+    - pattern: "**/config/secret/**"
+      policy: readonly
+    - pattern: "**/*.js"
+      requireDocstring: true
+      forbid: ["eval", "child_process", "exec", "spawn", "require('child_process')", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+    - pattern: "**/*.ts"
+      requireDocstring: true
+      forbid: ["eval", "child_process", "exec", "spawn", "require('child_process')", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+
+# === Gemini CLI ===
+gemini:
+  rules:
+    - match: "**/.env"
+      mode: readonly
+    - match: "**/secrets/**"
+      mode: readonly
+    - match: "**/private/**"
+      mode: readonly
+    - match: "**/*.js"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY", "document.write", "innerHTML"]
+    - match: "**/*.ts"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+    - match: "src/**/*.js"
+      maxLines: 300
+      requireDoc: true
+
+# === Claude Code ===
+claude:
+  policy:
+    - path: "**/.env"
+      action: readonly
+    - path: "**/secrets/**"
+      action: readonly
+    - path: "**/private/**"
+      action: readonly
+    - path: "**/config/secret/**"
+      action: readonly
+    - path: "**/*.js"
+      forbid: ["eval(", "new Function", "child_process", "exec(", "spawn(", "require('child_process')", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+    - path: "**/*.ts"
+      forbid: ["eval(", "new Function", "child_process", "exec(", "spawn(", "require('child_process')", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+    - path: "src/**/*.js"
+      enforce:
+        minCommentsPercent: 5
+    - path: "src/**/*.ts"
+      enforce:
+        minCommentsPercent: 5
+
+# === Trae AI ===
+trae:
+  rules:
+    - match: "**/*.js"
+      forbid: ["eval", "document.write", "innerHTML", "child_process", "exec", "spawn", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+      requireDoc: true
+    - match: "**/*.ts"
+      forbid: ["eval", "child_process", "exec", "spawn", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+      requireDoc: true
+    - match: "**/.env"
+      mode: readonly
+    - match: "**/secrets/**"
+      mode: readonly
+    - match: "**/private/**"
+      mode: readonly
+    - match: "routes/**"
+      enforceNaming: camelCase
+
+# === Wrap AI ===
+wrap:
+  rules:
+    - match: "**/*.js"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY", "document.write", "innerHTML"]
+      requireDoc: true
+      maxFunctionsPerFile: 15
+    - match: "**/*.ts"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+      requireDoc: true
+      maxFunctionsPerFile: 15
+    - match: "**/.env"
+      mode: readonly
+    - match: "**/secrets/**"
+      mode: readonly
+    - match: "**/private/**"
+      mode: readonly
+    - match: "src/**/*"
+      enforceNaming: camelCase
+      maxLines: 400
+
+# === Kiro AI ===
+kiro:
+  rules:
+    - match: "**/*.js"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY", "document.write", "innerHTML"]
+      requireDoc: true
+      maxFunctionsPerFile: 12
+    - match: "**/*.ts"
+      forbid: ["eval", "exec", "spawn", "child_process", "process.env.SECRET", "process.env.PASSWORD", "process.env.API_KEY"]
+      requireDoc: true
+      maxFunctionsPerFile: 12
+    - match: "**/.env"
+      mode: readonly
+    - match: "**/secrets/**"
+      mode: readonly
+    - match: "**/private/**"
+      mode: readonly
+    - match: "**/routes/**"
+      enforceNaming: camelCase
+    - match: "src/**/*"
+      maxLines: 350

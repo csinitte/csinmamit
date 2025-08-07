@@ -1,0 +1,60 @@
+# .claudecode/policy.yml - Enhanced Security Policy
+
+policies:
+  # Protect production environment file only
+  - path: "**/.env"
+    action: readonly
+
+  # Protect secret directories
+  - path: "**/secrets/**"
+    action: readonly
+  - path: "**/private/**"
+    action: readonly
+  - path: "config/secret/**"
+    action: readonly
+
+  # Forbid unsafe JS patterns
+  - path: "**/*.js"
+    forbid:
+      - "eval("
+      - "new Function"
+      - "child_process"
+      - "exec("
+      - "spawn("
+      - "require('child_process')"
+      - "process.env.SECRET"
+      - "process.env.PASSWORD"
+      - "process.env.API_KEY"
+      - "document.write"
+      - "innerHTML"
+
+  # Forbid unsafe TS patterns
+  - path: "**/*.ts"
+    forbid:
+      - "eval("
+      - "new Function"
+      - "child_process"
+      - "exec("
+      - "spawn("
+      - "require('child_process')"
+      - "process.env.SECRET"
+      - "process.env.PASSWORD"
+      - "process.env.API_KEY"
+
+  # Require comments for JS
+  - path: "src/**/*.js"
+    enforce:
+      minCommentsPercent: 5
+
+  # Require comments for TS
+  - path: "src/**/*.ts"
+    enforce:
+      minCommentsPercent: 5
+
+  # Naming conventions
+  - path: "routes/**/*.js"
+    enforce:
+      functionNames: camelCase
+  - path: "routes/**/*.ts"
+    enforce:
+      functionNames: camelCase

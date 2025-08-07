@@ -12,8 +12,8 @@ interface TeamMemberProps {
   linkedin: string | null;
   github: string | null;
   imageSrc: string;
-  year: number;
-  order: number;
+  _year: number;
+  _order: number;
 }
 
 export const TeamMember: React.FC<TeamMemberProps> = ({
@@ -22,8 +22,8 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
   linkedin,
   github,
   imageSrc,
-  year,
-  order
+  _year,
+  _order
 }) => {
   return (
     <div className="-m-2 rounded-xl bg-gray-900/5 p-4 ring-1 ring-inset ring-gray-900/10 transition-all hover:ring-blue-500 lg:-m-4 lg:rounded-2xl lg:p-6">
@@ -33,9 +33,14 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
             src={imageSrc}
             width={250}
             height={250}
-            alt="main-image"
+            alt={`${name} - ${position}`}
             quality={100}
             className="h-full w-full rounded-md object-cover"
+            onError={(e) => {
+              // Fallback to placeholder image if URL fails
+              const target = e.target as HTMLImageElement;
+              target.src = "https://via.placeholder.com/250x250/cccccc/666666?text=No+Image";
+            }}
           />
         </div>
       </div>
@@ -49,7 +54,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "rounded-full transition-colors hover:text-blue-500",
             })}
-            href={linkedin || "#"}
+            href={linkedin ?? "#"}
             target="_blank"
           >
             <LinkedinIcon size={24} />
@@ -60,7 +65,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "rounded-full  transition-colors hover:text-gray-600",
             })}
-            href={github || "#"}
+            href={github ?? "#"}
             target="_blank"
           >
             <GithubIcon />
