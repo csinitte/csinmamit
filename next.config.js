@@ -18,6 +18,12 @@ const config = {
     defaultLocale: "en",
   },
   images: {
+    domains: [
+      "lh3.googleusercontent.com",
+      "firebasestorage.googleapis.com",
+      "github.com",
+      "res.cloudinary.com",
+    ],
     remotePatterns: [
       {
         protocol: 'https',

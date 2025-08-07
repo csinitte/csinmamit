@@ -2,6 +2,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -12,13 +13,17 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase only if it hasn't been initialized already
 const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// Get a reference to the storage service, which is used to create references in your storage bucket
+// Initialize Firebase services
 export const storage = getStorage(firebaseApp);
-
-// Get a reference to the Firestore database
 export const db = getFirestore(firebaseApp);
+
+// Initialize Analytics (only in browser environment)
+export const analytics = typeof window !== 'undefined' ? getAnalytics(firebaseApp) : null;
+
+export default firebaseApp;
