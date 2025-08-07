@@ -14,8 +14,6 @@ import {
   startAfter,
   serverTimestamp,
   type Timestamp,
-  type DocumentData,
-  type QueryDocumentSnapshot,
   type CollectionReference,
   type DocumentSnapshot
 } from 'firebase/firestore';
@@ -90,11 +88,11 @@ export interface Event {
   maxTeams?: number;
   guests: string[];
   organizers?: string;
-  contactPersons?: any[];
+  contactPersons?: Record<string, unknown>[];
   year?: number;
   published: boolean;
   registrationsAvailable: boolean;
-  participants?: any[];
+  participants?: Record<string, unknown>[];
   participantCount?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -125,7 +123,6 @@ export interface Team {
   name: string;
   custid: string;
   email: string;
-  name?: string;
   leaderId?: string;
   transactionId?: string;
   eventId?: string;
@@ -169,11 +166,11 @@ export class FirestoreService<T> {
 
   async getAll(): Promise<T[]> {
     try {
-    const querySnapshot = await getDocs(this.collectionRef);
+      const querySnapshot = await getDocs(this.collectionRef);
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-    })) as T[];
+      })) as T[];
     } catch (error) {
       console.error(`Error getting all documents from ${this.collectionRef.path}:`, error);
       throw error;
@@ -182,16 +179,16 @@ export class FirestoreService<T> {
 
   async getById(id: string): Promise<T | null> {
     try {
-    const docRef = doc(this.collectionRef, id);
-    const docSnap = await getDoc(docRef);
-    
-    if (docSnap.exists()) {
-      return {
-        id: docSnap.id,
-        ...docSnap.data()
-      } as T;
-    }
-    return null;
+      const docRef = doc(this.collectionRef, id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return {
+          id: docSnap.id,
+          ...docSnap.data()
+        } as T;
+      }
+      return null;
     } catch (error) {
       console.error(`Error getting document ${id} from ${this.collectionRef.path}:`, error);
       throw error;
@@ -200,16 +197,16 @@ export class FirestoreService<T> {
 
   async create(data: Omit<T, 'id'>): Promise<T> {
     try {
-    const docRef = await addDoc(this.collectionRef, {
-      ...data,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-    
-    return {
-      id: docRef.id,
-      ...data
-    } as T;
+      const docRef = await addDoc(this.collectionRef, {
+        ...data,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      
+      return {
+        id: docRef.id,
+        ...data
+      } as T;
     } catch (error) {
       console.error(`Error creating document in ${this.collectionRef.path}:`, error);
       throw error;
@@ -250,8 +247,8 @@ export class FirestoreService<T> {
 
   async delete(id: string): Promise<void> {
     try {
-    const docRef = doc(this.collectionRef, id);
-    await deleteDoc(docRef);
+      const docRef = doc(this.collectionRef, id);
+      await deleteDoc(docRef);
     } catch (error) {
       console.error(`Error deleting document ${id} from ${this.collectionRef.path}:`, error);
       throw error;
@@ -261,16 +258,18 @@ export class FirestoreService<T> {
   async findOne(field: string, value: unknown): Promise<T | null> {
     try {
       const q = query(this.collectionRef, where(field, '==', value), limit(1));
-    const querySnapshot = await getDocs(q);
-    
+      const querySnapshot = await getDocs(q);
+      
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
-      return {
-          id: doc.id,
-          ...doc.data()
-      } as T;
-    }
-    return null;
+        if (doc) {
+          return {
+            id: doc.id,
+            ...doc.data()
+          } as T;
+        }
+      }
+      return null;
     } catch (error) {
       console.error(`Error finding document with ${field}=${value} in ${this.collectionRef.path}:`, error);
       throw error;
@@ -280,12 +279,12 @@ export class FirestoreService<T> {
   async findMany(field: string, value: unknown): Promise<T[]> {
     try {
       const q = query(this.collectionRef, where(field, '==', value));
-    const querySnapshot = await getDocs(q);
-    
+      const querySnapshot = await getDocs(q);
+      
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-    })) as T[];
+      })) as T[];
     } catch (error) {
       console.error(`Error finding documents with ${field}=${value} in ${this.collectionRef.path}:`, error);
       throw error;
@@ -294,13 +293,13 @@ export class FirestoreService<T> {
 
   async findManyOrdered(orderByField: string, direction: 'asc' | 'desc' = 'desc'): Promise<T[]> {
     try {
-    const q = query(this.collectionRef, orderBy(orderByField, direction));
-    const querySnapshot = await getDocs(q);
-    
+      const q = query(this.collectionRef, orderBy(orderByField, direction));
+      const querySnapshot = await getDocs(q);
+      
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-    })) as T[];
+      })) as T[];
     } catch (error) {
       console.error(`Error getting ordered documents from ${this.collectionRef.path}:`, error);
       throw error;
@@ -759,4 +758,11 @@ export class RecruitService {
 }
 
 // Export service instances
-export const recruitService = new RecruitService(); 
+export const recruitService = new RecruitService();
+
+// Export service instances for other collections
+export const userService = new FirestoreService<User>('users');
+export const coreService = new FirestoreService<Core>('core');
+export const teamMemberService = new FirestoreService<TeamMember>('team-members');
+export const eventService = new FirestoreService<Event>('events');
+export const teamService = new FirestoreService<Team>('teams'); 

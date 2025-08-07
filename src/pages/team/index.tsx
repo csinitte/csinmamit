@@ -68,7 +68,13 @@ export default function Team() {
               <TabsContent value="team">
                 <div className="mt-6 sm:mt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-10 xl:gap-20 pb-6 sm:pb-10">
                   {CoreMembers.sort((a, b) => a.order - b.order).map((member, index) => (
-                    <TeamMember key={index} {...member} _year={member.year} _order={member.order} />
+                    <TeamMember 
+                      key={index} 
+                      {...member} 
+                      email={null}
+                      _year={member.year} 
+                      _order={member.order} 
+                    />
                   ))}
                 </div>
               </TabsContent>
