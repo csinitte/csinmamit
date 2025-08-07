@@ -89,7 +89,7 @@ const HomePage: FunctionComponent = () => {
                 you, regardless of your experience or department.
               </p>
               <div className="mt-10 flex gap-6">
-                {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && (
+                {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && user && (
                   <Link href={"/recruit"}>
                     <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
                       Get Executive Membership <ArrowRight className="ml-2 h-5 w-5" />
@@ -170,7 +170,7 @@ const HomePage: FunctionComponent = () => {
             </div>
           </div>
           <div className="text-center pb-12">
-            {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading ? (
+            {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && user ? (
               <Link href="/recruit">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-8 py-3">
                   Get Executive Membership Now

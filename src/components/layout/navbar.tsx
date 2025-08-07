@@ -98,7 +98,7 @@ export function Navbar() {
               >
                 Team
               </Link>
-              {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && (
+              {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && user && (
                 <Link
                   href="/recruit"
                   className={buttonVariants({
@@ -115,7 +115,7 @@ export function Navbar() {
             
             {/* Mobile menu */}
             <div className="flex items-center space-x-2 sm:hidden">
-              {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && (
+              {env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && !hasActiveMembership && !isLoading && user && (
                 <Link
                   href="/recruit"
                   className={buttonVariants({
