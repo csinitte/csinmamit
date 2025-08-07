@@ -48,7 +48,8 @@ export const getAdminStorage = () => {
   return getStorage();
 };
 
-export default {
+// Export as named export instead of default export
+export const firebaseAdmin = {
   adminDb,
   adminAuth,
   adminStorage,

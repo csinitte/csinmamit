@@ -19,6 +19,24 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 
+// Helper function to safely convert Firestore timestamps to dates
+function safeTimestampToDate(timestamp: unknown): Date | undefined {
+  if (!timestamp) return undefined;
+  
+  // Check if it's a Firestore Timestamp with toDate method
+  if (typeof timestamp === 'object' && timestamp !== null && 'toDate' in timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate() as Date;
+  }
+  
+  // If it's already a Date object
+  if (timestamp instanceof Date) {
+    return timestamp;
+  }
+  
+  // Otherwise return as is
+  return timestamp as Date | undefined;
+}
+
 // Types for our data models
 export interface User {
   id?: string;
@@ -271,7 +289,7 @@ export class FirestoreService<T> {
       }
       return null;
     } catch (error) {
-      console.error(`Error finding document with ${field}=${value} in ${this.collectionRef.path}:`, error);
+      console.error(`Error finding document with ${field}=${String(value)} in ${this.collectionRef.path}:`, error);
       throw error;
     }
   }
@@ -286,7 +304,7 @@ export class FirestoreService<T> {
         ...doc.data()
       })) as T[];
     } catch (error) {
-      console.error(`Error finding documents with ${field}=${value} in ${this.collectionRef.path}:`, error);
+      console.error(`Error finding documents with ${field}=${String(value)} in ${this.collectionRef.path}:`, error);
       throw error;
     }
   }
@@ -417,7 +435,7 @@ export async function searchEvents(searchTerm: string): Promise<Event[]> {
   }
 }
 
-export async function getFeaturedEvents(limitCount: number = 6): Promise<Event[]> {
+export async function getFeaturedEvents(limitCount = 6): Promise<Event[]> {
   try {
     const eventsCollection = collection(db, 'events');
     const eventsQuery = query(
@@ -441,7 +459,7 @@ export async function getFeaturedEvents(limitCount: number = 6): Promise<Event[]
   }
 }
 
-export async function getRecentEvents(limitCount: number = 10): Promise<Event[]> {
+export async function getRecentEvents(limitCount = 10): Promise<Event[]> {
   try {
     const eventsCollection = collection(db, 'events');
     const eventsQuery = query(
@@ -465,7 +483,7 @@ export async function getRecentEvents(limitCount: number = 10): Promise<Event[]>
 }
 
 export async function getEventsPaginated(
-  pageSize: number = 10, 
+  pageSize = 10, 
   lastDoc?: DocumentSnapshot
 ): Promise<{ events: Event[], lastDoc: DocumentSnapshot | null }> {
   try {
@@ -492,7 +510,7 @@ export async function getEventsPaginated(
       events.push({ id: doc.id, ...doc.data() } as Event);
     });
     
-    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1] ?? null;
     
     return {
       events,
@@ -526,13 +544,13 @@ export async function getEventsStatistics() {
     
     const totalEvents = events.length;
     const eventsByYear = events.reduce((acc, event) => {
-      const year = event.year || new Date(event.date).getFullYear();
-      acc[year] = (acc[year] || 0) + 1;
+      const year = event.year ?? new Date(event.date).getFullYear();
+      acc[year] = (acc[year] ?? 0) + 1;
       return acc;
     }, {} as Record<number, number>);
     
     const eventsByCategory = events.reduce((acc, event) => {
-      acc[event.category] = (acc[event.category] || 0) + 1;
+      acc[event.category] = (acc[event.category] ?? 0) + 1;
       return acc;
     }, {} as Record<string, number>);
     
@@ -586,9 +604,9 @@ export class RecruitService {
         return {
           id: recruitSnapshot.id,
           ...data,
-          dateOfBirth: data.dateOfBirth?.toDate?.() || data.dateOfBirth,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt,
-          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+          dateOfBirth: safeTimestampToDate(data.dateOfBirth),
+          createdAt: safeTimestampToDate(data.createdAt),
+          updatedAt: safeTimestampToDate(data.updatedAt)
         } as Recruit;
       }
       
@@ -614,15 +632,15 @@ export class RecruitService {
         recruits.push({
           id: doc.id,
           ...data,
-          dateOfBirth: data.dateOfBirth?.toDate?.() || data.dateOfBirth,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt,
-          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+          dateOfBirth: safeTimestampToDate(data.dateOfBirth),
+          createdAt: safeTimestampToDate(data.createdAt),
+          updatedAt: safeTimestampToDate(data.updatedAt)
         } as Recruit);
       });
       
       return recruits;
     } catch (error) {
-      console.error(`Error getting ordered recruits by ${orderField}:`, error);
+      console.error(`Error getting ordered recruits by ${String(orderField)}:`, error);
       throw error;
     }
   }
@@ -680,9 +698,9 @@ export class RecruitService {
         recruits.push({
           id: doc.id,
           ...data,
-          dateOfBirth: data.dateOfBirth?.toDate?.() || data.dateOfBirth,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt,
-          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+          dateOfBirth: safeTimestampToDate(data.dateOfBirth),
+          createdAt: safeTimestampToDate(data.createdAt),
+          updatedAt: safeTimestampToDate(data.updatedAt)
         } as Recruit);
       });
       
@@ -710,9 +728,9 @@ export class RecruitService {
         recruits.push({
           id: doc.id,
           ...data,
-          dateOfBirth: data.dateOfBirth?.toDate?.() || data.dateOfBirth,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt,
-          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+          dateOfBirth: safeTimestampToDate(data.dateOfBirth),
+          createdAt: safeTimestampToDate(data.createdAt),
+          updatedAt: safeTimestampToDate(data.updatedAt)
         } as Recruit);
       });
       
@@ -733,12 +751,12 @@ export class RecruitService {
       const failedPayments = allRecruits.filter(r => r.paymentStatus === 'failed').length;
       
       const recruitsByBranch = allRecruits.reduce((acc, recruit) => {
-        acc[recruit.branch] = (acc[recruit.branch] || 0) + 1;
+        acc[recruit.branch] = (acc[recruit.branch] ?? 0) + 1;
         return acc;
       }, {} as Record<string, number>);
       
       const recruitsByYear = allRecruits.reduce((acc, recruit) => {
-        acc[recruit.yearOfStudy] = (acc[recruit.yearOfStudy] || 0) + 1;
+        acc[recruit.yearOfStudy] = (acc[recruit.yearOfStudy] ?? 0) + 1;
         return acc;
       }, {} as Record<string, number>);
       
