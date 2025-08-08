@@ -11,126 +11,160 @@ import { useState, useEffect } from "react";
 export default function Profile() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
-
+  
+  // Load user data from Firestore
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user?.id) return;
+    const loadUserData = async () => {
+      if (!user?.id) {
+        return;
+      }
+
       try {
-        const userDoc = await getDoc(doc(db, "users", user.id));
+        const userDoc = await getDoc(doc(db, 'users', user.id));
+        
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          const data = userDoc.data();
+          setUserData(data);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error loading user data:', error);
       }
     };
-    void fetchUserData();
+
+    void loadUserData();
   }, [user?.id]);
 
-  if (!user) {
-    return (
-      <main className="flex items-center justify-center min-h-screen text-xl">
-        <p>Please sign in to view your profile</p>
-      </main>
-    );
-  }
-
-  const displayName = (userData?.name as string) ?? user?.name ?? "Anonymous";
-  const bio = (userData?.bio as string) ?? "No bio available";
-  const branch = (userData?.branch as string) ?? "Not specified";
-  const role = (userData?.role as string) ?? "User";
-  const linkedin = (userData?.linkedin as string) ?? "/";
-  const github = (userData?.github as string) ?? "";
-  const githubUrl = github ? `https://github.com/${github}` : "/";
-
   return (
-    <main className="relative min-h-screen dark:from-gray-900 dark:via-gray-800 dark:to-black text-black dark:text-white">
+    <>
+      <main>
+        <section className="bg-white text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white">
+          <div className="flex flex-col items-center justify-center text-center">
+            <Fade triggerOnce cascade>
+              {user ? (
+                <div>
+                  <div className="relative isolate">
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+                    >
+                      <div
+                        style={{
+                          clipPath:
+                            "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+                        }}
+                        className="relative-left-[calc(50%-13rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
+                      ></div>
+                    </div>
 
-      {/* Shared Container */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 flex flex-col items-center justify-center">
+                    <div>
+                      <div className="mx-auto max-w-6xl lg:px-8">
+                        <div className="mb-24 flow-root sm:mt-24">
+                          <div className="-m-2   w-[45rem] overflow-hidden rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+                            <h1 className="mb-5 text-2xl font-bold">
+                              Your Profile
+                            </h1>
 
-        <Fade triggerOnce>
-          {/* Desktop */}
-          <div className="hidden md:flex w-full bg-white/20 dark:bg-white/5 backdrop-blur-lg shadow-2xl rounded-3xl overflow-hidden border border-white/30 dark:border-white/10 transition-all duration-500">
-            
-            {/* Image Section */}
-            <div className="w-1/2 relative bg-gradient-to-br from-blue-100/50 to-violet-100/30 dark:from-blue-900/20 dark:to-violet-900/20 flex items-center justify-center p-10">
-              <div className="relative h-64 w-64 rounded-full overflow-hidden ring-[10px] ring-blue-500/20 shadow-xl">
-                <Image
-                  src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
-                  alt={displayName}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
+                            <div className="rounded-mx relative mx-auto h-80 w-80 overflow-hidden pt-2 ">
+                              <Image
+                                src={
+                                  user?.image?.replace("=s96-c", "") ??
+                                  "/favicon.ico"
+                                }
+                                alt={user?.name ?? "img-av"}
+                                height={200}
+                                width={200}
+                                className="h-full w-full rounded-md object-cover hover:border-cyan-300"
+                              />
+                            </div>
 
-            {/* Info Section */}
-            <div className="w-1/2 p-10 flex flex-col justify-center space-y-4">
-              <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {displayName}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">@{displayName}</p>
-              <span className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-4 py-1 rounded-full text-sm font-semibold shadow">
-                {role}
-              </span>
-              <p className="text-base text-gray-800 dark:text-gray-200"><strong>Bio:</strong> {bio}</p>
-              <p className="text-base text-gray-800 dark:text-gray-200"><strong>Branch:</strong> {branch}</p>
+                            <div className="pt-3">
+                              <h1
+                                className={`bg-gradient-to-b from-blue-600 to-violet-400 bg-clip-text pb-4 text-center text-4xl font-black text-transparent`}
+                              >
+                                {(userData?.name as string) ?? user?.name}
+                              </h1>
+                            </div>
+                            <div>
+                              <h1>@{(userData?.name as string) ?? user?.name}</h1>
+                            </div>
 
-              <div className="mt-4 flex gap-6">
-                <Link
-                  href={linkedin}
-                  target="_blank"
-                  className="transition transform hover:scale-110 hover:text-blue-600"
-                >
-                  <LinkedinIcon size={28} />
-                </Link>
-                <Link
-                  href={githubUrl}
-                  target="_blank"
-                  className="transition transform hover:scale-110 hover:text-gray-700 dark:hover:text-gray-100"
-                >
-                  <Github size={28} />
-                </Link>
-              </div>
-            </div>
+                            <h4>
+                              <span className="font-bold text-slate-400">
+                                Bio :{" "}
+                              </span>
+                              {(userData?.bio as string) ?? "No bio available"}
+                            </h4>
+                            <h4>
+                              <span className="font-bold text-slate-400">
+                                Branch :{" "}
+                              </span>
+                              {(userData?.branch as string) ?? "Not specified"}
+                            </h4>
+                            <h4>
+                              <span className="font-bold text-slate-400">
+                                Role:{" "}
+                              </span>
+                              {(userData?.role as string) ?? "User"}
+                            </h4>
+                            <div className="mt-4 flex justify-center gap-4">
+                              <Link
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  size: "icon",
+                                  className:
+                                    "rounded-full transition-colors hover:text-blue-500",
+                                })}
+                                href={(userData?.linkedin as string) ?? "/"}
+                                target="_blank"
+                              >
+                                <LinkedinIcon size={24} />
+                              </Link>
+                              {(() => {
+                                const githubUrl = (userData?.github as string) ?? "";
+                                return (
+                              <Link
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  size: "icon",
+                                  className:
+                                    "rounded-full  transition-colors hover:text-gray-600",
+                                })}
+                                    href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
+                                target="_blank"
+                              >
+                                <Github size={24} />
+                              </Link>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+                    >
+                      <div
+                        style={{
+                          clipPath:
+                            "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+                        }}
+                        className="relative-left-[calc(50%-13rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h1>Please sign in to view your profile</h1>
+                </>
+              )}
+            </Fade>
           </div>
-
-          {/* Mobile */}
-          <div className="md:hidden w-full bg-white/30 dark:bg-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-xl text-center space-y-4">
-            <div className="relative h-32 w-32 mx-auto rounded-full overflow-hidden ring-[6px] ring-blue-400/40 shadow-lg">
-              <Image
-                src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
-                alt={displayName}
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-violet-600 bg-clip-text text-transparent">
-              {displayName}
-            </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400">@{displayName}</p>
-            <span className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-4 py-1 rounded-full text-sm font-semibold">
-              {role}
-            </span>
-
-            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-              <p><strong>Bio:</strong> {bio}</p>
-              <p><strong>Branch:</strong> {branch}</p>
-            </div>
-
-            <div className="mt-3 flex justify-center gap-5">
-              <Link href={linkedin} target="_blank" className="hover:text-blue-600">
-                <LinkedinIcon size={24} />
-              </Link>
-              <Link href={githubUrl} target="_blank" className="hover:text-gray-700 dark:hover:text-white">
-                <Github size={24} />
-              </Link>
-            </div>
-          </div>
-        </Fade>
-      </div>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
