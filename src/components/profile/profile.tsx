@@ -9,7 +9,6 @@ import { db } from "../../../firebase";
 import { useState, useEffect } from "react";
 import { env } from "~/env";
 
-
 interface MembershipData {
   membershipType: string;
   membershipStartDate: Date;
@@ -32,16 +31,18 @@ export default function Profile() {
   const [membershipData, setMembershipData] = useState<MembershipData | null>(null);
 
   useEffect(() => {
-    const loadUserData = async () => {
+    const fetchUserData = async () => {
       if (!user?.id) {
         setIsLoading(false);
         return;
       }
       try {
-        const userDoc = await getDoc(doc(db, "users", user.id));
+        const userDoc = await getDoc(doc(db, 'users', user.id));
+        
         if (userDoc.exists()) {
           const data = userDoc.data() as Record<string, unknown>;
           setUserData(data);
+          
           if (data.membershipType) {
             const membershipEndDateRaw = data.membershipEndDate as { toDate?: () => Date } | Date;
             const membershipEndDate =
@@ -53,9 +54,6 @@ export default function Profile() {
                 : new Date(membershipEndDateRaw as Date);
 
             const isActive = (endDate: Date) => new Date() < endDate;
-
-            // Client must not mutate membership/role; server API handles this per security rules
-            // We only compute and display state; updates occur via /api/membership/check-expired
 
             const membershipStartDateRaw = data.membershipStartDate as { toDate?: () => Date } | Date;
             const membershipStartDate =
@@ -93,13 +91,13 @@ export default function Profile() {
           }
         }
       } catch (error) {
-        console.error("Error loading user data:", error);
+        console.error("Error fetching user data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    void loadUserData();
+    void fetchUserData();
 
     if (user?.id) {
       // Call server API which uses Admin SDK to perform privileged updates
@@ -111,7 +109,7 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center min-h-screen p-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
           <p className="mt-2 text-sm text-gray-600">Loading profile data...</p>
@@ -122,7 +120,7 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <main className="flex items-center justify-center min-h-screen text-xl">
+      <main className="flex items-center justify-center min-h-screen text-xl p-4">
         <p>Please sign in to view your profile</p>
       </main>
     );
@@ -132,9 +130,6 @@ export default function Profile() {
   const bio = (userData?.bio as string) ?? "No bio available";
   const branch = (userData?.branch as string) ?? "Not specified";
   const role = (userData?.role as string) ?? "User";
-  const linkedin = (userData?.linkedin as string) ?? "/";
-  const github = (userData?.github as string) ?? "";
-  const githubUrl = github ? `https://github.com/${github}` : "/";
 
   const isActive = membershipData ? new Date() < membershipData.membershipEndDate : false;
   const statusMessage = membershipData
@@ -144,112 +139,198 @@ export default function Profile() {
     : "No membership found. Join CSI to become a member!";
 
   return (
-    <main className="relative min-h-screen dark:from-gray-900 dark:via-gray-800 dark:to-black text-black dark:text-white">
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-300/30 via-transparent to-transparent dark:from-indigo-900/20"></div>
+    <>
+      <main className="min-h-screen">
+        <section className="bg-white text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white py-8 sm:py-12 lg:py-16">
+          <div className="flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8">
+            <Fade triggerOnce cascade>
+              <div className="w-full max-w-4xl mx-auto">
+                <div className="relative isolate">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+                  >
+                    <div
+                      style={{
+                        clipPath:
+                          "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+                      }}
+                      className="relative-left-[calc(50%-13rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
+                    ></div>
+                  </div>
 
-      <div className="relative z-10 mx-auto max-w-3xl px-6 py-28">
-        <Fade triggerOnce>
-          <div className="rounded-[2rem] bg-white/40 dark:bg-white/5 backdrop-blur-xl p-12 shadow-2xl ring-1 ring-gray-300/30 dark:ring-white/10 transition-all duration-300">
-            <div className="flex flex-col items-center text-center">
-              <div className="relative h-52 w-52 overflow-hidden rounded-full ring-8 ring-blue-500/30 shadow-2xl mb-6">
-                <Image
-                  src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
-                  alt={displayName}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+                  <div className="mx-auto max-w-4xl lg:px-8">
+                    <div className="mb-12 sm:mb-16 lg:mb-24 flow-root sm:mt-12 lg:mt-24">
+                      <div className="w-full max-w-2xl mx-auto overflow-hidden rounded-xl bg-gray-900/5 p-4 sm:p-6 lg:p-8 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl">
+                        <h1 className="mb-6 sm:mb-8 text-xl sm:text-2xl lg:text-3xl font-bold">
+                          Your Profile
+                        </h1>
 
-              <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">
-                {displayName}
-              </h1>
+                        <div className="relative mx-auto h-48 w-48 sm:h-64 sm:w-64 lg:h-80 lg:w-80 overflow-hidden rounded-full ring-4 ring-blue-500/30 shadow-2xl mb-6 sm:mb-8">
+                          <Image
+                            src={
+                              user?.image?.replace("=s96-c", "") ??
+                              "/favicon.ico"
+                            }
+                            alt={user?.name ?? "img-av"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">
-                @{displayName}
-              </p>
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent mb-2 sm:mb-3">
+                          {displayName}
+                        </h1>
 
-              <span className="inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-200 mb-6">
-                {role}
-              </span>
+                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-4 sm:mb-6">
+                          @{displayName}
+                        </p>
 
-              {(env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" || membershipData) && (
-                <div className="mt-4 mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 w-full">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-900">
-                        {membershipData ? (isActive ? "Active Member" : "Membership Expired") : "Not a Member"}
-                      </h3>
-                      <p className="text-sm text-gray-600">{statusMessage}</p>
+                        <span className="inline-block rounded-full bg-blue-100 px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-200 mb-6 sm:mb-8">
+                          {role}
+                        </span>
+
+                        {/* Membership Status */}
+                        {(env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" || membershipData) && (
+                          <div className="mt-4 mb-6 sm:mb-8 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 w-full">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                              <div className="text-center sm:text-left">
+                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                                  {membershipData ? (isActive ? "Active Member" : "Membership Expired") : "Not a Member"}
+                                </h3>
+                                <p className="text-xs sm:text-sm text-gray-600 mt-1">{statusMessage}</p>
+                              </div>
+                              <div className="flex justify-center sm:justify-end gap-2">
+                                {!membershipData && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
+                                  <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2" })}>
+                                    Get Membership
+                                  </Link>
+                                )}
+                                {membershipData && !isActive && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
+                                  <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-orange-600 hover:bg-orange-700 text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2" })}>
+                                    Renew
+                                  </Link>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                          <div className="text-center sm:text-left">
+                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
+                              Bio:
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {bio}
+                            </p>
+                          </div>
+                          
+                          <div className="text-center sm:text-left">
+                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
+                              Branch:
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {branch}
+                            </p>
+                          </div>
+                          
+                          <div className="text-center sm:text-left">
+                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
+                              Role:
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {role}
+                            </p>
+                          </div>
+                          
+                          {/* Membership Details */}
+                          {membershipData && (
+                            <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                              <h4 className="font-semibold text-slate-600 mb-3 sm:mb-4 text-center sm:text-left">Membership Details:</h4>
+                              <div className="space-y-2 sm:space-y-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                  <span className="font-semibold text-slate-500">Type:</span>
+                                  <span className="text-gray-700 dark:text-gray-300">{membershipData.membershipType}</span>
+                                </div>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                  <span className="font-semibold text-slate-500">Period:</span>
+                                  <span className="text-gray-700 dark:text-gray-300">
+                                    {membershipData.membershipStartDate.toLocaleDateString()} - {membershipData.membershipEndDate.toLocaleDateString()}
+                                  </span>
+                                </div>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                  <span className="font-semibold text-slate-500">Amount:</span>
+                                  <span className="text-gray-700 dark:text-gray-300">
+                                    ₹{membershipData.paymentDetails.amount} {membershipData.paymentDetails.currency}
+                                  </span>
+                                </div>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                  <span className="font-semibold text-slate-500">Payment Date:</span>
+                                  <span className="text-gray-700 dark:text-gray-300">
+                                    {membershipData.paymentDetails.paymentDate instanceof Date 
+                                      ? membershipData.paymentDetails.paymentDate.toLocaleDateString()
+                                      : membershipData.paymentDetails.paymentDate.toDate().toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-6 sm:mt-8 flex justify-center gap-4 sm:gap-6">
+                          <Link
+                            className={buttonVariants({
+                              variant: "outline",
+                              size: "icon",
+                              className:
+                                "rounded-full transition-colors hover:text-blue-500 h-10 w-10 sm:h-12 sm:w-12",
+                            })}
+                            href={(userData?.linkedin as string) ?? "/"}
+                            target="_blank"
+                          >
+                            <LinkedinIcon size={20} className="sm:w-6 sm:h-6" />
+                          </Link>
+                          {(() => {
+                            const githubUrl = (userData?.github as string) ?? "";
+                            return (
+                              <Link
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  size: "icon",
+                                  className:
+                                    "rounded-full transition-colors hover:text-gray-600 h-10 w-10 sm:h-12 sm:w-12",
+                                })}
+                                href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
+                                target="_blank"
+                              >
+                                <Github size={20} className="sm:w-6 sm:h-6" />
+                              </Link>
+                            );
+                          })()}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      {!membershipData && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
-                        <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-blue-600 hover:bg-blue-700" })}>
-                          Get Membership
-                        </Link>
-                      )}
-                      {membershipData && !isActive && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
-                        <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-orange-600 hover:bg-orange-700" })}>
-                          Renew
-                        </Link>
-                      )}
-                    </div>
+                  </div>
+
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+                  >
+                    <div
+                      style={{
+                        clipPath:
+                          "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+                      }}
+                      className="relative-left-[calc(50%-13rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
+                    ></div>
                   </div>
                 </div>
-              )}
-
-              <div className="space-y-2 text-base text-gray-700 dark:text-gray-300 w-full">
-                <p>
-                  <span className="font-semibold text-slate-500">Bio:</span>{" "}
-                  {bio}
-                </p>
-                <p>
-                  <span className="font-semibold text-slate-500">Branch:</span>{" "}
-                  {branch}
-                </p>
-                {membershipData && (
-                  <div className="text-sm text-gray-700 dark:text-gray-300">
-                    <p>
-                      <span className="font-semibold text-slate-500">Membership:</span>{" "}
-                      {membershipData.membershipType}
-                    </p>
-                    <p>
-                      <span className="font-semibold text-slate-500">Period:</span>{" "}
-                      {membershipData.membershipStartDate.toLocaleDateString()} - {membershipData.membershipEndDate.toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
               </div>
-
-              <div className="mt-8 flex gap-6">
-                <Link
-                  href={linkedin}
-                  target="_blank"
-                  className={buttonVariants({
-                    variant: "outline",
-                    size: "icon",
-                    className:
-                      "rounded-full hover:bg-blue-100 dark:hover:bg-blue-900 transition shadow-sm",
-                  })}
-                >
-                  <LinkedinIcon size={26} />
-                </Link>
-                <Link
-                  href={githubUrl}
-                  target="_blank"
-                  className={buttonVariants({
-                    variant: "outline",
-                    size: "icon",
-                    className:
-                      "rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition shadow-sm",
-                  })}
-                >
-                  <Github size={26} />
-                </Link>
-              </div>
-            </div>
+            </Fade>
           </div>
-        </Fade>
-      </div>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }

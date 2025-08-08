@@ -22,13 +22,26 @@ const Events = () => {
             </p>
           </div>
           <Tabs defaultValue="2023" className="w-full max-w-6xl">
-            <TabsList className="flex flex-wrap h-auto p-1 gap-1 sm:gap-2">
-              <TabsTrigger value="2019" className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2">2019-20</TabsTrigger>
-              <TabsTrigger value="2020" className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2">2020-21</TabsTrigger>
-              <TabsTrigger value="2021" className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2">2021-22</TabsTrigger>
-              <TabsTrigger value="2022" className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2">2022-23</TabsTrigger>
-              <TabsTrigger value="2023" className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2">2023-24</TabsTrigger>
-            </TabsList>
+              <TabsList
+                className="flex w-full overflow-x-auto no-scrollbar sm:justify-center gap-2 rounded-md bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-2"
+              >
+                {[
+                  { year: "2019", label: "2019-20" },
+                  { year: "2020", label: "2020-21" },
+                  { year: "2021", label: "2021-22" },
+                  { year: "2022", label: "2022-23" },
+                  { year: "2023", label: "2023-24" },
+                ].map(({ year, label }) => (
+                  <TabsTrigger
+                    key={year}
+                    value={year}
+                    className="flex-shrink-0 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-colors border border-transparent hover:border-zinc-300 dark:hover:border-zinc-600 data-[state=active]:bg-zinc-100 dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-black dark:data-[state=active]:text-white data-[state=active]:border-zinc-300 dark:data-[state=active]:border-zinc-600"
+                  >
+                    {label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
             <TabsContent value="2019">
               <EventsList date="2019" />
             </TabsContent>

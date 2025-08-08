@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAdminFirestore } from '~/server/firebase-admin';
+import type { Timestamp } from 'firebase/firestore';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -17,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     snapshot.forEach((docSnap) => {
       const userData = docSnap.data() as Record<string, unknown>;
-      const membershipEndDateRaw = userData.membershipEndDate as FirebaseFirestore.Timestamp | Date | undefined;
+      const membershipEndDateRaw = userData.membershipEndDate as Timestamp | Date | undefined;
       const membershipEndDate = membershipEndDateRaw
         ? membershipEndDateRaw instanceof Date
           ? membershipEndDateRaw
