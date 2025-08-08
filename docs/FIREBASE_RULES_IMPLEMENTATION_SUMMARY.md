@@ -257,14 +257,6 @@ node scripts/test-firestore-rules.js
 4. Consider implementing custom claims for more complex roles
 5. Add automated security scanning
 
-## 📞 Support & Contact
-
-For issues with the Firebase rules implementation:
-
-1. **Check Documentation**: Review the comprehensive guide in `docs/FIREBASE_SECURITY_RULES_GUIDE.md`
-2. **Test Locally**: Use the testing script to verify rules behavior
-3. **Firebase Console**: Check for detailed error messages
-4. **Development Team**: Contact the CSI NMAMIT development team
 
 ## 📝 Change Log
 

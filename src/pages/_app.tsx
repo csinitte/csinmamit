@@ -1,4 +1,4 @@
-import App, { type AppType } from "next/app";
+import { type AppType } from "next/app";
 import { Poppins } from "next/font/google";
 // import { api } from "~/utils/api";
 import "~/styles/globals.css";

@@ -20,7 +20,6 @@ import { useAuth } from "~/lib/firebase-auth";
 import { useRouter } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
-import type { UserProfile } from '~/lib/firestore';
 const branches = [
   "Artificial Intelligence & Data Science",
   "Artificial Intelligence & Machine Learning",
@@ -126,18 +125,20 @@ export const EditProfile = () => {
       }
 
       try {
+        console.log('Loading user data for ID:', user.id);
         const userDoc = await getDoc(doc(db, 'users', user.id));
 
-        console.log(userDoc.data(), 'userDoc data');
+        console.log('User document exists:', userDoc.exists());
+        console.log('User document data:', userDoc.data());
         
         if (userDoc.exists()) {
           const data = userDoc.data();
-          console.log(data, 'data')
+          console.log('Setting form data from existing user:', data);
           setFormData({
             name: (data.name as string) ?? "",
             bio: (data.bio as string) ?? "",
             branch: (data.branch as string) ?? "",
-            usn: (data.usn as string) ?? "", // <-- Add this line
+            usn: (data.usn as string) ?? "",
             github: (data.github as string) ?? "",
             linkedin: (data.linkedin as string) ?? "",
             phone: (data.phone as string) ?? "",
@@ -145,11 +146,12 @@ export const EditProfile = () => {
             certificates: (data.certificates as string[]) ?? [],
           });
         } else {
+          console.log('No existing user document, creating new profile');
           setFormData({
             name: user?.name ?? "",
             bio: "",
             branch: "",
-            usn: "", // <-- Add this line
+            usn: "",
             github: "",
             linkedin: "",
             phone: "",
@@ -192,14 +194,21 @@ export const EditProfile = () => {
   }
 
   // Check authentication after loading is complete
-  if (!user) {
+  if (!user?.id) {
+    console.log('User not authenticated, redirecting to home');
     void router.push("/");
     return null;
   }
 
   const onSubmit = async () => {
     try {
-      if (!user.id) {
+      console.log('onSubmit called');
+      console.log('User object:', user);
+      console.log('User ID:', user?.id);
+      console.log('User loading state:', loading);
+      
+      if (!user?.id) {
+        console.error('User not authenticated or missing ID');
         toast.error("User not authenticated", {
           style: { backgroundColor: '#ef4444', color: 'white' }
         });
@@ -215,19 +224,33 @@ export const EditProfile = () => {
 
       const cleanGithubUsername = formData.github.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
 
-      setIsSubmitting(true);
-      await setDoc(doc(db, 'users', user.id), {
+      // Prepare the data to be saved - simplified for testing
+      const userData = {
         name: formData.name.trim(),
         bio: formData.bio.trim() || "",
         branch: formData.branch.trim() || "",
-        usn: formData.usn.trim() || "", // <-- Add this line
+        usn: formData.usn.trim() || "",
         github: cleanGithubUsername || "",
         linkedin: formData.linkedin.trim() || "",
         phone: formData.phone.trim() || "",
         role: formData.role,
         certificates: formData.certificates,
-        updatedAt: new Date(),
-      }, { merge: true });
+      };
+
+      console.log('Attempting to save user data:', userData);
+      console.log('User ID:', user.id);
+      console.log('User authenticated:', !!user);
+      console.log('User UID:', user.id);
+
+      setIsSubmitting(true);
+      
+      try {
+        await setDoc(doc(db, 'users', user.id), userData, { merge: true });
+        console.log('Document saved successfully');
+      } catch (setDocError) {
+        console.error('setDoc error:', setDocError);
+        throw setDocError;
+      }
 
       toast.success("Profile updated successfully!", {
         description: `${formData.name}'s profile has been updated.`,
@@ -236,8 +259,31 @@ export const EditProfile = () => {
      
       void router.push('/profile');
     } catch (error) {
-      console.log('Error updating profile:', error);
-      toast.error("Failed to update profile. Please try again.", {
+      console.error('Error updating profile:', error);
+      
+      // Provide more specific error messages
+      let errorMessage = "Failed to update profile. Please try again.";
+      
+      if (error instanceof Error) {
+        const firebaseError = error as Error & { code?: string };
+        console.error('Error details:', {
+          message: error.message,
+          code: firebaseError.code,
+          stack: error.stack
+        });
+        
+        if (error.message.includes('permission-denied') || firebaseError.code === 'permission-denied') {
+          errorMessage = "Permission denied. Please check if you're logged in correctly and try again.";
+        } else if (error.message.includes('unauthenticated') || firebaseError.code === 'unauthenticated') {
+          errorMessage = "You need to be logged in to update your profile.";
+        } else if (error.message.includes('invalid-argument') || firebaseError.code === 'invalid-argument') {
+          errorMessage = "Invalid data provided. Please check your input.";
+        } else if (error.message.includes('Missing or insufficient permissions')) {
+          errorMessage = "Permission issue detected. Please refresh the page and try again.";
+        }
+      }
+      
+      toast.error(errorMessage, {
         style: { backgroundColor: '#ef4444', color: 'white' }
       });
     } finally {

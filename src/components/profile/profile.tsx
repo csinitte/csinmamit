@@ -7,25 +7,118 @@ import { buttonVariants } from "~/components/ui/button";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useState, useEffect } from "react";
+import { env } from "~/env";
+
+
+interface MembershipData {
+  membershipType: string;
+  membershipStartDate: Date;
+  membershipEndDate: Date;
+  paymentDetails: {
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    amount: number;
+    currency: string;
+    paymentDate: Date | { toDate(): Date };
+  };
+  role: string;
+  csiIdNumber?: string;
+}
 
 export default function Profile() {
   const { user } = useAuth();
   const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [membershipData, setMembershipData] = useState<MembershipData | null>(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user?.id) return;
+    const loadUserData = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
       try {
         const userDoc = await getDoc(doc(db, "users", user.id));
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          const data = userDoc.data() as Record<string, unknown>;
+          setUserData(data);
+          if (data.membershipType) {
+            const membershipEndDateRaw = data.membershipEndDate as { toDate?: () => Date } | Date;
+            const membershipEndDate =
+              typeof membershipEndDateRaw === "object" &&
+              membershipEndDateRaw !== null &&
+              "toDate" in membershipEndDateRaw &&
+              typeof (membershipEndDateRaw as { toDate: () => Date }).toDate === "function"
+                ? (membershipEndDateRaw as { toDate: () => Date }).toDate()
+                : new Date(membershipEndDateRaw as Date);
+
+            const isActive = (endDate: Date) => new Date() < endDate;
+
+            // Client must not mutate membership/role; server API handles this per security rules
+            // We only compute and display state; updates occur via /api/membership/check-expired
+
+            const membershipStartDateRaw = data.membershipStartDate as { toDate?: () => Date } | Date;
+            const membershipStartDate =
+              typeof membershipStartDateRaw === "object" &&
+              membershipStartDateRaw !== null &&
+              "toDate" in membershipStartDateRaw &&
+              typeof (membershipStartDateRaw as { toDate: () => Date }).toDate === "function"
+                ? (membershipStartDateRaw as { toDate: () => Date }).toDate()
+                : new Date(membershipStartDateRaw as Date);
+
+            const paymentDetailsRaw = data.paymentDetails as Record<string, unknown> | undefined;
+            const paymentDateRaw = paymentDetailsRaw?.paymentDate as { toDate?: () => Date } | Date | undefined;
+            const paymentDate = paymentDateRaw
+              ? typeof paymentDateRaw === "object" &&
+                paymentDateRaw !== null &&
+                "toDate" in paymentDateRaw &&
+                typeof (paymentDateRaw as { toDate: () => Date }).toDate === "function"
+                ? (paymentDateRaw as { toDate: () => Date }).toDate()
+                : new Date(paymentDateRaw as Date)
+              : new Date();
+
+            setMembershipData({
+              membershipType: data.membershipType as string,
+              membershipStartDate,
+              membershipEndDate,
+              paymentDetails: {
+                razorpayOrderId: (paymentDetailsRaw?.razorpayOrderId as string) ?? "",
+                razorpayPaymentId: (paymentDetailsRaw?.razorpayPaymentId as string) ?? "",
+                amount: (paymentDetailsRaw?.amount as number) ?? 0,
+                currency: (paymentDetailsRaw?.currency as string) ?? "INR",
+                paymentDate,
+              },
+              role: isActive(membershipEndDate) ? (data.role as string) : "User",
+            });
+          }
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error loading user data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
-    void fetchUserData();
-  }, [user?.id]);
+
+    void loadUserData();
+
+    if (user?.id) {
+      // Call server API which uses Admin SDK to perform privileged updates
+      fetch('/api/membership/check-expired', { method: 'POST' }).catch((error) => {
+        console.error('Error triggering membership check:', error);
+      });
+    }
+  }, [user?.id, user?.email]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">Loading profile data...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -42,6 +135,13 @@ export default function Profile() {
   const linkedin = (userData?.linkedin as string) ?? "/";
   const github = (userData?.github as string) ?? "";
   const githubUrl = github ? `https://github.com/${github}` : "/";
+
+  const isActive = membershipData ? new Date() < membershipData.membershipEndDate : false;
+  const statusMessage = membershipData
+    ? isActive
+      ? `Active ${membershipData.membershipType}.`
+      : `Membership expired on ${membershipData.membershipEndDate.toLocaleDateString()}.`
+    : "No membership found. Join CSI to become a member!";
 
   return (
     <main className="relative min-h-screen dark:from-gray-900 dark:via-gray-800 dark:to-black text-black dark:text-white">
@@ -72,7 +172,32 @@ export default function Profile() {
                 {role}
               </span>
 
-              <div className="space-y-2 text-base text-gray-700 dark:text-gray-300">
+              {(env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" || membershipData) && (
+                <div className="mt-4 mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 w-full">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {membershipData ? (isActive ? "Active Member" : "Membership Expired") : "Not a Member"}
+                      </h3>
+                      <p className="text-sm text-gray-600">{statusMessage}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      {!membershipData && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
+                        <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-blue-600 hover:bg-blue-700" })}>
+                          Get Membership
+                        </Link>
+                      )}
+                      {membershipData && !isActive && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
+                        <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-orange-600 hover:bg-orange-700" })}>
+                          Renew
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2 text-base text-gray-700 dark:text-gray-300 w-full">
                 <p>
                   <span className="font-semibold text-slate-500">Bio:</span>{" "}
                   {bio}
@@ -81,6 +206,18 @@ export default function Profile() {
                   <span className="font-semibold text-slate-500">Branch:</span>{" "}
                   {branch}
                 </p>
+                {membershipData && (
+                  <div className="text-sm text-gray-700 dark:text-gray-300">
+                    <p>
+                      <span className="font-semibold text-slate-500">Membership:</span>{" "}
+                      {membershipData.membershipType}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-slate-500">Period:</span>{" "}
+                      {membershipData.membershipStartDate.toLocaleDateString()} - {membershipData.membershipEndDate.toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="mt-8 flex gap-6">
