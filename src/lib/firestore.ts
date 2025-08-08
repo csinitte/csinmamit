@@ -80,6 +80,35 @@ export interface EventsMetadata {
   };
 }
 
+export interface UserProfile {
+  userId: string;
+  userName: string;
+  userBio: string;
+  userBranch: string;
+  userUsn: string;
+  userGithub: string;
+  userLinkedin: string;
+  userPhone: string;
+  userRole: string;
+  userCertificates: string[]; // Use string[] if certificates are stored as an array
+}
+
+// Example function to map Firestore data to UserProfile
+export function mapFirestoreUserData(data: any): UserProfile {
+  return {
+    userId: data.userId,
+    userName: data.name ?? "",
+    userBio: data.bio ?? "",
+    userBranch: data.branch ?? "",
+    userUsn: data.usn ?? "",
+    userGithub: data.github ?? "",
+    userLinkedin: data.linkedin ?? "",
+    userPhone: data.phone ?? "",
+    userRole: data.role ?? "",
+    userCertificates: data.certificates ?? [],
+  };
+}
+
 /**
  * Get all events from Firestore
  */

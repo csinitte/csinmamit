@@ -61,7 +61,7 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
               size: "icon",
               className: "h-8 w-8 sm:h-10 sm:w-10 rounded-full transition-colors hover:text-gray-600",
             })}
-            href={github ? `https://github.com/${github}` : "#"}
+            href={github ? `${github}` : "#"}
             target="_blank"
             aria-label={`${name}'s GitHub`}
           >
