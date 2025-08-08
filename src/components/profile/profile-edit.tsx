@@ -367,7 +367,7 @@ export const EditProfile = () => {
                   id="usn"
                   value={formData.usn ?? ""}
                   onChange={(e) => setFormData({ ...formData, usn: e.target.value })}
-                  placeholder="NNM24CB503"
+                  placeholder="NNM*******"
                   helper="Your University Seat Number (optional)"
                 />
               </div>

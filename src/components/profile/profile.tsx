@@ -45,13 +45,17 @@ export default function Profile() {
 
   return (
     <main className="relative min-h-screen dark:from-gray-900 dark:via-gray-800 dark:to-black text-black dark:text-white">
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-300/30 via-transparent to-transparent dark:from-indigo-900/20"></div>
 
-      <div className="relative z-10 mx-auto max-w-3xl px-6 py-28">
+      {/* Shared Container */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 flex flex-col items-center justify-center">
+
         <Fade triggerOnce>
-          <div className="rounded-[2rem] bg-white/40 dark:bg-white/5 backdrop-blur-xl p-12 shadow-2xl ring-1 ring-gray-300/30 dark:ring-white/10 transition-all duration-300">
-            <div className="flex flex-col items-center text-center">
-              <div className="relative h-52 w-52 overflow-hidden rounded-full ring-8 ring-blue-500/30 shadow-2xl mb-6">
+          {/* Desktop */}
+          <div className="hidden md:flex w-full bg-white/20 dark:bg-white/5 backdrop-blur-lg shadow-2xl rounded-3xl overflow-hidden border border-white/30 dark:border-white/10 transition-all duration-500">
+            
+            {/* Image Section */}
+            <div className="w-1/2 relative bg-gradient-to-br from-blue-100/50 to-violet-100/30 dark:from-blue-900/20 dark:to-violet-900/20 flex items-center justify-center p-10">
+              <div className="relative h-64 w-64 rounded-full overflow-hidden ring-[10px] ring-blue-500/20 shadow-xl">
                 <Image
                   src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
                   alt={displayName}
@@ -59,56 +63,70 @@ export default function Profile() {
                   className="object-cover"
                 />
               </div>
+            </div>
 
-              <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">
+            {/* Info Section */}
+            <div className="w-1/2 p-10 flex flex-col justify-center space-y-4">
+              <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {displayName}
               </h1>
-
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">
-                @{displayName}
-              </p>
-
-              <span className="inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-200 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">@{displayName}</p>
+              <span className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-4 py-1 rounded-full text-sm font-semibold shadow">
                 {role}
               </span>
+              <p className="text-base text-gray-800 dark:text-gray-200"><strong>Bio:</strong> {bio}</p>
+              <p className="text-base text-gray-800 dark:text-gray-200"><strong>Branch:</strong> {branch}</p>
 
-              <div className="space-y-2 text-base text-gray-700 dark:text-gray-300">
-                <p>
-                  <span className="font-semibold text-slate-500">Bio:</span>{" "}
-                  {bio}
-                </p>
-                <p>
-                  <span className="font-semibold text-slate-500">Branch:</span>{" "}
-                  {branch}
-                </p>
-              </div>
-
-              <div className="mt-8 flex gap-6">
+              <div className="mt-4 flex gap-6">
                 <Link
                   href={linkedin}
                   target="_blank"
-                  className={buttonVariants({
-                    variant: "outline",
-                    size: "icon",
-                    className:
-                      "rounded-full hover:bg-blue-100 dark:hover:bg-blue-900 transition shadow-sm",
-                  })}
+                  className="transition transform hover:scale-110 hover:text-blue-600"
                 >
-                  <LinkedinIcon size={26} />
+                  <LinkedinIcon size={28} />
                 </Link>
                 <Link
                   href={githubUrl}
                   target="_blank"
-                  className={buttonVariants({
-                    variant: "outline",
-                    size: "icon",
-                    className:
-                      "rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition shadow-sm",
-                  })}
+                  className="transition transform hover:scale-110 hover:text-gray-700 dark:hover:text-gray-100"
                 >
-                  <Github size={26} />
+                  <Github size={28} />
                 </Link>
               </div>
+            </div>
+          </div>
+
+          {/* Mobile */}
+          <div className="md:hidden w-full bg-white/30 dark:bg-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-xl text-center space-y-4">
+            <div className="relative h-32 w-32 mx-auto rounded-full overflow-hidden ring-[6px] ring-blue-400/40 shadow-lg">
+              <Image
+                src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
+                alt={displayName}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-violet-600 bg-clip-text text-transparent">
+              {displayName}
+            </h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">@{displayName}</p>
+            <span className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-4 py-1 rounded-full text-sm font-semibold">
+              {role}
+            </span>
+
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+              <p><strong>Bio:</strong> {bio}</p>
+              <p><strong>Branch:</strong> {branch}</p>
+            </div>
+
+            <div className="mt-3 flex justify-center gap-5">
+              <Link href={linkedin} target="_blank" className="hover:text-blue-600">
+                <LinkedinIcon size={24} />
+              </Link>
+              <Link href={githubUrl} target="_blank" className="hover:text-gray-700 dark:hover:text-white">
+                <Github size={24} />
+              </Link>
             </div>
           </div>
         </Fade>
