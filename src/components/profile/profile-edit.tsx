@@ -310,9 +310,6 @@ export const EditProfile = () => {
             <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <User size={32} className="text-white" />
             </div>
-            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-md">
-              <UserCheck size={16} className="text-white" />
-            </div>
           </div>
           <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
