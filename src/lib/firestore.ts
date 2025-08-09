@@ -81,31 +81,58 @@ export interface EventsMetadata {
 }
 
 export interface UserProfile {
-  userId: string;
-  userName: string;
-  userBio: string;
-  userBranch: string;
-  userUsn: string;
-  userGithub: string;
-  userLinkedin: string;
-  userPhone: string;
-  userRole: string;
-  userCertificates: string[]; // Use string[] if certificates are stored as an array
+  id: string;
+  name: string;
+  bio: string;
+  branch: string;
+  usn: string;
+  github: string;
+  linkedin: string;
+  phone: string;
+  role: 'User' | 'Admin' | 'Moderator';
+  certificates: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// Example function to map Firestore data to UserProfile
-export function mapFirestoreUserData(data: Record<string, unknown>): UserProfile {
+// Type-safe function to map Firestore data to UserProfile
+export function mapFirestoreUserData(id: string, data: Record<string, unknown>): UserProfile {
+  // Helper function for safe string extraction
+  const getString = (value: unknown, fallback = ''): string => 
+    typeof value === 'string' ? value : fallback;
+
+  // Helper function for safe array extraction
+  const getStringArray = (value: unknown): string[] => 
+    Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+
+  // Helper function for safe date extraction
+  const getDate = (value: unknown): Date => {
+    if (value instanceof Date) return value;
+    if (value && typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
+      return (value as { toDate(): Date }).toDate();
+    }
+    return new Date();
+  };
+
+  // Helper function for safe role extraction
+  const getRole = (value: unknown): 'User' | 'Admin' | 'Moderator' => {
+    if (value === 'Admin' || value === 'Moderator') return value;
+    return 'User';
+  };
+
   return {
-    userId: typeof data.userId === 'string' ? data.userId : '',
-    userName: typeof data.name === 'string' ? data.name : "",
-    userBio: typeof data.bio === 'string' ? data.bio : "",
-    userBranch: typeof data.branch === 'string' ? data.branch : "",
-    userUsn: typeof data.usn === 'string' ? data.usn : "",
-    userGithub: typeof data.github === 'string' ? data.github : "",
-    userLinkedin: typeof data.linkedin === 'string' ? data.linkedin : "",
-    userPhone: typeof data.phone === 'string' ? data.phone : "",
-    userRole: typeof data.role === 'string' ? data.role : "",
-    userCertificates: Array.isArray(data.certificates) ? data.certificates as string[] : [],
+    id,
+    name: getString(data.name),
+    bio: getString(data.bio),
+    branch: getString(data.branch),
+    usn: getString(data.usn),
+    github: getString(data.github),
+    linkedin: getString(data.linkedin),
+    phone: getString(data.phone),
+    role: getRole(data.role),
+    certificates: getStringArray(data.certificates),
+    createdAt: getDate(data.createdAt),
+    updatedAt: getDate(data.updatedAt),
   };
 }
 
