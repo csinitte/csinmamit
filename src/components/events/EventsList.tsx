@@ -72,8 +72,10 @@ const EventsList: React.FC<EventsListProps> = ({ date }) => {
                 src={event.cloudinaryUrl}
                 alt={event.title}
                 className="object-cover rounded-md"
-                loading="lazy"
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={events.indexOf(event) === 0}
+                {...(events.indexOf(event) !== 0 && { loading: "lazy" })}
               />
             </div>
           )}

@@ -18,12 +18,6 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "firebasestorage.googleapis.com",
-      "github.com",
-      "res.cloudinary.com",
-    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -40,6 +34,12 @@ const config = {
       {
         protocol: 'https',
         hostname: 'github.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**',
       },
