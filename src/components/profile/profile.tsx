@@ -30,6 +30,14 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [membershipData, setMembershipData] = useState<MembershipData | null>(null);
 
+  const InfoRow: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
+    <div className="flex justify-between text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-slate-500">{label}:</span>
+      <span>{value}</span>
+    </div>
+  );
+
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user?.id) {
@@ -158,160 +166,105 @@ export default function Profile() {
                       className="relative-left-[calc(50%-13rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
                     ></div>
                   </div>
+<div className="max-w-6xl mx-auto px-4">
+  <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800 
+                  p-6 sm:p-8 lg:p-10 flex flex-col lg:flex-row gap-10">
 
-                  <div className="mx-auto max-w-4xl lg:px-8">
-                    <div className="mb-12 sm:mb-16 lg:mb-24 flow-root sm:mt-12 lg:mt-24">
-                      <div className="w-full max-w-2xl mx-auto overflow-hidden rounded-xl bg-gray-900/5 p-4 sm:p-6 lg:p-8 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl">
-                        <h1 className="mb-6 sm:mb-8 text-xl sm:text-2xl lg:text-3xl font-bold">
-                          Your Profile
-                        </h1>
+    {/* LEFT PANEL */}
+    <div className="flex flex-col items-center lg:items-start gap-6 lg:w-1/3">
+      {/* Profile Image */}
+      <div className="relative h-40 w-40 rounded-full overflow-hidden ring-4 ring-blue-500/50 shadow-xl hover:scale-105 transition-transform">
+        <Image
+          src={user?.image?.replace("=s96-c", "") ?? "/favicon.ico"}
+          alt={user?.name ?? "Profile"}
+          fill
+          className="object-cover"
+        />
+      </div>
 
-                        <div className="relative mx-auto h-48 w-48 sm:h-64 sm:w-64 lg:h-80 lg:w-80 overflow-hidden rounded-full ring-4 ring-blue-500/30 shadow-2xl mb-6 sm:mb-8">
-                          <Image
-                            src={
-                              user?.image?.replace("=s96-c", "") ??
-                              "/favicon.ico"
-                            }
-                            alt={user?.name ?? "img-av"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
+      {/* Name & Role */}
+      <div className="text-center lg:text-left space-y-1">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          {displayName}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">@{displayName}</p>
+        <span className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-1.5 text-sm font-medium shadow-md">
+          {role}
+        </span>
+      </div>
 
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent mb-2 sm:mb-3">
-                          {displayName}
-                        </h1>
+      {/* Social Links */}
+      <div className="flex gap-3">
+        <Link className="rounded-full p-3 bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          href={userData?.linkedin ?? "/"} target="_blank">
+          <LinkedinIcon size={20} />
+        </Link>
+        <Link className="rounded-full p-3 bg-gray-800 text-white hover:bg-black transition-colors"
+          href={userData?.github ? `https://github.com/${userData.github}` : "/"} target="_blank">
+          <Github size={20} />
+        </Link>
+      </div>
+    </div>
 
-                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-4 sm:mb-6">
-                          @{displayName}
-                        </p>
+    {/* RIGHT PANEL */}
+    <div className="flex-1 space-y-6">
 
-                        <span className="inline-block rounded-full bg-blue-100 px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-200 mb-6 sm:mb-8">
-                          {role}
-                        </span>
+      {/* Membership Status */}
+      {(env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" || membershipData) && (
+        <div className="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl border border-blue-200/50 shadow">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white">
+                {membershipData
+                  ? isActive
+                    ? "✅ Active Member"
+                    : "⚠️ Membership Expired"
+                  : "Not a Member"}
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">{statusMessage}</p>
+            </div>
+            <div className="flex gap-2">
+              {!membershipData && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
+                <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-blue-600 hover:bg-blue-700" })}>
+                  Get Membership
+                </Link>
+              )}
+              {membershipData && !isActive && (
+                <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-orange-600 hover:bg-orange-700" })}>
+                  Renew
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
-                        {/* Membership Status */}
-                        {(env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" || membershipData) && (
-                          <div className="mt-4 mb-6 sm:mb-8 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 w-full">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                              <div className="text-center sm:text-left">
-                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-                                  {membershipData ? (isActive ? "Active Member" : "Membership Expired") : "Not a Member"}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-gray-600 mt-1">{statusMessage}</p>
-                              </div>
-                              <div className="flex justify-center sm:justify-end gap-2">
-                                {!membershipData && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
-                                  <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2" })}>
-                                    Get Membership
-                                  </Link>
-                                )}
-                                {membershipData && !isActive && env.NEXT_PUBLIC_MEMBERSHIP_ENABLED === "true" && (
-                                  <Link href="/recruit" className={buttonVariants({ variant: "default", size: "sm", className: "bg-orange-600 hover:bg-orange-700 text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2" })}>
-                                    Renew
-                                  </Link>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
+      {/* Profile Info Card */}
+      <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200/30 shadow-sm space-y-2">
+        <h4 className="font-semibold text-slate-600 dark:text-gray-300">Profile Information</h4>
+        <InfoRow label="Bio" value={bio} />
+        <InfoRow label="Branch" value={branch} />
+        <InfoRow label="Role" value={role} />
+      </div>
 
-                        <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-700 dark:text-gray-300">
-                          <div className="text-center sm:text-left">
-                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
-                              Bio:
-                            </h4>
-                            <p className="text-gray-700 dark:text-gray-300">
-                              {bio}
-                            </p>
-                          </div>
-                          
-                          <div className="text-center sm:text-left">
-                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
-                              Branch:
-                            </h4>
-                            <p className="text-gray-700 dark:text-gray-300">
-                              {branch}
-                            </p>
-                          </div>
-                          
-                          <div className="text-center sm:text-left">
-                            <h4 className="font-semibold text-slate-600 mb-1 sm:mb-2">
-                              Role:
-                            </h4>
-                            <p className="text-gray-700 dark:text-gray-300">
-                              {role}
-                            </p>
-                          </div>
-                          
-                          {/* Membership Details */}
-                          {membershipData && (
-                            <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                              <h4 className="font-semibold text-slate-600 mb-3 sm:mb-4 text-center sm:text-left">Membership Details:</h4>
-                              <div className="space-y-2 sm:space-y-3">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-                                  <span className="font-semibold text-slate-500">Type:</span>
-                                  <span className="text-gray-700 dark:text-gray-300">{membershipData.membershipType}</span>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-                                  <span className="font-semibold text-slate-500">Period:</span>
-                                  <span className="text-gray-700 dark:text-gray-300">
-                                    {membershipData.membershipStartDate.toLocaleDateString()} - {membershipData.membershipEndDate.toLocaleDateString()}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-                                  <span className="font-semibold text-slate-500">Amount:</span>
-                                  <span className="text-gray-700 dark:text-gray-300">
-                                    ₹{membershipData.paymentDetails.amount} {membershipData.paymentDetails.currency}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-                                  <span className="font-semibold text-slate-500">Payment Date:</span>
-                                  <span className="text-gray-700 dark:text-gray-300">
-                                    {membershipData.paymentDetails.paymentDate instanceof Date 
-                                      ? membershipData.paymentDetails.paymentDate.toLocaleDateString()
-                                      : membershipData.paymentDetails.paymentDate.toDate().toLocaleDateString()}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+      {/* Membership Details */}
+      {membershipData && (
+        <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200/30 shadow-sm space-y-2">
+          <h4 className="font-semibold text-slate-600 dark:text-gray-300">Membership Details</h4>
+          <InfoRow label="Type" value={membershipData.membershipType} />
+          <InfoRow label="Period" value={`${membershipData.membershipStartDate.toLocaleDateString()} - ${membershipData.membershipEndDate.toLocaleDateString()}`} />
+          <InfoRow label="Amount" value={`₹${membershipData.paymentDetails.amount} ${membershipData.paymentDetails.currency}`} />
+          <InfoRow label="Payment Date" value={
+            membershipData.paymentDetails.paymentDate instanceof Date
+              ? membershipData.paymentDetails.paymentDate.toLocaleDateString()
+              : membershipData.paymentDetails.paymentDate.toDate().toLocaleDateString()
+          } />
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
-                        <div className="mt-6 sm:mt-8 flex justify-center gap-4 sm:gap-6">
-                          <Link
-                            className={buttonVariants({
-                              variant: "outline",
-                              size: "icon",
-                              className:
-                                "rounded-full transition-colors hover:text-blue-500 h-10 w-10 sm:h-12 sm:w-12",
-                            })}
-                            href={(userData?.linkedin as string) ?? "/"}
-                            target="_blank"
-                          >
-                            <LinkedinIcon size={20} className="sm:w-6 sm:h-6" />
-                          </Link>
-                          {(() => {
-                            const githubUrl = (userData?.github as string) ?? "";
-                            return (
-                              <Link
-                                className={buttonVariants({
-                                  variant: "outline",
-                                  size: "icon",
-                                  className:
-                                    "rounded-full transition-colors hover:text-gray-600 h-10 w-10 sm:h-12 sm:w-12",
-                                })}
-                                href={githubUrl ? `https://github.com/${githubUrl}` : "/"}
-                                target="_blank"
-                              >
-                                <Github size={20} className="sm:w-6 sm:h-6" />
-                              </Link>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   <div
                     aria-hidden="true"

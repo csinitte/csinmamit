@@ -10,7 +10,7 @@ export interface CoreMember {
   linkedin: string | null;
   github: string | null;
   imageSrc: string;
-  year: number;
+  // year: number;
   order: number;
 }
 
@@ -18,8 +18,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Takshak Shetty",
     position: "President",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: ,
     linkedin: "https://www.linkedin.com/in/takshak-shetty",
     github: "https://github.com/Takshak-Shetty",
     imageSrc: "/team25/TakshakShetty.jpg",
@@ -28,8 +28,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Harshitha P Salian",
     position: "Vice President",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/harshitha-p-s-163574288",
     github: "https://github.com/harshithaps11",
     imageSrc: "/team25/harshitha-p-salian.jpg",
@@ -38,8 +38,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Ashwin Arun",
     position: "Secretary",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/winashcs",
     github: "https://github.com/winashcs",
     imageSrc: "/team25/ashwin-arun.jpg",
@@ -48,8 +48,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Shravya N Bhat",
     position: "Joint Secretary",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/shravya-n-bhat-077694284",
     github: "https://github.com/Shravya2820",
     imageSrc: "/team25/shravya-n-bhat.jpg",
@@ -58,8 +58,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Shreya Irniraya",
     position: "Treasurer",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/shreyaik",
     github: "https://github.com/ShreyaIK06",
     imageSrc: "/team25/shreya-irniraya.png",
@@ -68,8 +68,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Jeevan",
     position: "Program Committee Head",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "#",
     github: "#",
     imageSrc: "/team25/Jeevanshetty.jpg",
@@ -78,8 +78,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Shradda Shet",
     position: "Program Committee Co-head",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/shraddhashet03",
     github: "https://github.com/shraddha-shet",
     imageSrc: "/team25/Shraddha-shet.jpg",
@@ -88,8 +88,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Alima Raniya",
     position: "MC Committee",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/alima-raniya",
     github: "https://github.com/AlimaRaniya",
     imageSrc: "/team25/alima-raniya.jpg",
@@ -98,8 +98,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Niharika",
     position: "MC Committee",
-    branch: "CSE",
-    year: 2,
+    branch: "",
+    // year: 2,
     linkedin: "https://www.linkedin.com/in/niharika-niranjan-19778a290",
     github: "https://github.com/NiharikaN-CB",
     imageSrc: "/team25/niharika.jpg",
@@ -108,8 +108,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Prashith Shetty",
     position: "Technical (Lead)",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/prashith-shetty-a91508244/",
     github: "https://github.com/Prashithshetty",
     imageSrc: "/team25/Prashith-Shetty.jpg",
@@ -118,8 +118,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Anish Kumar",
     position: "Technical Team",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/anish-kumar-1a5bb133a/",
     github: "https://github.com/iotserver24",
     imageSrc: "/team25/anish-kumar.jpg",
@@ -128,8 +128,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Alen Chettiar",
     position: "Technical Team",
-    branch: "CSE",
-    year: 2,
+    branch: "",
+    // year: 2,
     linkedin: "https://www.linkedin.com/in/alen-chettiar-940329355",
     github: "https://github.com/AlenChettiar",
     imageSrc: "/team25/alen-chettiar.jpg",
@@ -138,8 +138,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Thrisha K",
     position: "Technical Team",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/thrisha-k-b17599321",
     github: "https://github.com/ThrishahK",
     imageSrc: "/team25/thrisha-k.jpg",
@@ -148,8 +148,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "M K Subrahmanya",
     position: "Technical Team",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/subrahmanya-m-k-788700327/",
     github: "https://github.com/MKSubrahmanya12345",
     imageSrc: "/team25/m-k-subrahmanya.jfif",
@@ -158,8 +158,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Nithin K R",
     position: "Technical Team",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/nithinkr06",
     github: "https://github.com/NITHINKR06",
     imageSrc: "/team25/nithin-k-r.jpg",
@@ -168,8 +168,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Akshay S Mayya",
     position: "Graphics",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/akshay-mayya-b59159242/",
     github: "https://github.com/167389073",
     imageSrc: "/team25/akshay-s-mayya.jpeg",
@@ -178,8 +178,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Pratheeksha",
     position: "Graphics",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/pratheeksha-7323b928a",
     github: "https://github.com/pratheeksha63",
     imageSrc: "/team25/pratheeksha.jpg",
@@ -188,8 +188,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Sanjana C Upadhya",
     position: "Graphics",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/sanjana-upadhya-a8493b321",
     github: "https://github.com/sanjana03upadhya",
     imageSrc: "/team25/sanjana-c-upadhya.jpeg",
@@ -198,8 +198,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Sonal Hegde",
     position: "Social Media",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/sonalhegde",
     github: "https://github.com/Sonalhegde",
     imageSrc: "/team25/sonal-hegde.jpeg",
@@ -208,8 +208,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Prathiksha S",
     position: "Publicity (Lead)",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/prathiksha-s-/",
     github: "https://github.com/PrathikshaAmin",
     imageSrc: "/team25/prathiksha-s.jpeg",
@@ -218,8 +218,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Anand Bobba",
     position: "Publicity (Lead)",
-    branch: "CSE",
-    year: 4,
+    branch: "",
+    // year: 4,
     linkedin: "https://www.linkedin.com/in/anandbobba",
     github: "https://github.com/anandbobba",
     imageSrc: "/team25/anand-bobba.jpg",
@@ -228,8 +228,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Shrinidhi M Shetty",
     position: "Publicity",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/shrinidhi-m-shetty-230050295",
     github: "https://github.com/Shrinidhimshetty",
     imageSrc: "/team25/shrinidhi-m-shetty.jpg",
@@ -238,8 +238,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Shreya Sridhara",
     position: "Publicity",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/shreya-shridhara-50b44831b",
     github: "https://github.com/shreyashridhara",
     imageSrc: "/team25/shreya-shridhara.jpg",
@@ -248,8 +248,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Vedant Suresh Mahalle",
     position: "Event Management Lead",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/vedant-mahalle-b217b4290/",
     github: "https://github.com/Vedant10Mahalle",
     imageSrc: "/team25/vedant-mahalle.jpg",
@@ -258,8 +258,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Vidyalakshmi Kamath",
     position: "Event Management Lead",
-    branch: "CSE",
-    year: 3,
+    branch: "",
+    // year: 3,
     linkedin: "https://www.linkedin.com/in/vidyalakshmi-kamath-086311325",
     github: "https://github.com/Vidya-kama-th",
     imageSrc: "/team25/vidyalakshmi-kamath.jpg",
@@ -268,8 +268,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Ananya S Nayak",
     position: "Event Management",
-    branch: "CSE",
-    year: 2,
+    branch: "",
+    // year: 2,
     linkedin: "https://www.linkedin.com/in/ananya-s-nayak-18171b363",
     github: "https://github.com/Ananyasn98",
     imageSrc: "/team25/ananya-s-nayak.jpg",
@@ -278,8 +278,8 @@ export const CoreMembers: CoreMember[] = [
   {
     name: "Tanisha U Prakash",
     position: "Event Management",
-    branch: "CSE",
-    year: 2,
+    branch: "",
+    // year: 2,
     linkedin: "https://www.linkedin.com/in/tanisha-u-prakash-713910320",
     github: "https://github.com/Tanishauprakash05",
     imageSrc: "/team25/tanisha-u-prakash.jpg",
