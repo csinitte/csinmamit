@@ -1,17 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-export const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-export const FIREBASE_AUTH_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN;
-export const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-export const FIREBASE_STORAGE_BUCKET = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-export const FIREBASE_MESSAGING_SENDER_ID = process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID;
-export const FIREBASE_APP_ID = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
-export const FIREBASE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
-
-export const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-export const CLOUDINARY_API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-export const CLOUDINARY_API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+// Remove direct process.env access - use env object instead
+=======
 
 export const env = createEnv({
 
@@ -24,16 +15,18 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-    FIREBASE_ADMIN_PROJECT_ID: z.string().optional(),
-    FIREBASE_ADMIN_CLIENT_EMAIL: z.string().optional(),
-    FIREBASE_ADMIN_PRIVATE_KEY: z.string().optional(),
-    RAZORPAY_KEY_ID: z.string().optional(),
-    RAZORPAY_KEY_SECRET: z.string().optional(),
+    // Make critical server vars required
+    FIREBASE_ADMIN_PROJECT_ID: z.string().min(1, "Firebase Admin Project ID is required"),
+    FIREBASE_ADMIN_CLIENT_EMAIL: z.string().email("Valid Firebase Admin Client Email is required"),
+    FIREBASE_ADMIN_PRIVATE_KEY: z.string().min(1, "Firebase Admin Private Key is required"),
+    RAZORPAY_KEY_ID: z.string().min(1, "Razorpay Key ID is required"),
+    RAZORPAY_KEY_SECRET: z.string().min(1, "Razorpay Key Secret is required"),
+    // Optional server vars
     SMTP_HOST: z.string().optional(),
     SMTP_PORT: z.string().optional(),
     SMTP_USER: z.string().optional(),
     SMTP_PASS: z.string().optional(),
-    SMTP_FROM_EMAIL: z.string().optional(),
+    SMTP_FROM_EMAIL: z.string().email().optional(),
     CLOUDINARY_API_KEY: z.string().optional(),
     CLOUDINARY_API_SECRET: z.string().optional(),
   },
@@ -45,13 +38,15 @@ export const env = createEnv({
   */
 
   client: {
-    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_API_KEY: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string().optional(),
-    NEXT_PUBLIC_FIREBASE_APP_ID: z.string().optional(),
+    // Make critical client vars required
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1, "Public Razorpay Key ID is required"),
+    NEXT_PUBLIC_FIREBASE_API_KEY: z.string().min(1, "Firebase API Key is required"),
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: z.string().min(1, "Firebase Auth Domain is required"),
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID: z.string().min(1, "Firebase Project ID is required"),
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string().min(1, "Firebase Storage Bucket is required"),
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string().min(1, "Firebase Messaging Sender ID is required"),
+    NEXT_PUBLIC_FIREBASE_APP_ID: z.string().min(1, "Firebase App ID is required"),
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().optional(),
   },
 
   /**
