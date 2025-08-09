@@ -1,7 +1,6 @@
 import * as React from "react";
-import Image from "next/image";
-import "react-awesome-slider/dist/styles.css";
 import AwesomeSlider from "react-awesome-slider";
+import "react-awesome-slider/dist/styles.css";
 
 const imgList = [
   "/highlights/event (1).jpg",
@@ -17,11 +16,13 @@ const imgList = [
 
 export const ImageSlider = () => {
   return (
-    <AwesomeSlider className="pb-10">
+    <AwesomeSlider
+      className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-xl shadow-lg"
+      bullets={true}
+      organicArrows={true}
+    >
       {imgList.map((imageUrl, index) => (
-        <div key={index} data-src={imageUrl}>
-          <Image src={imageUrl} alt="Image" width={300} height={200} />
-        </div>
+        <div key={index} data-src={imageUrl} />
       ))}
     </AwesomeSlider>
   );

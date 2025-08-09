@@ -70,4 +70,4 @@ logs/
 *.tmp
 *.temp
 .cache/
-/REMOVING-FOLDER
+/unsed_folder
