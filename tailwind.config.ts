@@ -108,6 +108,9 @@ const config = {
         "slide-out": "slide-out 0.3s ease-out",
       },
     },
+    animation: {
+      "fade-in": "fade-in 0.6s ease-out",
+    },
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

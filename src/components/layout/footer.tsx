@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import BlurImage from "../helpers/BlurImage";
-import { InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
+import { InstagramLogoIcon } from "@radix-ui/react-icons";
 
 const Links = [
   { name: "Home", link: "/" },
@@ -18,13 +18,6 @@ const social = [
       <InstagramLogoIcon className="h-5 w-5 sm:h-6 sm:w-6 duration-200 hover:scale-125 hover:text-blue-500" />
     ),
     name: "Instagram",
-  },
-  {
-    link: "https://twitter.com/csinmamit",
-    icon: (
-      <TwitterLogoIcon className="h-5 w-5 sm:h-6 sm:w-6 duration-200 hover:scale-125 hover:text-blue-500" />
-    ),
-    name: "Twitter",
   },
 ];
 

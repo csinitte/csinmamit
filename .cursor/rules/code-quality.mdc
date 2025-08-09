@@ -1,0 +1,85 @@
+# Code Quality and Best Practices Rules for CSI NMAMIT
+
+# General code quality
+pattern: **/*.{ts,tsx,js,jsx}
+enforce:
+  useTypeScript: true
+  useESLint: true
+  usePrettier: true
+  useConsistentFormatting: true
+
+# Function and method quality
+pattern: **/*.{ts,tsx}
+enforce:
+  maxFunctionLength: 50
+  maxParameters: 5
+  useDefaultParameters: true
+  useDestructuring: true
+  useArrowFunctions: true
+
+# Variable and constant naming
+pattern: **/*.{ts,tsx}
+enforce:
+  useCamelCase: true
+  useDescriptiveNames: true
+  useConstForConstants: true
+  useLetForVariables: true
+  avoidVar: true
+
+# Import and export patterns
+pattern: **/*.{ts,tsx}
+enforce:
+  useNamedExports: true
+  useDefaultExports: false
+  useAbsoluteImports: true
+  useImportAliases: true
+  groupImports: true
+
+# Error handling
+pattern: **/*.{ts,tsx}
+enforce:
+  useTryCatch: true
+  useErrorBoundaries: true
+  useCustomErrorTypes: true
+  useErrorLogging: true
+  useGracefulDegradation: true
+
+# Performance optimization
+pattern: **/*.{ts,tsx}
+enforce:
+  useMemoization: true
+  useCallback: true
+  useLazyLoading: true
+  useCodeSplitting: true
+  useBundleOptimization: true
+
+# Testing patterns
+pattern: **/*.{test,spec}.{ts,tsx}
+enforce:
+  useJest: true
+  useTestingLibrary: true
+  useMocking: true
+  useTestCoverage: true
+  useIntegrationTests: true
+
+# Documentation
+pattern: **/*.{ts,tsx}
+enforce:
+  useJSDoc: true
+  useInlineComments: true
+  useREADME: true
+  useAPI: true
+  useExamples: true
+
+# Git practices
+pattern: **/*
+enforce:
+  useMeaningfulCommits: true
+  useBranchNaming: true
+  usePRTemplates: true
+  useCodeReview: true
+  useAutomatedTesting: true
+description:
+globs:
+alwaysApply: false
+---

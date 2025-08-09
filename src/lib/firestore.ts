@@ -11,9 +11,9 @@ import {
   orderBy, 
   limit,
   startAfter,
-  DocumentSnapshot,
   Timestamp
 } from 'firebase/firestore';
+import type { DocumentSnapshot } from 'firebase/firestore';
 
 // Types
 export interface Recruit {
@@ -50,11 +50,11 @@ export interface Event {
   type: 'SOLO' | 'TEAM';
   entryFee: number;
   organizers: string;
-  contactPersons: any[];
+  contactPersons: Record<string, unknown>[];
   year: number;
   published: boolean;
   registrationsAvailable: boolean;
-  participants: any[];
+  participants: Record<string, unknown>[];
   participantCount: number;
   createdAt: string;
   updatedAt: string;
@@ -77,6 +77,35 @@ export interface EventsMetadata {
     migratedAt: string;
     updatedEvents: number;
     totalMappings: number;
+  };
+}
+
+export interface UserProfile {
+  userId: string;
+  userName: string;
+  userBio: string;
+  userBranch: string;
+  userUsn: string;
+  userGithub: string;
+  userLinkedin: string;
+  userPhone: string;
+  userRole: string;
+  userCertificates: string[]; // Use string[] if certificates are stored as an array
+}
+
+// Example function to map Firestore data to UserProfile
+export function mapFirestoreUserData(data: Record<string, unknown>): UserProfile {
+  return {
+    userId: typeof data.userId === 'string' ? data.userId : '',
+    userName: typeof data.name === 'string' ? data.name : "",
+    userBio: typeof data.bio === 'string' ? data.bio : "",
+    userBranch: typeof data.branch === 'string' ? data.branch : "",
+    userUsn: typeof data.usn === 'string' ? data.usn : "",
+    userGithub: typeof data.github === 'string' ? data.github : "",
+    userLinkedin: typeof data.linkedin === 'string' ? data.linkedin : "",
+    userPhone: typeof data.phone === 'string' ? data.phone : "",
+    userRole: typeof data.role === 'string' ? data.role : "",
+    userCertificates: Array.isArray(data.certificates) ? data.certificates as string[] : [],
   };
 }
 
@@ -219,7 +248,7 @@ export async function searchEvents(searchTerm: string): Promise<Event[]> {
 /**
  * Get featured events
  */
-export async function getFeaturedEvents(limitCount: number = 6): Promise<Event[]> {
+export async function getFeaturedEvents(limitCount = 6): Promise<Event[]> {
   try {
     const eventsCollection = collection(db, 'events');
     const featuredQuery = query(
@@ -246,7 +275,7 @@ export async function getFeaturedEvents(limitCount: number = 6): Promise<Event[]
 /**
  * Get recent events
  */
-export async function getRecentEvents(limitCount: number = 10): Promise<Event[]> {
+export async function getRecentEvents(limitCount = 10): Promise<Event[]> {
   try {
     const eventsCollection = collection(db, 'events');
     const recentQuery = query(
@@ -275,7 +304,7 @@ export async function getRecentEvents(limitCount: number = 10): Promise<Event[]>
  * Get events with pagination
  */
 export async function getEventsPaginated(
-  pageSize: number = 10, 
+  pageSize = 10, 
   lastDoc?: DocumentSnapshot
 ): Promise<{ events: Event[], lastDoc: DocumentSnapshot | null }> {
   try {
@@ -353,13 +382,13 @@ export async function getEventsStatistics() {
     events.forEach(event => {
       // By year
       const year = event.year.toString();
-      stats.eventsByYear[year] = (stats.eventsByYear[year] || 0) + 1;
+      stats.eventsByYear[year] = (stats.eventsByYear[year] ?? 0) + 1;
       
       // By category
-      stats.eventsByCategory[event.category] = (stats.eventsByCategory[event.category] || 0) + 1;
+      stats.eventsByCategory[event.category] = (stats.eventsByCategory[event.category] ?? 0) + 1;
       
       // By type
-      stats.eventsByType[event.type] = (stats.eventsByType[event.type] || 0) + 1;
+      stats.eventsByType[event.type] = (stats.eventsByType[event.type] ?? 0) + 1;
       
       // With images
       if (event.image && event.image !== '') {
@@ -417,7 +446,7 @@ export const recruitService = {
       const docSnapshot = await getDoc(recruitDoc);
       
       if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
+        const data = docSnapshot.data() as Record<string, unknown>;
         return {
           id: docSnapshot.id,
           ...data,
@@ -449,7 +478,7 @@ export const recruitService = {
       const recruits: Recruit[] = [];
       
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
+        const data = doc.data() as Record<string, unknown>;
         recruits.push({
           id: doc.id,
           ...data,
@@ -528,7 +557,7 @@ export const recruitService = {
       const recruits: Recruit[] = [];
       
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
+        const data = doc.data() as Record<string, unknown>;
         recruits.push({
           id: doc.id,
           ...data,
@@ -565,7 +594,7 @@ export const recruitService = {
       const recruits: Recruit[] = [];
       
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
+        const data = doc.data() as Record<string, unknown>;
         recruits.push({
           id: doc.id,
           ...data,
@@ -601,17 +630,17 @@ export const recruitService = {
       
       recruits.forEach(recruit => {
         // By year of study
-        stats.recruitsByYear[recruit.yearOfStudy] = (stats.recruitsByYear[recruit.yearOfStudy] || 0) + 1;
+        stats.recruitsByYear[recruit.yearOfStudy] = (stats.recruitsByYear[recruit.yearOfStudy] ?? 0) + 1;
         
         // By branch
-        stats.recruitsByBranch[recruit.branch] = (stats.recruitsByBranch[recruit.branch] || 0) + 1;
+        stats.recruitsByBranch[recruit.branch] = (stats.recruitsByBranch[recruit.branch] ?? 0) + 1;
         
         // By membership plan
-        stats.recruitsByMembershipPlan[recruit.membershipPlan] = (stats.recruitsByMembershipPlan[recruit.membershipPlan] || 0) + 1;
+        stats.recruitsByMembershipPlan[recruit.membershipPlan] = (stats.recruitsByMembershipPlan[recruit.membershipPlan] ?? 0) + 1;
         
         // By payment status
-        const paymentStatus = recruit.paymentStatus || 'pending';
-        stats.recruitsByPaymentStatus[paymentStatus] = (stats.recruitsByPaymentStatus[paymentStatus] || 0) + 1;
+        const paymentStatus = recruit.paymentStatus ?? 'pending';
+        stats.recruitsByPaymentStatus[paymentStatus] = (stats.recruitsByPaymentStatus[paymentStatus] ?? 0) + 1;
         
         if (paymentStatus === 'completed') {
           stats.completedPayments++;
