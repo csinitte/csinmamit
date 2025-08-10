@@ -93,7 +93,7 @@ export function Navbar() {
             </Link>
           ))}
 
-          <div className="pt-2 border-t border-gray-200">
+          <div className="pt-2 border-t border-gray-200 flex justify-center">
             <AuthButton />
           </div>
         </div>
