@@ -2,8 +2,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
 import EventsList from "~/components/events/EventsList";
-import localFont from "next/font/local";
-const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 const Events = () => {
 
@@ -12,7 +10,7 @@ const Events = () => {
         <>
           <div className="mt-6 sm:mt-10 mb-6 sm:mb-10">
           <h1
-            className={`${myFont.className} bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text pt-6 sm:pt-10 text-center text-3xl sm:text-4xl lg:text-6xl font-black text-transparent underline-offset-2 `}
+            className="bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text pt-6 sm:pt-10 text-center text-3xl sm:text-4xl lg:text-6xl font-black text-transparent underline-offset-2"
           >
             Events
           </h1>

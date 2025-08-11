@@ -22,7 +22,7 @@ export interface CloudinaryUploadResult {
 export interface CloudinaryUploadOptions {
   folder?: string;
   public_id?: string;
-  transformation?: any[];
+  transformation?: unknown[];
   tags?: string[];
   overwrite?: boolean;
   resource_type?: 'image' | 'video' | 'raw' | 'auto';
@@ -67,7 +67,7 @@ export async function uploadImage(
  */
 export async function deleteImage(publicId: string): Promise<{ result: string }> {
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    const result = await cloudinary.uploader.destroy(publicId) as { result: string };
     return result;
   } catch (error) {
     console.error('Error deleting from Cloudinary:', error);
@@ -108,9 +108,9 @@ export function getOptimizedImageUrl(
 /**
  * Get image details from Cloudinary
  */
-export async function getImageDetails(publicId: string) {
+export async function getImageDetails(publicId: string): Promise<unknown> {
   try {
-    const result = await cloudinary.api.resource(publicId);
+    const result = await cloudinary.api.resource(publicId) as unknown;
     return result;
   } catch (error) {
     console.error('Error fetching image details:', error);
@@ -121,14 +121,14 @@ export async function getImageDetails(publicId: string) {
 /**
  * List images in a folder
  */
-export async function listImages(folder: string = 'events', maxResults: number = 50) {
+export async function listImages(folder = 'events', maxResults = 50): Promise<unknown[]> {
   try {
     const result = await cloudinary.api.resources({
       type: 'upload',
       prefix: folder,
       max_results: maxResults,
       resource_type: 'image',
-    });
+    }) as { resources: unknown[] };
     
     return result.resources;
   } catch (error) {
@@ -140,11 +140,22 @@ export async function listImages(folder: string = 'events', maxResults: number =
 /**
  * Generate a signed upload URL for client-side uploads
  */
-export function generateSignedUploadUrl(options: CloudinaryUploadOptions = {}) {
+export function generateSignedUploadUrl(options: CloudinaryUploadOptions = {}): {
+  signature: string;
+  timestamp: number;
+  api_key: string | undefined;
+  cloud_name: string | undefined;
+  folder?: string;
+  public_id?: string;
+  transformation?: unknown[];
+  tags?: string[];
+  overwrite?: boolean;
+  resource_type?: 'image' | 'video' | 'raw' | 'auto';
+} {
   try {
     const timestamp = Math.round(new Date().getTime() / 1000);
     const params = {
-      folder: options.folder || 'events',
+      folder: options.folder ?? 'events',
       ...options,
     };
 

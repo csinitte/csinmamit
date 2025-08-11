@@ -200,7 +200,7 @@ export default function Profile() {
           <LinkedinIcon size={20} />
         </Link>
         <Link className="rounded-full p-3 bg-gray-800 text-white hover:bg-black transition-colors"
-          href={userData?.github ? `https://github.com/${userData.github}` : "/"} target="_blank">
+          href={userData?.github ? `https://github.com/${String(userData.github)}` : "/"} target="_blank">
           <Github size={20} />
         </Link>
       </div>

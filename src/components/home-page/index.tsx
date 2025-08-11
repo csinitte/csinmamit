@@ -6,10 +6,7 @@ import { Button } from "../ui/button";
 import { ArrowRight, GroupIcon } from "lucide-react";
 import Link from "next/link";
 import { ImageSlider } from "../helpers/ImageSlider";
-import localFont from "next/font/local";
 import Testimonials from "../testimonials";
-
-const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 const HomePage: FunctionComponent = () => {
   return (
@@ -75,7 +72,7 @@ const HomePage: FunctionComponent = () => {
       <section className="bg-white text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white">
         <MaxWidthWrapper>
           <h1
-            className={`${myFont.className} bg-gradient-to-b from-blue-600 to-violet-400 bg-clip-text pb-4 pt-20 text-center text-6xl font-black text-transparent`}
+            className="bg-gradient-to-b from-blue-600 to-violet-400 bg-clip-text pb-4 pt-20 text-center text-6xl font-black text-transparent"
           >
             Highlights
           </h1>
@@ -92,7 +89,7 @@ const HomePage: FunctionComponent = () => {
       <section className="bg-gray-600/10 text-black transition-colors duration-500 dark:bg-gray-900/10 dark:text-white">
         <MaxWidthWrapper>
           <h1
-            className={`${myFont.className} bg-gradient-to-b from-violet-600 to-purple-400 bg-clip-text pb-4 pt-20 text-center text-6xl font-black text-transparent`}
+            className="bg-gradient-to-b from-violet-600 to-purple-400 bg-clip-text pb-4 pt-20 text-center text-6xl font-black text-transparent"
           >
             Testimonials
           </h1>

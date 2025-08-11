@@ -6,7 +6,6 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Fade } from "react-awesome-reveal";
-import localFont from "next/font/local";
 import { toast, Toaster } from "sonner";
 import { useAuth } from "~/lib/firebase-auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -14,8 +13,6 @@ import { db } from "../../../firebase";
 import { env } from "~/env";
 import { useRouter } from "next/navigation";
 import { CheckCircle, CreditCard, Crown, Loader2, Lock, XCircle } from "lucide-react";
-
-const myFont = localFont({ src: "../obscura.otf" });
 
 // Public Razorpay Key ID (non-secret) hardcoded to avoid invalid config errors on client
 const RAZORPAY_KEY_ID = "rzp_test_CfJA68nNVTLQg3";
@@ -293,7 +290,7 @@ export default function RecruitPage() {
                   Logged in as: {user.email}
                 </div>
               </div>
-              <h1 className={`${myFont.className} bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text text-4xl font-black text-transparent sm:text-6xl`}>
+              <h1 className="text-4xl font-black text-transparent sm:text-6xl bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text">
                 CSI NMAMIT EXECUTIVE MEMBERSHIP
               </h1>
               <p className="mt-4 text-lg text-gray-600">Join the Computer Society of India (CSI) Executive Membership!</p>

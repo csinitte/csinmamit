@@ -3,13 +3,10 @@ import { FacultyList } from "~/lib/constants";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import MaxWidthWrapper from "~/components/layout/max-width-wrapper";
 import Loader from "~/components/ui/loader";
-import localFont from "next/font/local";
 import { Faculty } from "~/components/team/faculty-cards";
 import { Fade } from "react-awesome-reveal";
 import { TeamMember } from "~/components/team/team-cards";
 import { CoreMembers } from "~/components/team/team-data"; // Importing static core members data
-
-const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 export interface CoreMember {
   name: string;
@@ -39,7 +36,7 @@ export default function Team() {
       <Fade triggerOnce cascade>
         <div className="mb-6 sm:mb-10 mt-6 sm:mt-10">
           <h1
-            className={`${myFont.className} bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text pt-6 sm:pt-10 text-center text-3xl sm:text-4xl lg:text-6xl font-black text-transparent underline-offset-2 `}
+            className="bg-gradient-to-b from-pink-600 to-violet-400 bg-clip-text pt-6 sm:pt-10 text-center text-3xl sm:text-4xl lg:text-6xl font-black text-transparent underline-offset-2"
           >
             Meet the Team
           </h1>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 
 /**
  * Custom hook for performance optimization utilities
@@ -13,53 +13,6 @@ export const usePerformance = () => {
   });
 
   /**
-   * Debounce function to limit rapid function calls
-   */
-  const useDebounce = useCallback(<T extends (...args: unknown[]) => void>(
-    func: T,
-    delay: number
-  ) => {
-    const timeoutRef = useRef<NodeJS.Timeout>();
-
-    return useCallback((...args: Parameters<T>) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => func(...args), delay);
-    }, [func, delay]);
-  }, []);
-
-  /**
-   * Throttle function to limit function calls to once per interval
-   */
-  const useThrottle = useCallback(<T extends (...args: unknown[]) => void>(
-    func: T,
-    limit: number
-  ) => {
-    const inThrottleRef = useRef(false);
-
-    return useCallback((...args: Parameters<T>) => {
-      if (!inThrottleRef.current) {
-        func(...args);
-        inThrottleRef.current = true;
-        setTimeout(() => {
-          inThrottleRef.current = false;
-        }, limit);
-      }
-    }, [func, limit]);
-  }, []);
-
-  /**
-   * Memoized value that only recalculates when dependencies change
-   */
-  const useMemoizedValue = useCallback(<T>(
-    factory: () => T,
-    deps: React.DependencyList
-  ) => {
-    return useMemo(factory, deps);
-  }, []);
-
-  /**
    * Performance metrics for debugging
    */
   const getPerformanceMetrics = useCallback(() => {
@@ -71,11 +24,45 @@ export const usePerformance = () => {
   }, []);
 
   return {
-    useDebounce,
-    useThrottle,
-    useMemoizedValue,
     getPerformanceMetrics,
   };
+};
+
+/**
+ * Custom hook for debouncing function calls
+ */
+export const useDebounce = <T extends (...args: unknown[]) => void>(
+  func: T,
+  delay: number
+) => {
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  return useCallback((...args: Parameters<T>) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => func(...args), delay);
+  }, [func, delay]);
+};
+
+/**
+ * Custom hook for throttling function calls
+ */
+export const useThrottle = <T extends (...args: unknown[]) => void>(
+  func: T,
+  limit: number
+) => {
+  const inThrottleRef = useRef(false);
+
+  return useCallback((...args: Parameters<T>) => {
+    if (!inThrottleRef.current) {
+      func(...args);
+      inThrottleRef.current = true;
+      setTimeout(() => {
+        inThrottleRef.current = false;
+      }, limit);
+    }
+  }, [func, limit]);
 };
 
 /**

@@ -7,7 +7,6 @@ import {
   CircleUserRound,
   Phone,
   GitBranch,
-  UserCheck,
   Loader2,
   Github,
   User,
