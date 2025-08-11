@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircle, CreditCard, Crown, Loader2, Lock, XCircle } from "lucide-react";
 
 // Public Razorpay Key ID (non-secret) hardcoded to avoid invalid config errors on client
-const RAZORPAY_KEY_ID = "rzp_test_CfJA68nNVTLQg3";
+const RAZORPAY_KEY_ID = "rzp_live_1VJCSr9bMzGon1";
 
 const membershipPlans = [
   { id: "1-year", name: "1 Year", price: 350, years: 1 },
