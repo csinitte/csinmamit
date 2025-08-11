@@ -9,7 +9,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId, selectedYears, amount, userEmail, userName, userUsn } = req.body as {
+    const { 
+      razorpay_order_id, 
+      razorpay_payment_id, 
+      razorpay_signature, 
+      userId, 
+      selectedYears, 
+      amount, 
+      userEmail, 
+      userName, 
+      userUsn,
+      platformFee,
+      baseAmount
+    } = req.body as {
       razorpay_order_id: string;
       razorpay_payment_id: string;
       razorpay_signature: string;
@@ -19,6 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       userEmail?: string;
       userName?: string;
       userUsn?: string;
+      platformFee?: number;
+      baseAmount?: number;
     };
 
     // Get user data for email from request body
@@ -46,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (isAuthentic) {
       // Optionally update membership server-side using Admin SDK (bypasses client security rule limitations)
       if (userId && selectedYears && amount) {
-        console.log('🔧 Payment verification - Selected years:', selectedYears, 'Amount:', amount);
+        console.log('🔧 Payment verification - Selected years:', selectedYears, 'Amount:', amount, 'Platform Fee:', platformFee);
         try {
           const db = getAdminFirestore();
           const membershipStartDate = new Date();
@@ -77,7 +91,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               paymentDetails: {
                 razorpayOrderId: razorpay_order_id,
                 razorpayPaymentId: razorpay_payment_id,
-                amount,
+                amount: baseAmount ?? amount, // Store base amount (without platform fee)
+                platformFee: platformFee ?? 0, // Store platform fee separately
+                totalAmount: amount, // Store total amount paid
                 currency: 'INR',
                 paymentDate: new Date(),
               },

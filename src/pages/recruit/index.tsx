@@ -17,6 +17,9 @@ import { CheckCircle, CreditCard, Crown, Loader2, Lock, XCircle } from "lucide-r
 // Public Razorpay Key ID (non-secret) hardcoded to avoid invalid config errors on client
 const RAZORPAY_KEY_ID = "rzp_live_1VJCSr9bMzGon1";
 
+// Platform fee percentage
+const PLATFORM_FEE_PERCENTAGE = 2; // 2%
+
 const membershipPlans = [
   { id: "1-year", name: "1 Year", price: 350, years: 1 },
   { id: "2-year", name: "2 Years", price: 650, years: 2 },
@@ -54,6 +57,10 @@ export default function RecruitPage() {
   const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasActiveMembership, setHasActiveMembership] = useState(false);
+
+  // Calculate platform fee and total amount
+  const platformFee = Math.round((selectedPlanPrice * PLATFORM_FEE_PERCENTAGE) / 100);
+  const totalAmount = selectedPlanPrice + platformFee;
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -109,7 +116,13 @@ export default function RecruitPage() {
       const orderResponse = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: selectedPlanPrice, currency: "INR", receipt: `mem_${Date.now()}` }),
+        body: JSON.stringify({ 
+          amount: totalAmount, // Send total amount including platform fee
+          currency: "INR", 
+          receipt: `mem_${Date.now()}`,
+          platformFee: platformFee, // Send platform fee separately for tracking
+          baseAmount: selectedPlanPrice // Send base amount for reference
+        }),
       });
       const orderData = (await orderResponse.json()) as { error?: string; amount: number; currency: string; orderId: string };
       if (!orderResponse.ok) throw new Error(orderData.error ?? "Failed to create order");
@@ -130,7 +143,9 @@ export default function RecruitPage() {
                 ...response,
                 userId: user.id,
                 selectedYears,
-                amount: selectedPlanPrice,
+                amount: totalAmount, // Send total amount including platform fee
+                baseAmount: selectedPlanPrice, // Send base amount
+                platformFee: platformFee, // Send platform fee
                 userEmail: user.email,
                 userName: user.name ?? (typeof userData?.name === 'string' ? userData.name : null),
                 userUsn: typeof userData?.usn === 'string' ? userData.usn : null,
@@ -344,15 +359,15 @@ export default function RecruitPage() {
                       <ul className="space-y-2 text-blue-700">
                         <li className="flex items-center gap-2">
                           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          1-Year Executive Membership: ₹350
+                          1-Year Executive Membership: ₹350 + ₹7 platform fee = ₹357
                         </li>
                         <li className="flex items-center gap-2">
                           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          2-Year Executive Membership: ₹650
+                          2-Year Executive Membership: ₹650 + ₹13 platform fee = ₹663
                         </li>
                         <li className="flex items-center gap-2">
                           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          3-Year Executive Membership: ₹900
+                          3-Year Executive Membership: ₹900 + ₹18 platform fee = ₹918
                         </li>
                       </ul>
                     </div>
@@ -413,11 +428,24 @@ export default function RecruitPage() {
             {/* Selected Plan Preview */}
             {selectedPlan && (
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
-                <h3 className="font-semibold text-blue-800 mb-1">Selected Plan:</h3>
-                <p className="text-blue-700">
-                  {selectedPlan} Executive Membership — ₹{selectedPlanPrice}
-                </p>
-                <p className="text-sm text-blue-600 mt-1">
+                <h3 className="font-semibold text-blue-800 mb-3">Payment Breakdown:</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-blue-700">Membership Fee:</span>
+                    <span className="text-blue-700">₹{selectedPlanPrice}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-blue-700">Platform Fee ({PLATFORM_FEE_PERCENTAGE}%):</span>
+                    <span className="text-blue-700">₹{platformFee}</span>
+                  </div>
+                  <div className="border-t border-blue-200 pt-2 mt-2">
+                    <div className="flex justify-between items-center font-semibold">
+                      <span className="text-blue-800">Total Amount:</span>
+                      <span className="text-blue-800">₹{totalAmount}</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-blue-600 mt-3">
                   Duration: {selectedYears} year{selectedYears > 1 ? "s" : ""}
                 </p>
               </div>
@@ -435,7 +463,7 @@ export default function RecruitPage() {
                 ) : (
                   <>
                     <CreditCard className="w-4 h-4" />
-                    Pay ₹{selectedPlanPrice} & Get Executive Membership
+                    Pay ₹{totalAmount} & Get Executive Membership
                   </>
                 )}
               </Button>

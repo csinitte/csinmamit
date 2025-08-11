@@ -8,6 +8,8 @@ const createOrderSchema = z.object({
   amount: z.number().positive('Amount must be positive').max(1000000, 'Amount too large'),
   currency: z.string().optional().default('INR'),
   receipt: z.string().min(1, 'Receipt is required').max(40, 'Receipt too long'),
+  platformFee: z.number().min(0, 'Platform fee must be non-negative').optional(),
+  baseAmount: z.number().positive('Base amount must be positive').optional(),
 });
 
 const razorpay = new Razorpay({
@@ -41,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    const { amount, currency, receipt } = validationResult.data;
+    const { amount, currency, receipt, platformFee, baseAmount } = validationResult.data;
 
     // Additional business logic validation
     if (amount < 1) {
@@ -51,10 +53,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
+    // Validate that total amount equals base amount + platform fee if both are provided
+    if (baseAmount && platformFee !== undefined) {
+      const expectedTotal = baseAmount + platformFee;
+      if (Math.abs(amount - expectedTotal) > 1) { // Allow 1 rupee difference for rounding
+        return res.status(400).json({ 
+          error: 'Amount mismatch',
+          message: 'Total amount does not match base amount + platform fee'
+        });
+      }
+    }
+
     const options = {
       amount: Math.round(amount * 100), // Razorpay expects amount in paise, ensure integer
       currency,
       receipt,
+      notes: {
+        platformFee: platformFee?.toString() ?? '0',
+        baseAmount: baseAmount?.toString() ?? amount.toString(),
+      },
     };
 
     const order = await razorpay.orders.create(options) as {
@@ -68,6 +85,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       orderId: order.id,
       amount: order.amount,
       currency: order.currency,
+      platformFee: platformFee ?? 0,
+      baseAmount: baseAmount ?? amount,
     });
   } catch (error) {
     console.error('Error creating Razorpay order:', error);
