@@ -71,3 +71,4 @@ logs/
 *.temp
 .cache/
 /unsed_folder
+VERCEL_DEPLOYMENT_FIX.md
