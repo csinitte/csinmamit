@@ -1,9 +1,6 @@
 import { Fade } from "react-awesome-reveal";
 import { type FunctionComponent } from "react";
 import Image from "next/image";
-import localFont from "next/font/local";
-
-const myFont = localFont({ src: "../../pages/obscura.otf" });
 
 const AboutUs: FunctionComponent = () => {
   return (
@@ -32,7 +29,7 @@ const AboutUs: FunctionComponent = () => {
                       <div className="flex flex-col items-center justify-center gap-8 p-8 sm:flex-row">
                         <div className="flex w-full flex-col items-center sm:w-1/2 sm:items-start">
                           <h1
-                            className={`${myFont.className} mb-4 max-w-3xl text-center text-4xl font-bold text-blue-600 sm:text-left sm:text-5xl md:text-5xl lg:text-6xl`}
+                            className="mb-4 max-w-3xl text-center text-4xl font-bold text-blue-600 sm:text-left sm:text-5xl md:text-5xl lg:text-6xl"
                           >
                             About Us
                           </h1>
