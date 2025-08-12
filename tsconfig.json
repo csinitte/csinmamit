@@ -30,7 +30,10 @@
     }
   },
   "include": [
+<<<<<<< HEAD
     ".eslintrc.cjs",
+=======
+>>>>>>> ace81e2965e8c1fa85208e75a89768eeddd8c86f
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
