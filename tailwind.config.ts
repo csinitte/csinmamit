@@ -26,6 +26,10 @@ const config = {
       '2xl': '1536px',
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui", "arial", "sans-serif"],
+        poppins: ["var(--font-sans)", "Poppins", "system-ui", "arial", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

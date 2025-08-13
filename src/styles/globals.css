@@ -33,6 +33,9 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+    
+    /* Font fallback - will be overridden by Next.js font if available */
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -86,7 +89,7 @@
   /* Ensure proper viewport on mobile */
   html {
     -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   
   /* Improve touch targets */
