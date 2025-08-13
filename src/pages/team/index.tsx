@@ -21,11 +21,27 @@ export interface CoreMember {
 
 export default function Team() {
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
+  
   useEffect(() => {
-    const delay = setTimeout(() => {
+    const preloadImages = async () => {
+      const imagePromises = CoreMembers.map((member) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = member.imageSrc;
+          img.onload = () => {
+            setImagesLoaded(prev => prev + 1);
+            resolve(true);
+          };
+          img.onerror = () => resolve(false);
+        });
+      });
+
+      await Promise.all(imagePromises);
       setLoading(false);
-    }, 2000);
-    return () => clearTimeout(delay);
+    };
+
+    void preloadImages();
   }, []);
 
   // Removed backend query (api.teamMembers.getAll.useQuery) to avoid errors.

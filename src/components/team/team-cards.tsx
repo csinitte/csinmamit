@@ -35,7 +35,14 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
             height={250}
             alt={`${name} - ${position}`}
             quality={100}
+            priority={_order < 5} // Load first 4 images immediately
+            loading={_order < 5 ? "eager" : "lazy"}
             className="h-full w-full rounded-md object-cover object-[center_20%]"
+            onError={(e) => {
+              // Fallback to a default image if loading fails
+              const imgElement = e.target as HTMLImageElement;
+              imgElement.src = "/favicon.ico";
+            }}
           />
         </div>
       </div>

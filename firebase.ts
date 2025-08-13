@@ -3,6 +3,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -23,6 +24,7 @@ const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : get
 // Initialize Firebase services
 export const storage = getStorage(firebaseApp);
 export const db = getFirestore(firebaseApp);
+export const auth = getAuth(firebaseApp);
 
 // Initialize Analytics (only in browser environment)
 export const analytics = typeof window !== 'undefined' ? getAnalytics(firebaseApp) : null;
