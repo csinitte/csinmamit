@@ -1,4 +1,4 @@
-/** @type {import('eslint').Linter.Config} */
+/* eslint config */
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
