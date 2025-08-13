@@ -34,15 +34,18 @@ export const TeamMember: React.FC<TeamMemberProps> = ({
             width={250}
             height={250}
             alt={`${name} - ${position}`}
-            quality={100}
-            priority={_order < 5} // Load first 4 images immediately
+            quality={85}
+            priority={_order < 5}
             loading={_order < 5 ? "eager" : "lazy"}
-            className="h-full w-full rounded-md object-cover object-[center_20%]"
+            className="h-full w-full rounded-md object-cover object-center transition-opacity duration-300"
             onError={(e) => {
-              // Fallback to a default image if loading fails
               const imgElement = e.target as HTMLImageElement;
-              imgElement.src = "/favicon.ico";
+              if (imgElement.src !== "/csi-logo.png") {
+                imgElement.src = "/csi-logo.png";
+              }
             }}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEwLzYvLi41ODY6OTc1PUNFNj1BPTw6Q0VJR0M/TUJBPkNOPUJHS0f/2wBDAQUXFx4aHh4pISE9RzlHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAABgj/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX2AAAA//Z"
           />
         </div>
       </div>
