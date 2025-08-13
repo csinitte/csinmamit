@@ -113,7 +113,7 @@ export const CoreMembers: CoreMember[] = [
     year: 3,
     linkedin: "https://www.linkedin.com/in/prashith-shetty-a91508244/",
     github: "https://github.com/Prashithshetty",
-    imageSrc: "/team25/Prashith-Shetty.jpg",
+    imageSrc: "/team25/Prashith-Shetty.JPG",
     order: 10
   },
   {
