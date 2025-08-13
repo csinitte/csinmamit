@@ -113,7 +113,7 @@ export const CoreMembers: CoreMember[] = [
     year: 3,
     linkedin: "https://www.linkedin.com/in/prashith-shetty-a91508244/",
     github: "https://github.com/Prashithshetty",
-    imageSrc: "/team25/Prashith-Shetty.JPG",
+    imageSrc: "/team25/Prashith-Shetty.jpg",
     order: 10
   },
   {
@@ -153,7 +153,7 @@ export const CoreMembers: CoreMember[] = [
     year: 3,
     linkedin: "https://www.linkedin.com/in/subrahmanya-m-k-788700327/",
     github: "https://github.com/MKSubrahmanya12345",
-    imageSrc: "/team25/m-k-subrahmanya.jfif",
+    imageSrc: "/team25/m-k-subrahmanya.jpg",
     order: 14
   },
   {
