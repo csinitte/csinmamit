@@ -44,7 +44,7 @@ export default function AuthButton() {
         className="rounded-full object-cover h-8 w-8"
       />
       <span className="text-sm font-medium text-black dark:text-white">
-        {user.name? user.name : "User"}
+        {user.name ?? "User"}
       </span>
     </button>
   </DropdownMenuTrigger>

@@ -138,6 +138,8 @@ export default function Profile() {
   const bio = (userData?.bio as string) ?? "No bio available";
   const branch = (userData?.branch as string) ?? "Not specified";
   const role = (userData?.role as string) ?? "User";
+  const githubUsername =
+    typeof userData?.github === "string" ? userData.github : "";
 
   const isActive = membershipData ? new Date() < membershipData.membershipEndDate : false;
   const statusMessage = membershipData
@@ -199,8 +201,11 @@ export default function Profile() {
           href={userData?.linkedin ?? "/"} target="_blank">
           <LinkedinIcon size={20} />
         </Link>
-        <Link className="rounded-full p-3 bg-gray-800 text-white hover:bg-black transition-colors"
-          href={userData?.github ? `https://github.com/${String(userData.github)}` : "/"} target="_blank">
+        <Link
+          className="rounded-full p-3 bg-gray-800 text-white hover:bg-black transition-colors"
+          href={githubUsername ? `https://github.com/${githubUsername}` : "/"}
+          target="_blank"
+        >
           <Github size={20} />
         </Link>
       </div>

@@ -151,7 +151,7 @@ export const EditProfile = () => {
             certificates: [],
           });
         }
-      } catch (error) {
+      } catch {
         toast.error("Failed to load profile data", {
           description: "Please refresh the page and try again.",
           style: { backgroundColor: '#ef4444', color: 'white' }
