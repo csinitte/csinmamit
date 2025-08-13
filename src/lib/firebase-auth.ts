@@ -19,6 +19,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check if all required Firebase config values are present
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+  console.error('Missing required Firebase configuration. Check your environment variables.');
+}
+
 // Initialize Firebase only if it hasn't been initialized already
 const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
